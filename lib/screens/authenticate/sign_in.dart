@@ -13,13 +13,20 @@ class _SignInState extends State<SignIn> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.grey,
+        backgroundColor: Colors.deepPurple,
         elevation: 0.0, // убирает тень
         title: Text('Продолжить'),
       ),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
-        child: ElevatedButton(),
+        child: ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor:
+                MaterialStateProperty.all<Color>(Colors.deepPurpleAccent),
+          ),
+          child: Text('Sign in anon'),
+          onPressed: () async {},
+        ),
       ),
     );
   }
