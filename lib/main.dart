@@ -7,8 +7,8 @@ void main() async{
   await Firebase.initializeApp();
   runApp(MyApp());
   print('check changes');
-  print('another changes another changes another changes');
-  print('another changes');
+  print('   changes another changes   changes    ');
+  print(' changes another another another changes changes changes');
 }
 
 class MyApp extends StatelessWidget {
