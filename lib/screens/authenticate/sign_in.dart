@@ -1,4 +1,4 @@
-import 'package:first_project_test/services/auth.dart';
+import 'package:first_project_test/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class SignIn extends StatefulWidget {
@@ -9,6 +9,7 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+
   final AuthService _auth = AuthService();
 
   @override
@@ -23,18 +24,21 @@ class _SignInState extends State<SignIn> {
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
         child: ElevatedButton(
-          style: ButtonStyle(
-            backgroundColor:
-                MaterialStateProperty.all<Color>(Colors.deepPurpleAccent),
-          ),
           child: Text('Sign in anon'),
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.pink)
+          ),
           onPressed: () async {
+
             dynamic result = await _auth.signInAnon();
+
             if (result == null){
-              throw ErrorDescription('Error signing in!');
-            } else {
-              print('signed in!');
-              print(result.uid);
+              throw ErrorDescription('error signing in');
+            }
+            else {
+              print('signed in');
+              print(result);
+              return result;
             }
           },
         ),
