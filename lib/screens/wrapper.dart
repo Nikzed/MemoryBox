@@ -1,4 +1,4 @@
-import 'package:first_project_test/model/user.dart' as custom;
+import 'package:first_project_test/model/user.dart';
 import 'package:first_project_test/screens/authenticate/authenticate.dart';
 import 'package:first_project_test/screens/home/home.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +10,8 @@ class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final user = Provider.of<custom.User?>(context);
-    print(user);
+    final user = Provider.of<UserModel?>(context);
+    print('$user is here');
 
     // return Home or Authenticate widget
     return Authenticate();
