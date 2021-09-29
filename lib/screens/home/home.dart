@@ -5,8 +5,30 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text("Home"),
+    return Scaffold(
+      backgroundColor: Colors.deepPurpleAccent,
+      appBar: AppBar(
+        backgroundColor: Colors.deepPurple,
+        elevation: 0.0,
+        leading: IconButton(
+          icon: Text('hiii'),
+          onPressed: () => Scaffold.of(context).openDrawer(),
+        ),
+        actions: <Widget>[
+          // TextButton.icon(onPressed: () {}, icon: icon, label: label)
+        ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+                decoration: BoxDecoration(color: Colors.blue),
+                child: Text('Аудиосказки'))
+          ],
+        ),
+      ),
+
     );
   }
 }
