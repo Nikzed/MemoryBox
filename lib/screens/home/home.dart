@@ -8,12 +8,18 @@ class Home extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.deepPurpleAccent,
       appBar: AppBar(
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Text('hiii'),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
         backgroundColor: Colors.deepPurple,
         elevation: 0.0,
-        leading: IconButton(
-          icon: Text('hiii'),
-          onPressed: () => Scaffold.of(context).openDrawer(),
-        ),
+        // leading: IconButton(
+        //   icon: Text('hiii'),
+        //   onPressed: () => null,
+        // ),
         actions: <Widget>[
           // TextButton.icon(onPressed: () {}, icon: icon, label: label)
         ],
@@ -28,7 +34,6 @@ class Home extends StatelessWidget {
           ],
         ),
       ),
-
     );
   }
 }
