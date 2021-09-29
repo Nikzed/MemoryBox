@@ -33,12 +33,11 @@ class _SignInState extends State<SignIn> {
             dynamic result = await _auth.signInAnon();
 
             if (result == null){
-              throw ErrorDescription('error signing in');
+              print('error signing in');
             }
             else {
               print('signed in');
-              print(result);
-              return result;
+              return result.uid;
             }
           },
         ),

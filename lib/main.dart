@@ -1,4 +1,4 @@
-import 'package:first_project_test/model/user.dart';
+import 'package:first_project_test/model/user_model.dart';
 import 'package:first_project_test/screens/wrapper.dart';
 import 'package:first_project_test/services/auth_service.dart';
 import 'package:flutter/material.dart';
