@@ -47,10 +47,44 @@ class Home extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: 10,
+            left: 17,
+            top: 10,
             child: Text('Подборки',
                 style: TextStyle(
                     color: Colors.white, fontSize: 24, fontFamily: 'Consolas')),
+          ),
+          Positioned(
+            top: 4,
+            right: 10,
+            child: TextButton(
+              onPressed: () {},
+              child: Text(
+                'Открыть всё',
+                style: TextStyle(
+                    color: Colors.white, fontSize: 14, fontFamily: 'Consolas'),
+              ),
+              style: ButtonStyle(),
+            ),
+          ),
+          Positioned(
+            top: 78,
+            left: 16,
+            child: InkWell(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              onTap: () {},
+              child: Container(
+                width: 183,
+                height: 240,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color(0xcc71A59F),
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.all(Radius.circular(15.0))
+                  ),
+                ),
+              ),
+            ),
           )
         ],
       ),
@@ -83,8 +117,6 @@ class CirclePainter extends CustomPainter {
 
     var path = Path();
     path.moveTo(0, size.height * 0.2);
-    // path.quadraticBezierTo(size.width * 0.25, size.height * 0.7,
-    //     size.width * 0.5, size.height * 0.8);
     path.quadraticBezierTo(size.width * 0.5, size.height * 0.5,
         size.width * 1.0, size.height * 0.3);
     path.lineTo(size.width, 0);
