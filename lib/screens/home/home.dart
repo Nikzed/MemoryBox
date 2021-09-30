@@ -6,15 +6,17 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.deepPurpleAccent,
       appBar: AppBar(
         leading: Builder(
           builder: (context) => IconButton(
-            icon: Text('hiii'),
+            icon: CustomPaint(
+              size: Size(20, 0),
+              painter: MyPainter(),
+            ),
             onPressed: () => Scaffold.of(context).openDrawer(),
           ),
         ),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Color(0xff8c84e2),
         elevation: 0.0,
         // leading: IconButton(
         //   icon: Text('hiii'),
@@ -35,5 +37,24 @@ class Home extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class MyPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.fill
+      ..strokeWidth = 2;
+    canvas.drawLine(Offset(0, -6), Offset(20, -6), paint);
+    canvas.drawLine(Offset(0, 0), Offset(20, 0), paint);
+    canvas.drawLine(Offset(0, 6), Offset(20, 6), paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+    throw UnimplementedError();
   }
 }
