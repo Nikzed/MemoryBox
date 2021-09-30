@@ -37,8 +37,9 @@ class Home extends StatelessWidget {
           ],
         ),
       ),
-      body: Stack (
-        children: <Widget>[Container(
+      body: Stack(
+        children: <Widget>[
+          Container(
             width: 500,
             height: 500,
             child: CustomPaint(
@@ -46,10 +47,11 @@ class Home extends StatelessWidget {
             ),
           ),
           Positioned(
-              left: 10,
-              child: Text()
+            left: 10,
+            child: Text('Подборки',
+                style: TextStyle(
+                    color: Colors.white, fontSize: 24, fontFamily: 'Consolas')),
           )
-
         ],
       ),
     );
@@ -74,12 +76,10 @@ class MyPainter extends CustomPainter {
   }
 }
 
-class CirclePainter extends CustomPainter{
+class CirclePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-
-    var paint = Paint()
-      ..color = Color(0xff8c84e2);
+    var paint = Paint()..color = Color(0xff8c84e2);
 
     var path = Path();
     path.moveTo(0, size.height * 0.2);
@@ -91,12 +91,10 @@ class CirclePainter extends CustomPainter{
     path.lineTo(0, 0);
 
     canvas.drawPath(path, paint);
-
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return true;
   }
-
 }
