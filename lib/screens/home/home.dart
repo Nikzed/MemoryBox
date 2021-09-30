@@ -7,6 +7,7 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.dark,
         leading: Builder(
           builder: (context) => IconButton(
             icon: CustomPaint(
@@ -36,6 +37,21 @@ class Home extends StatelessWidget {
           ],
         ),
       ),
+      body: Stack (
+        children: <Widget>[Container(
+            width: 500,
+            height: 500,
+            child: CustomPaint(
+              painter: CirclePainter(),
+            ),
+          ),
+          Positioned(
+              left: 10,
+              child: Text()
+          )
+
+        ],
+      ),
     );
   }
 }
@@ -55,6 +71,32 @@ class MyPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return true;
-    throw UnimplementedError();
   }
+}
+
+class CirclePainter extends CustomPainter{
+  @override
+  void paint(Canvas canvas, Size size) {
+
+    var paint = Paint()
+      ..color = Color(0xff8c84e2);
+
+    var path = Path();
+    path.moveTo(0, size.height * 0.2);
+    // path.quadraticBezierTo(size.width * 0.25, size.height * 0.7,
+    //     size.width * 0.5, size.height * 0.8);
+    path.quadraticBezierTo(size.width * 0.5, size.height * 0.5,
+        size.width * 1.0, size.height * 0.3);
+    path.lineTo(size.width, 0);
+    path.lineTo(0, 0);
+
+    canvas.drawPath(path, paint);
+
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+
 }
