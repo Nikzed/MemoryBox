@@ -1,4 +1,5 @@
 cd C:/important/StudioProjects/MemoryBox
+git pull
 git add .
 timestamp() {
   date +"at %H:%M:%S on %d/%m/%Y"
