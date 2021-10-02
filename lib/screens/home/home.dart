@@ -67,7 +67,7 @@ class Home extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 78,
+            top: 60,
             left: 16,
             child: InkWell(
               splashColor: Colors.transparent,
@@ -77,15 +77,65 @@ class Home extends StatelessWidget {
                 width: 183,
                 height: 240,
                 child: Container(
-                  decoration: BoxDecoration(
-                    color: Color(0xcc71A59F),
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.all(Radius.circular(15.0))
+                  child: ListView(
+                    padding: EdgeInsets.fromLTRB(30, 70, 30, 30),
+                    children: [
+                      Text(
+                        'Здесь будет твой набор сказок',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                        ),
+                      )
+                    ],
                   ),
+                  decoration: BoxDecoration(
+                      color: Color(0xd971A59F),
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.all(Radius.circular(15.0))),
                 ),
               ),
             ),
-          )
+          ),
+          Positioned(
+            top: 60,
+            left: 215,
+            child: InkWell(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              onTap: () {},
+              child: Container(
+                width: 163,
+                height: 112,
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Color(0xffF1B488),
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.all(Radius.circular(15.0))),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 188,
+            left: 215,
+            child: InkWell(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              onTap: () {},
+              child: Container(
+                width: 163,
+                height: 112,
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Color(0xd9678BD2),
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.all(Radius.circular(15.0))),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -116,9 +166,9 @@ class CirclePainter extends CustomPainter {
     var paint = Paint()..color = Color(0xff8c84e2);
 
     var path = Path();
-    path.moveTo(0, size.height * 0.2);
-    path.quadraticBezierTo(size.width * 0.5, size.height * 0.5,
-        size.width * 1.0, size.height * 0.3);
+    path.moveTo(0, size.height * 0.3);
+    path.quadraticBezierTo(size.width * 0.3, size.height * 0.51,
+        size.width * 1.0, size.height * 0.41);
     path.lineTo(size.width, 0);
     path.lineTo(0, 0);
 
