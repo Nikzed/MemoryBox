@@ -2,143 +2,177 @@ import 'package:flutter/material.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
+  final backgroundColor = 0xffF6F6F6;
+  final themeColor = 0xff8c84e2;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        brightness: Brightness.dark,
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: CustomPaint(
-              size: Size(20, 0),
-              painter: MyPainter(),
-            ),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
-        backgroundColor: Color(0xff8c84e2),
-        elevation: 0.0,
-        // leading: IconButton(
-        //   icon: Text('hiii'),
-        //   onPressed: () => null,
-        // ),
-        actions: <Widget>[
-          // TextButton.icon(onPressed: () {}, icon: icon, label: label)
-        ],
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-                decoration: BoxDecoration(color: Colors.blue),
-                child: Text('Аудиосказки'))
-          ],
-        ),
-      ),
-      body: Stack(
-        children: <Widget>[
-          Container(
-            width: 500,
-            height: 500,
-            child: CustomPaint(
-              painter: CirclePainter(),
-            ),
-          ),
-          Positioned(
-            left: 17,
-            top: 10,
-            child: Text('Подборки',
-                style: TextStyle(
-                    color: Colors.white, fontSize: 24, fontFamily: 'Consolas')),
-          ),
-          Positioned(
-            top: 4,
-            right: 10,
-            child: TextButton(
-              onPressed: () {},
-              child: Text(
-                'Открыть всё',
-                style: TextStyle(
-                    color: Colors.white, fontSize: 14, fontFamily: 'Consolas'),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            backgroundColor: Color(backgroundColor),
+            expandedHeight: MediaQuery.of(context).size.height * 0.5,
+            leading: Builder(
+              builder: (context) => IconButton(
+                icon: CustomPaint(
+                  size: Size(20, 0),
+                  painter: MyPainter(),
+                ),
+                onPressed: () => Scaffold.of(context).openDrawer(),
               ),
-              style: ButtonStyle(),
             ),
-          ),
-          Positioned(
-            top: 60,
-            left: 16,
-            child: InkWell(
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              onTap: () {},
-              child: Container(
-                width: 183,
-                height: 240,
-                child: Container(
-                  child: ListView(
-                    padding: EdgeInsets.fromLTRB(30, 70, 30, 30),
-                    children: [
-                      Text(
-                        'Здесь будет твой набор сказок',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
+            flexibleSpace: FlexibleSpaceBar(
+                background: Stack(
+              children: <Widget>[
+                Container(
+                  width: 500,
+                  height: 500,
+                  child: CustomPaint(
+                    painter: CirclePainter(),
+                  ),
+                ),
+                Positioned(
+                  top: 116,
+                  left: 17,
+                  child: Text('Подборки',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontFamily: 'Consolas')),
+                ),
+                Positioned(
+                  top: 110,
+                  right: 10,
+                  child: TextButton(
+                    onPressed: () {},
+                    child: Text(
+                      'Открыть всё',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontFamily: 'Consolas'),
+                    ),
+                    style: ButtonStyle(),
+                  ),
+                ),
+                Positioned(
+                  top: 166,
+                  left: 16,
+                  child: Container(
+                    width: 173,
+                    height: 240,
+                    child: Container(
+                      child: Stack(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(24, 60, 23, 0),
+                            child: Text(
+                              'Здесь будет твой набор сказок',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(50, 160, 0, 49),
+                            child: TextButton(
+                              onPressed: () {},
+                              child: Text('Добавить',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    color: Color(backgroundColor),
+                                    fontSize: 14,
+                                  )),
+                            ),
+                          ),
+                        ],
+                      ),
+                      decoration: BoxDecoration(
+                          color: Color(0xd971A59F),
+                          shape: BoxShape.rectangle,
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(15.0))),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 166,
+                  left: 205,
+                  child: InkWell(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    onTap: () {},
+                    child: Container(
+                      width: 173,
+                      height: 112,
+                      child: Container(
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            color: Color(0xffF1B488),
+                            shape: BoxShape.rectangle,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(15.0))),
+                        child: Text(
+                          'Тут',
+                          style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
+                          ),
                         ),
-                      )
-                    ],
+                      ),
+                    ),
                   ),
-                  decoration: BoxDecoration(
-                      color: Color(0xd971A59F),
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.all(Radius.circular(15.0))),
                 ),
-              ),
-            ),
+                Positioned(
+                  top: 294,
+                  left: 205,
+                  child: Container(
+                    width: 173,
+                    height: 112,
+                    child: Container(
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          color: Color(0xd9678BD2),
+                          shape: BoxShape.rectangle,
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(15.0))),
+                      child: Text(
+                        'И тут',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )),
           ),
-          Positioned(
-            top: 60,
-            left: 215,
-            child: InkWell(
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              onTap: () {},
-              child: Container(
-                width: 163,
-                height: 112,
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Color(0xffF1B488),
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.all(Radius.circular(15.0))),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 188,
-            left: 215,
-            child: InkWell(
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              onTap: () {},
-              child: Container(
-                width: 163,
-                height: 112,
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Color(0xd9678BD2),
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.all(Radius.circular(15.0))),
-                ),
-              ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate((context, index) {
+              return Container(
+                height: 50,
+                alignment: Alignment.center,
+                color: Colors.orange[100 * (index % 9)],
+                child: Text('orange ${index+1}'),
+              );
+            },
+              childCount: 18,
             ),
           ),
         ],
       ),
+      drawer: Drawer(),
     );
+  }
+
+  Widget dashboard(context) {
+    return SliverAppBar();
   }
 }
 
@@ -166,9 +200,9 @@ class CirclePainter extends CustomPainter {
     var paint = Paint()..color = Color(0xff8c84e2);
 
     var path = Path();
-    path.moveTo(0, size.height * 0.3);
-    path.quadraticBezierTo(size.width * 0.3, size.height * 0.51,
-        size.width * 1.0, size.height * 0.41);
+    path.moveTo(0, size.height * 0.7);
+    path.quadraticBezierTo(size.width * 0.3, size.height * 0.88,
+        size.width * 1.0, size.height * 0.77);
     path.lineTo(size.width, 0);
     path.lineTo(0, 0);
 
