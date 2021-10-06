@@ -9,20 +9,22 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(fontFamily: 'Roboto'),
+      // theme: ThemeData(fontFamily: 'Roboto'),
       home: Scaffold(
         body: CustomScrollView(
           slivers: [
             SliverAppBar(
               backgroundColor: Color(backgroundColor),
               expandedHeight: MediaQuery.of(context).size.height * 0.5,
-              leading: Builder(
-                builder: (context) => IconButton(
-                  icon: CustomPaint(
-                    size: Size(20, 0),
-                    painter: MyPainter(),
+              leading: Container(
+                height: 140,
+                color: Colors.black,
+                child: Builder(
+                  builder: (context) => IconButton(
+                    tooltip: 'Open menu',
+                    icon: Icon(Icons.menu),
+                    onPressed: () => Scaffold.of(context).openDrawer(),
                   ),
-                  onPressed: () => Scaffold.of(context).openDrawer(),
                 ),
               ),
               flexibleSpace: FlexibleSpaceBar(
@@ -35,15 +37,28 @@ class Home extends StatelessWidget {
                       painter: CirclePainter(),
                     ),
                   ),
-                  Positioned(
-                    top: 116,
-                    left: 17,
-                    child: Text('Подборки',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontFamily: 'Consolas')),
+
+                  Padding(
+                    padding: EdgeInsets.only(top: 28, left: 20),
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Text('Подборки',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontFamily: 'Consolas')),
+                    ),
                   ),
+
+                  // Positioned(
+                  //   top: 116,
+                  //   left: 17,
+                  //   child: Text('Подборки',
+                  //       style: TextStyle(
+                  //           color: Colors.white,
+                  //           fontSize: 24,
+                  //           fontFamily: 'Consolas')),
+                  // ),
                   Positioned(
                     top: 110,
                     right: 10,
