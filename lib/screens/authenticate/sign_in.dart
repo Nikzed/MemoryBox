@@ -2,6 +2,7 @@ import 'package:first_project_test/model/painter_model.dart';
 import 'package:first_project_test/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
+
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
 
@@ -38,7 +39,7 @@ class _SignInState extends State<SignIn> {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text('Твой голос всегда рядом',
-                    style: TextStyle(color: Colors.white, fontSize: 14,),
+                    style: TextStyle(color: Colors.white, fontSize: 14),
                   ),
                 )
               ],
