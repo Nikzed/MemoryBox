@@ -12,6 +12,7 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   final AuthService _auth = AuthService();
+  final backgroundColor = 0xffF6F6F6;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class _SignInState extends State<SignIn> {
       builder: () => MaterialApp(
         theme: ThemeData(fontFamily: 'Roboto'),
         home: Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: Color(backgroundColor),
           body: Stack(children: [
             Container(
               width: 500,
@@ -46,47 +47,98 @@ class _SignInState extends State<SignIn> {
                 ]),
               ),
             ),
-            Align(
-              alignment: Alignment.center,
-              child: Container(
-                width: 200.w,
-                height: 57.h,
-                margin: EdgeInsets.only(top: 100.h),
-                alignment: Alignment.center,
-                child: Text('data'),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.shade400,
-                      blurRadius: 10,
-                      offset: Offset(0, 2), // Shadow position
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              alignment: Alignment.topCenter,
-              padding: EdgeInsets.only(top: 500.0),
-              child: ElevatedButton(
-                child: Text('Sign in anon'),
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.pink)),
-                onPressed: () async {
-                  dynamic result = await _auth.signInAnon();
 
-                  if (result == null) {
-                    print('error signing in');
-                  } else {
-                    print('signed in');
-                    return result.uid;
-                  }
-                },
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 50),
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Привет!',
+                      style: TextStyle(
+                        fontSize: 24,
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 150),
+                      child: Text(
+                        'Мы рады видеть тебя здесь. Это приложение поможет записывать сказки и держать их в удобном месте не заполняя память на телефоне!',
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  Align(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 350),
+                      child: ElevatedButton(
+                          onPressed: () {},
+                          child: Text(
+                            'Продолжить',
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          )),
+                    ),
+                  )
+                ],
               ),
             ),
+
+            // ОКНО текста с тенью
+
+            // Align(
+            //   alignment: Alignment.center,
+            //   child: Container(
+            //     width: 200.w,
+            //     height: 57.h,
+            //     margin: EdgeInsets.only(top: 100.h),
+            //     alignment: Alignment.center,
+            //     child: Text('data'),
+            //     decoration: BoxDecoration(
+            //       color: Colors.white,
+            //       shape: BoxShape.rectangle,
+            //       borderRadius: BorderRadius.all(Radius.circular(15.0)),
+            //       boxShadow: [
+            //         BoxShadow(
+            //           color: Colors.grey.shade400,
+            //           blurRadius: 10,
+            //           offset: Offset(0, 2), // Shadow position
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
+
+            // ОКНО текста с тенью
+
+            // КНОПКА анонимного входа - начало
+
+            // Container(
+            //   alignment: Alignment.topCenter,
+            //   padding: EdgeInsets.only(top: 500.0),
+            //   child: ElevatedButton(
+            //     child: Text('Sign in anon'),
+            //     style: ButtonStyle(
+            //         backgroundColor: MaterialStateProperty.all(Colors.pink)),
+            //     onPressed: () async {
+            //       dynamic result = await _auth.signInAnon();
+            //
+            //       if (result == null) {
+            //         print('error signing in');
+            //       } else {
+            //         print('signed in');
+            //         return result.uid;
+            //       }
+            //     },
+            //   ),
+            // ),
+
+            // КНОПКА анонимного входа - конец
           ]),
         ),
       ),
