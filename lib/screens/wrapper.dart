@@ -2,6 +2,7 @@ import 'package:first_project_test/model/user_model.dart';
 import 'package:first_project_test/screens/authenticate/authenticate.dart';
 import 'package:first_project_test/screens/home/home.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 // для отслеживания состояний
@@ -10,7 +11,9 @@ class Wrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle( // добавил для проверки апп бара
+      statusBarColor: Colors.white.withOpacity(0),
+    ));
     final user = Provider.of<UserModel?>(context);
 
     // return Home or Authenticate widget

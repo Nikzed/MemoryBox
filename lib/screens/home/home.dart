@@ -1,15 +1,24 @@
 import 'package:first_project_test/model/painter_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
 class Home extends StatelessWidget {
+
+
+
   const Home({Key? key}) : super(key: key);
   final backgroundColor = 0xffF6F6F6;
   final accentColor = 0xff8c84e2;
 
   @override
   Widget build(BuildContext context) {
+
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle( // добавил для проверки апп бара
+      statusBarColor: Colors.white.withOpacity(0),
+    ));
+
     return ScreenUtilInit(
       designSize: Size(360 , 690),
       builder:() => MaterialApp(
