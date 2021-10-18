@@ -11,9 +11,6 @@ class Wrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle( // добавил для проверки апп бара
-      statusBarColor: Colors.white.withOpacity(0),
-    ));
     final user = Provider.of<UserModel?>(context);
 
     // return Home or Authenticate widget

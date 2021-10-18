@@ -261,22 +261,4 @@ class Home extends StatelessWidget {
   }
 }
 
-class MyPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.fill
-      ..strokeWidth = 2;
-    canvas.drawLine(Offset(0, -6), Offset(20, -6), paint);
-    canvas.drawLine(Offset(0, 0), Offset(20, 0), paint);
-    canvas.drawLine(Offset(0, 6), Offset(20, 6), paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
-  }
-}
-
 

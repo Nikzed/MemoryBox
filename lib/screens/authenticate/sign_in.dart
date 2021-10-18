@@ -1,7 +1,9 @@
 import 'package:first_project_test/model/painter_model.dart';
+import 'package:first_project_test/screens/home/home.dart';
 import 'package:first_project_test/services/auth_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
@@ -65,9 +67,7 @@ class _SignInState extends State<SignIn> {
                       child: Text(
                         'Привет!',
                         style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold
-                        ),
+                            fontSize: 22, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -188,7 +188,7 @@ class _RegistrationState extends State<Registration> {
         builder: () => MaterialApp(
               theme: ThemeData(fontFamily: 'Roboto'),
               home: Scaffold(
-                resizeToAvoidBottomInset: false,
+                  resizeToAvoidBottomInset: false,
                   backgroundColor: Color(backgroundColor),
                   body: Stack(children: [
                     Container(
@@ -243,8 +243,13 @@ class _RegistrationState extends State<Registration> {
                       alignment: Alignment.center,
                       padding: EdgeInsets.only(top: 400.0),
                       child: InkWell(
-                        child: Text('Позже',
-                          style: TextStyle(fontWeight: FontWeight.w600,letterSpacing: 2,fontSize: 18.sp, color: Color(0xff3A3A55)),
+                        child: Text(
+                          'Позже',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 2,
+                              fontSize: 18.sp,
+                              color: Color(0xff3A3A55)),
                         ),
                         onTap: () async {
                           dynamic result = await _auth.signInAnon();
@@ -253,7 +258,7 @@ class _RegistrationState extends State<Registration> {
                             print('error signing in');
                           } else {
                             print('signed in');
-                            return result.uid;
+                            _navigateToHome(context);
                           }
                         },
                       ),
@@ -310,7 +315,7 @@ class _RegistrationState extends State<Registration> {
                             color: Color(backgroundColor),
                             shape: BoxShape.rectangle,
                             borderRadius:
-                            BorderRadius.all(Radius.circular(15.0)),
+                                BorderRadius.all(Radius.circular(15.0)),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black12,
@@ -321,8 +326,11 @@ class _RegistrationState extends State<Registration> {
                           ),
                           child: Align(
                             alignment: Alignment.center,
-                            child: Text('Регистрация привяжет твои сказки  к облаку, после чего они всегда будут с тобой',
-                            style: TextStyle(fontSize: 12.sp),textAlign: TextAlign.center,),
+                            child: Text(
+                              'Регистрация привяжет твои сказки  к облаку, после чего они всегда будут с тобой',
+                              style: TextStyle(fontSize: 12.sp),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                         ),
                       ),
@@ -334,6 +342,10 @@ class _RegistrationState extends State<Registration> {
   void _navigateToNextScreen(BuildContext context) {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => VerifyNumber()));
+  }
+
+  void _navigateToHome(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()));
   }
 }
 
@@ -361,6 +373,7 @@ class _VerifyNumberState extends State<VerifyNumber> {
         builder: () => MaterialApp(
             theme: ThemeData(fontFamily: 'Roboto'),
             home: Scaffold(
+              resizeToAvoidBottomInset: false,
               backgroundColor: Color(backgroundColor),
               body: _status != Status.Error
                   ? Stack(children: [
@@ -383,6 +396,97 @@ class _VerifyNumberState extends State<VerifyNumber> {
                               letterSpacing: 3.w),
                         ),
                       ),
+                      Align(
+                          alignment: Alignment.topCenter,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                top: 275.h, left: 80.w, right: 80.w),
+                            child: Text(
+                              'Введи код из смс, чтобы мы тебя запомнили',
+                              style: TextStyle(fontSize: 14.sp),
+                              textAlign: TextAlign.center,
+                            ),
+                          )),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                          width: 279.w,
+                          height: 62.h,
+                          margin: EdgeInsets.only(top: 10.h),
+                          alignment: Alignment.center,
+                          child: Material(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(100)),
+                            elevation: 4,
+                            shadowColor: Colors.black,
+                            child: TextField(
+                              textAlign: TextAlign.center,
+                              keyboardType: TextInputType.phone,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Color(backgroundColor),
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.circular(100.0),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 280),
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Color(0xffF1B488),
+                                fixedSize: Size(269.w, 49.h),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50)),
+                              ),
+                              onPressed: () {},
+                              child: Text(
+                                'Продолжить',
+                                style: TextStyle(
+                                    fontSize: 18, color: Colors.white),
+                              )),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: EdgeInsets.only(bottom: 50.h),
+                          child: Container(
+                            width: 250.w,
+                            height: 90.h,
+                            padding: EdgeInsets.all(25),
+                            decoration: BoxDecoration(
+                              color: Color(backgroundColor),
+                              shape: BoxShape.rectangle,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15.0)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 2,
+                                  offset: Offset(0, 5), // Shadow position
+                                ),
+                              ],
+                            ),
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                'Регистрация привяжет твои сказки  к облаку, после чего они всегда будут с тобой',
+                                style: TextStyle(fontSize: 12.sp),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
                     ])
                   : Stack(
                       children: [
