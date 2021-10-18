@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_project_test/model/painter_model.dart';
 import 'package:first_project_test/screens/home/home.dart';
 import 'package:first_project_test/services/auth_service.dart';
@@ -63,7 +64,7 @@ class _SignInState extends State<SignIn> {
                   Align(
                     alignment: Alignment.topCenter,
                     child: Padding(
-                      padding: EdgeInsets.only(top: 320),
+                      padding: EdgeInsets.only(top: 300.h),
                       child: Text(
                         'Привет!',
                         style: TextStyle(
@@ -180,7 +181,8 @@ class _RegistrationState extends State<Registration> {
   final backgroundColor = 0xffF6F6F6;
   final AuthService _auth = AuthService();
   final phoneMask = MaskTextInputFormatter(
-      mask: '+# (###) ###-##-##', filter: {"#": RegExp(r'[0-9]')});
+      mask: '+## ### ### ## ##', filter: {"#": RegExp(r'[0-9]')});
+  final _textController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -275,6 +277,7 @@ class _RegistrationState extends State<Registration> {
                           elevation: 4,
                           shadowColor: Colors.black,
                           child: TextField(
+                            controller: _textController,
                             textAlign: TextAlign.center,
                             keyboardType: TextInputType.phone,
                             inputFormatters: [phoneMask],
@@ -341,7 +344,7 @@ class _RegistrationState extends State<Registration> {
 
   void _navigateToNextScreen(BuildContext context) {
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => VerifyNumber()));
+        .push(MaterialPageRoute(builder: (context) => VerifyNumber(number: _textController.text,)));
   }
 
   void _navigateToHome(BuildContext context) {
@@ -363,7 +366,10 @@ class _VerifyNumberState extends State<VerifyNumber> {
   final phoneNumber;
   Status _status = Status.Waiting;
   var _verificationId;
+  // TextEditingController _textEditingController = TextEditingController();
+  final _auth = FirebaseAuth.instance;
   final backgroundColor = 0xffF6F6F6;
+  final _textController = TextEditingController();
 
   _VerifyNumberState(this.phoneNumber);
 
@@ -420,6 +426,7 @@ class _VerifyNumberState extends State<VerifyNumber> {
                             elevation: 4,
                             shadowColor: Colors.black,
                             child: TextField(
+                              controller: _textController,
                               textAlign: TextAlign.center,
                               keyboardType: TextInputType.phone,
                               inputFormatters: [
@@ -447,7 +454,9 @@ class _VerifyNumberState extends State<VerifyNumber> {
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(50)),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                _sendCodeToFirebase(code: _textController.text);
+                              },
                               child: Text(
                                 'Продолжить',
                                 style: TextStyle(
@@ -548,9 +557,39 @@ class _VerifyNumberState extends State<VerifyNumber> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
+    _verifyPhoneNumber();
   }
 
-  Future _verifyPhoneNumber() async {}
+  Future _verifyPhoneNumber() async {
+    _auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: (phoneCredentials) async {},
+        verificationFailed: (verificationFailed) async {},
+        codeSent: (verificationId, resendingToken) async {
+          setState(() {
+            this._verificationId = verificationId;
+          });
+        },
+        codeAutoRetrievalTimeout: (verificationId) async {});
+  }
+
+  Future _sendCodeToFirebase({String? code}) async {
+    if (this._verificationId != null) {
+      var credential = PhoneAuthProvider.credential(
+          verificationId: _verificationId, smsCode: code!);
+
+      await _auth
+          .signInWithCredential(credential)
+          .then((value) {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()));
+      })
+          .whenComplete(() {})
+          .onError((error, stackTrace) {
+            setState(() {
+              _textController.text = '';
+              this._status = Status.Error;
+            });
+      });
+    }
+  }
 }
