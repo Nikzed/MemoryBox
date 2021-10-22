@@ -3,27 +3,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
 class Home extends StatelessWidget {
-
-
-
   const Home({Key? key}) : super(key: key);
   final backgroundColor = 0xffF6F6F6;
   final accentColor = 0xff8c84e2;
 
   @override
   Widget build(BuildContext context) {
-
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle( // добавил для проверки апп бара
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      // добавил для проверки апп бара
       statusBarColor: Colors.white.withOpacity(0),
     ));
 
     return ScreenUtilInit(
-      designSize: Size(360 , 690),
-      builder:() => MaterialApp(
+      designSize: Size(360, 690),
+      builder: () => MaterialApp(
         // theme: ThemeData(fontFamily: 'Roboto'),
         home: Scaffold(
+          bottomNavigationBar: BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: 'Главная'
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.dashboard),
+                  label: 'Подборки'
+              ),
+            ],
+          ),
           body: CustomScrollView(
             slivers: [
               SliverAppBar(
@@ -58,41 +66,36 @@ class Home extends StatelessWidget {
                     //           fontFamily: 'Consolas')),
                     // ),
                     Align(
-                      alignment: Alignment.topCenter,
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 85.h, right: 17.h, left: 17.h),
-                        child: Container(
-                          height: 50,
-                          child: Stack(
-                            children: [
-                            Align(
-                                alignment: Alignment.bottomLeft,
-                                child: Text(
-                                    'Подборки',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 24,
-                                    )
+                        alignment: Alignment.topCenter,
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              top: 85.h, right: 17.h, left: 17.h),
+                          child: Container(
+                            height: 50,
+                            child: Stack(
+                              children: [
+                                Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text('Подборки',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 24,
+                                      )),
                                 ),
-                              ),
-                              Align(
-                              alignment: Alignment.bottomRight,
-                              child: InkWell(
-                                child: Text(
-                                'Открыть всё',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                )
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: InkWell(
+                                    child: Text('Открыть всё',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                        )),
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
-                            ],
-
                           ),
-                        ),
-                      )
-                    ),
+                        )),
 
                     Positioned(
                       top: 0.22.sh,
@@ -104,7 +107,8 @@ class Home extends StatelessWidget {
                           child: Stack(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(24, 60, 23, 0),
+                                padding:
+                                    const EdgeInsets.fromLTRB(24, 60, 23, 0),
                                 child: Text(
                                   'Здесь будет твой набор сказок',
                                   textAlign: TextAlign.center,
@@ -227,23 +231,23 @@ class Home extends StatelessWidget {
                     style: TextStyle(fontSize: 22, color: Color(0xd93A3A5580)),
                   ),
                 ),
-
                 Container(
                   padding: const EdgeInsets.only(top: 80, left: 40),
                   child: Stack(
                     children: [
-                      RichText(text: TextSpan(
-                        style: TextStyle(color: Colors.black, fontSize: 18),
-                        children: [
-                          WidgetSpan(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                              child: Icon(Icons.home),
-                            ),
-                          ),
-                          TextSpan(text: 'Главная'),
-                        ]
-                      ),
+                      RichText(
+                        text: TextSpan(
+                            style: TextStyle(color: Colors.black, fontSize: 18),
+                            children: [
+                              WidgetSpan(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 2.0),
+                                  child: Icon(Icons.home),
+                                ),
+                              ),
+                              TextSpan(text: 'Главная'),
+                            ]),
                       ),
                     ],
                   ),
@@ -260,5 +264,3 @@ class Home extends StatelessWidget {
     return SliverAppBar();
   }
 }
-
-
