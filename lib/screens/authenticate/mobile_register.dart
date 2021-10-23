@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_project_test/model/painter_model.dart';
 import 'package:first_project_test/screens/authenticate/verify_number.dart';
 import 'package:first_project_test/screens/home/home.dart';
@@ -20,13 +21,26 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationState extends State<Registration> {
-  final currentState = MobileVerificationState.SHOW_MOBILE_FORM;
+  MobileVerificationState currentState =
+      MobileVerificationState.SHOW_MOBILE_FORM;
+
   final backgroundColor = 0xffF6F6F6;
+
   final _phoneMask = MaskTextInputFormatter(
     mask: '+## ### ### ## ##',
     filter: {"#": RegExp(r'[0-9]')},
   );
+
   final _phoneController = TextEditingController();
+
+  FirebaseAuth _auth = FirebaseAuth.instance;
+
+  late String verificationId;
+
+  final GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
+
+  bool showLoading
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +49,7 @@ class _RegistrationState extends State<Registration> {
             builder: () => MaterialApp(
               theme: ThemeData(fontFamily: 'Roboto'),
               home: Scaffold(
+                key: _scaffoldKey,
                 resizeToAvoidBottomInset: false,
                 backgroundColor: Color(backgroundColor),
                 body: Stack(children: [
@@ -78,7 +93,29 @@ class _RegistrationState extends State<Registration> {
                             borderRadius: BorderRadius.circular(50),
                           ),
                         ),
-                        onPressed: () {
+                        onPressed: () async {
+                          await _auth.verifyPhoneNumber(
+                            phoneNumber: _phoneController.text,
+                            verificationCompleted:
+                                (phoneAuthCredential) async {},
+                            verificationFailed: (verificationFailed) async {
+                              _scaffoldKey.currentState!.showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    verificationFailed.message!,
+                                  ),
+                                ),
+                              );
+                            },
+                            codeSent: (verificationId, resendingToken) async {
+                              setState(() {
+                                currentState =
+                                    MobileVerificationState.SHOW_OTP_FORM;
+                                this.verificationId = verificationId;
+                              });
+                            },
+                            codeAutoRetrievalTimeout: (verificationId) async {},
+                          );
                           _navigateToNextScreen(context);
                         },
                         child: Text(
@@ -129,19 +166,6 @@ class _RegistrationState extends State<Registration> {
                           ),
                         ),
                       ),
-                      // decoration:
-                      // BoxDecoration(
-                      //   color: Color(backgroundColor),
-                      //   shape: BoxShape.rectangle,
-                      //   borderRadius: BorderRadius.all(Radius.circular(100.0)),
-                      //   boxShadow: [
-                      //     BoxShadow(
-                      //       color: Colors.grey.shade400,
-                      //       blurRadius: 10,
-                      //       offset: Offset(0, 2), // Shadow position
-                      //     ),
-                      //   ],
-                      // ),
                     ),
                   ),
                   Align(
@@ -167,7 +191,7 @@ class _RegistrationState extends State<Registration> {
                         child: Align(
                           alignment: Alignment.center,
                           child: Text(
-                            'Регистрация привяжет твои сказки  к облаку, после чего они всегда будут с тобой',
+                            'Регистрация привяжет твои сказки к облаку, после чего они всегда будут с тобой',
                             style: TextStyle(fontSize: 12.sp),
                             textAlign: TextAlign.center,
                           ),
