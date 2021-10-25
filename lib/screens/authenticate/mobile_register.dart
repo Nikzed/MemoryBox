@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_project_test/model/painter_model.dart';
+import 'package:first_project_test/screens/authenticate/registration_splash.dart';
 import 'package:first_project_test/screens/home/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +57,7 @@ class _RegistrationState extends State<Registration> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Home(),
+            builder: (context) => RegistrationSplash(),
           ),
         );
       }
@@ -381,13 +382,5 @@ class _RegistrationState extends State<Registration> {
               ),
             ),
           );
-  }
-
-  void _navigateToHome(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => Home(),
-      ),
-    );
   }
 }
