@@ -22,17 +22,29 @@ class _HomeState extends State<Home> {
         debugShowCheckedModeBanner: false,
         // theme: ThemeData(fontFamily: 'Roboto'),
         home: Scaffold(
+          // TODO https://stackoverflow.com/questions/50008737/flutter-corner-radius-with-transparent-background
           bottomNavigationBar: BottomAppBar(
             child: Container(
-              height: 70.h,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Icon(), // make custom House icon
-                    Icon(Icons.dashboard),
-                  ],
+              height: 100,
+              color: Colors.transparent,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                ),
+                height: 70.h,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Icon(), // make custom House icon
+                      Icon(Icons.dashboard),
+                    ],
+                  ),
                 ),
               ),
             ),
