@@ -1,15 +1,15 @@
 import 'package:first_project_test/screens/authenticate/sign_in.dart';
+import 'package:first_project_test/screens/home/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  // if (USE_EMULATOR) _connectToFirebaseEmulator();
-  // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-  //   statusBarColor: Colors.white.withOpacity(0),
-  // ));
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+
   runApp(MyApp());
 }
 
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'MemoryBox',
       debugShowCheckedModeBanner: false,
-      home: SignIn(),
+      home: SplashScreen(),
     );
   }
 }

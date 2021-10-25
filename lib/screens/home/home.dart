@@ -19,6 +19,7 @@ class _HomeState extends State<Home> {
     return ScreenUtilInit(
       designSize: Size(360, 690),
       builder: () => MaterialApp(
+        debugShowCheckedModeBanner: false,
         // theme: ThemeData(fontFamily: 'Roboto'),
         home: Scaffold(
           bottomNavigationBar: BottomAppBar(

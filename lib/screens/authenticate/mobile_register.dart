@@ -281,11 +281,13 @@ class _RegistrationState extends State<Registration> {
               elevation: 4,
               shadowColor: Colors.black,
               child: TextField(
+                maxLength: 6,
                 controller: otpController,
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.phone,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 decoration: InputDecoration(
+                  counterText: '',
                   filled: true,
                   fillColor: Color(backgroundColor),
                   border: OutlineInputBorder(
@@ -367,6 +369,7 @@ class _RegistrationState extends State<Registration> {
           )
         : ScreenUtilInit(
             builder: () => MaterialApp(
+              debugShowCheckedModeBanner: false,
               theme: ThemeData(fontFamily: 'Roboto'),
               home: Scaffold(
                 key: _scaffoldKey,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'mobile_register.dart';
 
+
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
 
@@ -18,6 +19,7 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       builder: () => MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: 'Roboto'),
         home: Scaffold(
           backgroundColor: Color(backgroundColor),
