@@ -1,36 +1,40 @@
 import 'package:first_project_test/model/painter_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
   final backgroundColor = 0xffF6F6F6;
+
   final accentColor = 0xff8c84e2;
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      // добавил для проверки апп бара
-      statusBarColor: Colors.white.withOpacity(0),
-    ));
-
     return ScreenUtilInit(
       designSize: Size(360, 690),
       builder: () => MaterialApp(
         // theme: ThemeData(fontFamily: 'Roboto'),
         home: Scaffold(
-          bottomNavigationBar: BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Главная'
+          bottomNavigationBar: BottomAppBar(
+            child: Container(
+              height: 70.h,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Icon(), // make custom House icon
+                    Icon(Icons.dashboard),
+                  ],
+                ),
               ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.dashboard),
-                  label: 'Подборки'
-              ),
-            ],
+            ),
           ),
           body: CustomScrollView(
             slivers: [
@@ -55,16 +59,6 @@ class Home extends StatelessWidget {
                         painter: CirclePainter(),
                       ),
                     ),
-
-                    // Positioned(
-                    //   top: 116,
-                    //   left: 17,
-                    //   child: Text('Подборки',
-                    //       style: TextStyle(
-                    //           color: Colors.white,
-                    //           fontSize: 24,
-                    //           fontFamily: 'Consolas')),
-                    // ),
                     Align(
                         alignment: Alignment.topCenter,
                         child: Padding(
@@ -96,7 +90,6 @@ class Home extends StatelessWidget {
                             ),
                           ),
                         )),
-
                     Positioned(
                       top: 0.22.sh,
                       left: 0.035.sw,
@@ -258,9 +251,5 @@ class Home extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Widget dashboard(context) {
-    return SliverAppBar();
   }
 }

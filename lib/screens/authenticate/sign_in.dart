@@ -1,9 +1,7 @@
 import 'package:first_project_test/model/painter_model.dart';
-import 'package:first_project_test/services/auth_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'mobile_register.dart';
 
 class SignIn extends StatefulWidget {
@@ -14,7 +12,6 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-  final AuthService _auth = AuthService();
   final backgroundColor = 0xffF6F6F6;
 
   @override
@@ -62,7 +59,6 @@ class _SignInState extends State<SignIn> {
                   ],
                 ),
               ),
-
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 40.w),
                 child: Stack(
@@ -114,57 +110,6 @@ class _SignInState extends State<SignIn> {
                   ],
                 ),
               ),
-
-              // ОКНО текста с тенью
-
-              // Align(
-              //   alignment: Alignment.center,
-              //   child: Container(
-              //     width: 200.w,
-              //     height: 57.h,
-              //     margin: EdgeInsets.only(top: 100.h),
-              //     alignment: Alignment.center,
-              //     child: Text('data'),
-              //     decoration: BoxDecoration(
-              //       color: Colors.white,
-              //       shape: BoxShape.rectangle,
-              //       borderRadius: BorderRadius.all(Radius.circular(15.0)),
-              //       boxShadow: [
-              //         BoxShadow(
-              //           color: Colors.grey.shade400,
-              //           blurRadius: 10,
-              //           offset: Offset(0, 2), // Shadow position
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
-
-              // ОКНО текста с тенью
-
-              // КНОПКА анонимного входа - начало
-
-              // Container(
-              //   alignment: Alignment.topCenter,
-              //   padding: EdgeInsets.only(top: 500.0),
-              //   child: ElevatedButton(
-              //     child: Text('Sign in anon'),
-              //     style: ButtonStyle(
-              //         backgroundColor: MaterialStateProperty.all(Colors.pink)),
-              //     onPressed: () async {
-              //       dynamic result = await _auth.signInAnon();
-              //
-              //       if (result == null) {
-              //         print('error signing in');
-              //       } else {
-              //         print('signed in');
-              //         return result.uid;
-              //       }
-              //     },
-              //   ),
-              // ),
-
-              // КНОПКА анонимного входа - конец
             ],
           ),
         ),
@@ -173,8 +118,10 @@ class _SignInState extends State<SignIn> {
   }
 
   void _navigateToNextScreen(BuildContext context) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => Registration(),),);
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => Registration(),
+      ),
+    );
   }
 }
-
