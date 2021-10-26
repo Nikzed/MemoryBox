@@ -9,7 +9,7 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.of(context).push(
+      Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => Home(),
         ),
@@ -111,7 +111,7 @@ class SplashScreen extends StatelessWidget {
                         padding: EdgeInsets.only(bottom: 50.h),
                         child: Container(
                           width: 250.w,
-                          height: 70.h,
+                          height: 75.h,
                           padding: EdgeInsets.all(25),
                           decoration: BoxDecoration(
                             color: Color(backgroundColor),
@@ -130,7 +130,7 @@ class SplashScreen extends StatelessWidget {
                             alignment: Alignment.center,
                             child: Text(
                               'Взрослые иногда нуждаются в сказке даже больше, чем дети',
-                              style: TextStyle(fontSize: 12.sp),
+                              style: TextStyle(fontSize: 14),
                               textAlign: TextAlign.center,
                             ),
                           ),

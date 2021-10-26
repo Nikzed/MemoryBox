@@ -93,38 +93,6 @@ class RegistrationSplash extends StatelessWidget {
                             color: Color(0xffF1B488),
                           )),
                     ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 50.h),
-                        child: Container(
-                          width: 250.w,
-                          height: 70.h,
-                          padding: EdgeInsets.all(25),
-                          decoration: BoxDecoration(
-                            color: Color(backgroundColor),
-                            shape: BoxShape.rectangle,
-                            borderRadius:
-                            BorderRadius.all(Radius.circular(15.0)),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 2,
-                                offset: Offset(0, 5), // Shadow position
-                              ),
-                            ],
-                          ),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              'Взрослые иногда нуждаются в сказке даже больше, чем дети',
-                              style: TextStyle(fontSize: 12.sp),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),

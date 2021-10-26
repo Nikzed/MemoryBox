@@ -16,39 +16,13 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO Реализовать скрины через PageView
     return ScreenUtilInit(
       designSize: Size(360, 690),
       builder: () => MaterialApp(
         debugShowCheckedModeBanner: false,
         // theme: ThemeData(fontFamily: 'Roboto'),
         home: Scaffold(
-          // TODO https://stackoverflow.com/questions/50008737/flutter-corner-radius-with-transparent-background
-          bottomNavigationBar: BottomAppBar(
-            child: Container(
-              height: 100,
-              color: Colors.transparent,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.green,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
-                ),
-                height: 70.h,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Icon(), // make custom House icon
-                      Icon(Icons.dashboard),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
           body: CustomScrollView(
             slivers: [
               SliverAppBar(
@@ -210,11 +184,18 @@ class _HomeState extends State<Home> {
                     return Container(
                       height: 50,
                       alignment: Alignment.center,
-                      color: Colors.orange[100 * (index % 9)],
+                      color: index % 2 == 0
+                          ? Color(accentColor)
+                          : Color(backgroundColor),
                       child: Text('orange ${index + 1}'),
                     );
                   },
                   childCount: 18,
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 75,
                 ),
               ),
             ],
@@ -261,6 +242,43 @@ class _HomeState extends State<Home> {
               ],
             ),
           ),
+          extendBody: true,
+          // backgroundColor: Colors.transparent,
+          bottomNavigationBar: Container(
+              height: 75,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(10),
+                  topLeft: Radius.circular(10),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.grey,
+                      spreadRadius: 0,
+                      blurRadius: 5,
+                      offset: Offset(5, 5)),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30.0),
+                  topRight: Radius.circular(30.0),
+                ),
+                child: BottomNavigationBar(
+                  selectedFontSize: 14,
+                  unselectedFontSize: 14,
+                  items: <BottomNavigationBarItem>[
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.favorite),
+                      label: 'главная',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.favorite),
+                      label: 'что-то',
+                    )
+                  ],
+                ),
+              )),
         ),
       ),
     );
