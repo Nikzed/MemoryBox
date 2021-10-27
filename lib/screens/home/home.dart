@@ -185,17 +185,12 @@ class _HomeState extends State<Home> {
                       height: 50,
                       alignment: Alignment.center,
                       color: index % 2 == 0
-                          ? Color(accentColor)
+                          ? Color(backgroundColor)
                           : Color(backgroundColor),
                       child: Text('orange ${index + 1}'),
                     );
                   },
                   childCount: 18,
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: 75,
                 ),
               ),
             ],
@@ -242,43 +237,6 @@ class _HomeState extends State<Home> {
               ],
             ),
           ),
-          extendBody: true,
-          // backgroundColor: Colors.transparent,
-          bottomNavigationBar: Container(
-              height: 75,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(10),
-                  topLeft: Radius.circular(10),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.grey,
-                      spreadRadius: 0,
-                      blurRadius: 5,
-                      offset: Offset(5, 5)),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30.0),
-                  topRight: Radius.circular(30.0),
-                ),
-                child: BottomNavigationBar(
-                  selectedFontSize: 14,
-                  unselectedFontSize: 14,
-                  items: <BottomNavigationBarItem>[
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.favorite),
-                      label: 'главная',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.favorite),
-                      label: 'что-то',
-                    )
-                  ],
-                ),
-              )),
         ),
       ),
     );

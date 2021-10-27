@@ -1,5 +1,6 @@
 import 'package:first_project_test/model/painter_model.dart';
 import 'package:first_project_test/screens/home/home.dart';
+import 'package:first_project_test/screens/home/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -11,7 +12,7 @@ class SplashScreen extends StatelessWidget {
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => Home(),
+          builder: (context) => Wrapper(),
         ),
       );
     });
