@@ -1,3 +1,4 @@
+import 'package:first_project_test/model/painter_model.dart';
 import 'package:flutter/cupertino.dart';
 
 class Profile extends StatelessWidget {
@@ -6,9 +7,17 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Align(
-        alignment: Alignment.center,
-        child: Text('PROFILE!!!!'),
+      child: Stack(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height*0.55,
+            width: double.infinity,
+            child: CustomPaint(
+              painter: CirclePainter(),
+            ),
+          ),
+          
+        ],
       ),
     );
   }

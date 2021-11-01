@@ -13,231 +13,215 @@ class _HomeState extends State<Home> {
   final backgroundColor = 0xffF6F6F6;
 
   final accentColor = 0xff8c84e2;
+  final List<String> entries = <String>['A', 'B', 'C'];
+  final List<int> colorCodes = <int>[600, 500, 100];
 
   @override
   Widget build(BuildContext context) {
-    // TODO Реализовать скрины через PageView
-    return ScreenUtilInit(
-      designSize: Size(360, 690),
-      builder: () => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        // theme: ThemeData(fontFamily: 'Roboto'),
-        home: Scaffold(
-          body: CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                backgroundColor: Color(backgroundColor),
-                expandedHeight: 0.55.sh,
-                leading: Builder(
-                  builder: (context) => IconButton(
-                    padding: EdgeInsets.zero,
-                    tooltip: 'открыть меню',
-                    icon: Icon(Icons.menu),
-                    onPressed: () => Scaffold.of(context).openDrawer(),
-                  ),
-                ),
-                flexibleSpace: FlexibleSpaceBar(
-                    background: Stack(
-                  children: <Widget>[
-                    Container(
-                      width: 1.sw,
-                      height: 0.55.sh,
-                      child: CustomPaint(
-                        painter: CirclePainter(),
-                      ),
-                    ),
-                    Align(
-                        alignment: Alignment.topCenter,
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                              top: 85.h, right: 17.h, left: 17.h),
-                          child: Container(
-                            height: 50,
-                            child: Stack(
-                              children: [
-                                Align(
-                                  alignment: Alignment.bottomLeft,
-                                  child: Text('Подборки',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 24,
-                                      )),
-                                ),
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: InkWell(
-                                    child: Text('Открыть всё',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                        )),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )),
-                    Positioned(
-                      top: 0.22.sh,
-                      left: 0.035.sw,
-                      child: Container(
-                        width: 0.45.sw,
-                        height: 0.32.sh,
-                        child: Container(
-                          child: Stack(
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(24, 60, 23, 0),
-                                child: Text(
-                                  'Здесь будет твой набор сказок',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                  ),
-                                ),
-                              ),
-                              Align(
-                                alignment: Alignment.center,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 130),
-                                  child: TextButton(
-                                    onPressed: () {},
-                                    child: Text('Добавить',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          decoration: TextDecoration.underline,
-                                          color: Color(backgroundColor),
-                                          fontSize: 14,
-                                        )),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          decoration: BoxDecoration(
-                              color: Color(0xd971A59F),
-                              shape: BoxShape.rectangle,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15.0))),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 0.22.sh,
-                      right: 0.035.sw,
-                      child: InkWell(
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onTap: () {},
-                        child: Container(
-                          width: 0.45.sw,
-                          height: 0.15.sh,
-                          child: Container(
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                color: Color(0xffF1B488),
-                                shape: BoxShape.rectangle,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15.0))),
-                            child: Text(
-                              'Тут',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 0.39.sh,
-                      right: 0.035.sw,
-                      child: Container(
-                        width: 163.w,
-                        height: 0.15.sh,
-                        child: Container(
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: Color(0xd9678BD2),
-                              shape: BoxShape.rectangle,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15.0))),
-                          child: Text(
-                            'И тут',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                )),
-              ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    return Container(
-                      height: 50,
-                      alignment: Alignment.center,
-                      color: index % 2 == 0
-                          ? Color(backgroundColor)
-                          : Color(backgroundColor),
-                      child: Text('orange ${index + 1}'),
-                    );
-                  },
-                  childCount: 18,
-                ),
-              ),
-            ],
+    return CustomScrollView(
+      slivers: [
+        _getSliverAppBar(),
+        _getSliverList(),
+        SliverToBoxAdapter(
+          child: Container(
+            height: 80,
           ),
-          drawer: Drawer(
-            child: ListView(
-              children: [
-                Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.only(top: 90),
-                    child: Text(
-                      'Аудисказки',
-                      style: TextStyle(fontSize: 24),
-                    )),
-                Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.only(top: 40),
-                  child: Text(
-                    'Меню',
-                    style: TextStyle(fontSize: 22, color: Color(0xd93A3A5580)),
-                  ),
+        ),
+      ],
+    );
+  }
+
+  Widget _getSliverAppBar() {
+    return SliverAppBar(
+      backgroundColor: Color(backgroundColor),
+      expandedHeight: 0.55.sh,
+      automaticallyImplyLeading: false,
+      flexibleSpace: FlexibleSpaceBar(
+        background: Stack(
+          children: <Widget>[
+            Container(
+              width: 1.sw,
+              height: 0.55.sh,
+              child: CustomPaint(
+                painter: CirclePainter(),
+              ),
+            ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: EdgeInsets.only(top: 40, left: 5),
+                child: IconButton(
+                  color: Colors.white,
+                  iconSize: 28,
+                  icon: Icon(Icons.menu),
+                  onPressed: () => Scaffold.of(context).openDrawer(),
                 ),
-                Container(
-                  padding: const EdgeInsets.only(top: 80, left: 40),
+              ),
+            ),
+            Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: EdgeInsets.only(top: 85.h, right: 17.h, left: 17.h),
+                child: Container(
+                  height: 50,
                   child: Stack(
                     children: [
-                      RichText(
-                        text: TextSpan(
-                            style: TextStyle(color: Colors.black, fontSize: 18),
-                            children: [
-                              WidgetSpan(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 2.0),
-                                  child: Icon(Icons.home),
-                                ),
-                              ),
-                              TextSpan(text: 'Главная'),
-                            ]),
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Text(
+                          'Подборки',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: InkWell(
+                          child: Text(
+                            'Открыть всё',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                )
-              ],
+                ),
+              ),
             ),
-          ),
+            Positioned(
+              top: 0.22.sh,
+              left: 0.035.sw,
+              child: Container(
+                width: 0.45.sw,
+                height: 0.32.sh,
+                child: Container(
+                  child: Stack(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 60, 23, 0),
+                        child: Text(
+                          'Здесь будет твой набор сказок',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 130),
+                          child: TextButton(
+                            onPressed: () {},
+                            child: Text(
+                              'Добавить',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                decoration: TextDecoration.underline,
+                                color: Color(backgroundColor),
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  decoration: BoxDecoration(
+                    color: Color(0xd971A59F),
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(15.0),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 0.22.sh,
+              right: 0.035.sw,
+              child: InkWell(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                onTap: () {},
+                child: Container(
+                  width: 0.45.sw,
+                  height: 0.15.sh,
+                  child: Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Color(0xffF1B488),
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(15.0),
+                      ),
+                    ),
+                    child: Text(
+                      'Тут',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 0.39.sh,
+              right: 0.035.sw,
+              child: Container(
+                width: 163.w,
+                height: 0.15.sh,
+                child: Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Color(0xd9678BD2),
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(15.0),
+                    ),
+                  ),
+                  child: Text(
+                    'И тут',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget _getSliverList() {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          return Card(
+            margin: const EdgeInsets.all(15),
+            child: Container(
+              color: Color(accentColor),
+              height: 80,
+              alignment: Alignment.center,
+              child: Text(
+                "Item $index",
+                style: const TextStyle(fontSize: 30),
+              ),
+            ),
+          );
+        },
+        childCount: 10, // 1000 list items
       ),
     );
   }

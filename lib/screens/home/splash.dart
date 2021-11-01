@@ -4,11 +4,17 @@ import 'package:first_project_test/screens/home/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
   final backgroundColor = 0xffF6F6F6;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
@@ -16,7 +22,10 @@ class SplashScreen extends StatelessWidget {
         ),
       );
     });
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return ScreenUtilInit(
       builder: () => MaterialApp(
         debugShowCheckedModeBanner: false,
