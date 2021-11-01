@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 const int sampleRate = 44000;
 
@@ -26,6 +28,7 @@ class _RecordState extends State<Record> {
   bool _playbackReady = false;
   String? _path;
   StreamSubscription? _recordingDataSubscription;
+  String _recorderTime = '00:00:00';
 
   Future<void> _openRecorder() async {
     var status = await Permission.microphone.request();
@@ -33,6 +36,8 @@ class _RecordState extends State<Record> {
       throw RecordingPermissionException('Microphone permission not granted');
     }
     await _recorder!.openAudioSession();
+    await _recorder!.setSubscriptionDuration(Duration(milliseconds: 100));
+    await initializeDateFormatting();
     setState(() {
       _recorderIsInited = true;
     });
@@ -48,7 +53,7 @@ class _RecordState extends State<Record> {
             _playerIsInited = true;
           }),
         });
-    _openRecorder();
+    _openRecorder().then((value) => record());
   }
 
   @override
@@ -74,7 +79,6 @@ class _RecordState extends State<Record> {
   }
 
   // Методы для работы с аудио
-
   Future<void> record() async {
     assert(_recorderIsInited && _player!.isStopped);
     IOSink sink = await createFile();
@@ -85,14 +89,29 @@ class _RecordState extends State<Record> {
         sink.add(buffer.data!);
       }
     });
+
+
+
     await _recorder!.startRecorder(
-      toStream: recordingDataController.sink,
       // скорее всего придется поменять со стрима на файл
-      codec: Codec.pcm16,
+      toStream: recordingDataController.sink,
       // и попробовать с другим кодеком
+      codec: Codec.pcm16,
       numChannels: 1,
       sampleRate: sampleRate,
     );
+
+    StreamSubscription _recorderSubscription =
+    _recorder!.onProgress!.listen((event) {
+      DateTime date = DateTime.fromMillisecondsSinceEpoch(
+          event.duration.inMilliseconds,
+          isUtc: true);
+      String txt = DateFormat('mm:ss:SS', 'en_GB').format(date);
+      setState(() {
+        _recorderTime = txt.substring(0, 8);
+      });
+    });
+
     setState(() {});
   }
 
@@ -219,6 +238,13 @@ class _RecordState extends State<Record> {
                     //color: Colors.white,
                     //disabledColor: Colors.grey,
                     child: Text(_player!.isPlaying ? 'Stop' : 'Play'),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 200),
+                    child: Text('$_recorderTime'),
                   ),
                 ),
               ],
