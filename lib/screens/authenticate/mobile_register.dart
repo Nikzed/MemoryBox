@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_project_test/model/painter_model.dart';
 import 'package:first_project_test/screens/authenticate/registration_splash.dart';
 import 'package:first_project_test/screens/home/home.dart';
+import 'package:first_project_test/screens/home/wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -194,13 +195,28 @@ class _RegistrationState extends State<Registration> {
             child: Text(
               'Позже',
               style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 2,
-                  fontSize: 18.sp,
-                  color: Color(0xff3A3A55)),
+                fontWeight: FontWeight.w600,
+                letterSpacing: 2,
+                fontSize: 18.sp,
+                color: Color(0xff3A3A55),
+              ),
             ),
             onTap: () async {
+              setState(() {
+                showLoading = true;
+              });
               UserCredential userCredential = await _auth.signInAnonymously();
+              if (userCredential != null){
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Wrapper(),
+                  ),
+                );
+                setState(() {
+                  showLoading = false;
+                });
+              }
             },
           ),
         ),

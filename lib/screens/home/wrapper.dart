@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:first_project_test/screens/additional_screens/search.dart';
 import 'package:first_project_test/screens/home/home.dart';
 import 'package:first_project_test/screens/home/profile.dart';
 import 'package:first_project_test/screens/home/record.dart';
@@ -21,6 +22,7 @@ class _WrapperState extends State<Wrapper> {
   int currentIndex = 0;
   bool showDrawer = true;
   String recordLabelText = 'Запись';
+  var drawerColor = Color(0xff3A3A55);
 
   @override
   void dispose() {
@@ -38,7 +40,8 @@ class _WrapperState extends State<Wrapper> {
         controller: _pageController,
         onPageChanged: (page) {
           setState(() {
-            currentIndex = page;
+            if(page < 5) currentIndex = page;
+            else currentIndex = 0;
             if (page == 1) {
               showDrawer = false;
             } else {
@@ -57,6 +60,8 @@ class _WrapperState extends State<Wrapper> {
           Record(),
           RecordToStreamExample(),
           Profile(),
+          // additional_screens
+          Search(),
         ],
       ),
       drawer: _getDrawer(),
@@ -84,22 +89,43 @@ class _WrapperState extends State<Wrapper> {
           ),
           Container(
             padding: const EdgeInsets.only(top: 80, left: 40),
-            child: Stack(
+            child: Column(
               children: [
-                RichText(
-                  text: TextSpan(
-                    style: TextStyle(color: Colors.black, fontSize: 18),
-                    children: [
-                      WidgetSpan(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                          child: Icon(Icons.home),
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      currentIndex = 0;
+                      _pageController.jumpToPage(0);
+                    });
+                  },
+                  child: RichText(
+                    text: TextSpan(
+                      style: TextStyle(color: Colors.black, fontSize: 18),
+                      children: [
+                        WidgetSpan(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 2.0),
+                            child: SvgPicture.asset(
+                              'assets/Home.svg',
+                              color: drawerColor,
+                            ),
+                          ),
                         ),
-                      ),
-                      TextSpan(text: 'Главная'),
-                    ],
+                        TextSpan(text: 'Главная'),
+                      ],
+                    ),
                   ),
                 ),
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      currentIndex = 5;
+                      _pageController.jumpToPage(5);
+                    });
+                  },
+                  child: Padding(padding: EdgeInsets.only(top: 50),child: Text('SEARCH')),
+                )
               ],
             ),
           ),
@@ -133,10 +159,11 @@ class _WrapperState extends State<Wrapper> {
           selectedItemColor: Color(0xff8c84e2),
           iconSize: 30,
           onTap: (value) {
-            _pageController.animateToPage(
+            _pageController.jumpToPage(
               value,
-              duration: Duration(milliseconds: 500),
-              curve: Curves.decelerate,
+              // если использовать animateToPage
+              // duration: Duration(milliseconds: 500),
+              // curve: Curves.decelerate,
             );
 
             setState(() {});

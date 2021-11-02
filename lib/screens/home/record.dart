@@ -90,8 +90,6 @@ class _RecordState extends State<Record> {
       }
     });
 
-
-
     await _recorder!.startRecorder(
       // скорее всего придется поменять со стрима на файл
       toStream: recordingDataController.sink,
@@ -223,14 +221,6 @@ class _RecordState extends State<Record> {
                     ),
                   ),
                 ),
-                // Container(
-                //   width: double.infinity,
-                //   child: Padding(
-                //     padding:
-                //         EdgeInsets.symmetric(vertical: 200, horizontal: 10),
-                //     child: Divider(color: Colors.black),
-                //   ),
-                // ),
                 Align(
                   alignment: Alignment.center,
                   child: ElevatedButton(
