@@ -1,5 +1,6 @@
 import 'package:first_project_test/model/painter_model.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class Profile extends StatelessWidget {
   const Profile({Key? key}) : super(key: key);
@@ -10,13 +11,16 @@ class Profile extends StatelessWidget {
       child: Stack(
         children: [
           Container(
-            height: MediaQuery.of(context).size.height*0.55,
+            height: MediaQuery.of(context).size.height * 0.55,
             width: double.infinity,
             child: CustomPaint(
               painter: CirclePainter(),
             ),
           ),
-          
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(padding: EdgeInsets.only(top:200),child: Text('PROFILE', style: TextStyle(color: Colors.white, fontSize: 32),)),
+          ),
         ],
       ),
     );
