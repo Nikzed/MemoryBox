@@ -28,7 +28,8 @@ class _RecordState extends State<Record> {
   bool _playbackReady = false;
   String? _path;
   StreamSubscription? _recordingDataSubscription;
-  String _recorderTime = '00:00:00';
+  String _recorderText = '00:00:00';
+  String _playerText = '00:00:00';
 
   Future<void> _openRecorder() async {
     var status = await Permission.microphone.request();
@@ -89,7 +90,6 @@ class _RecordState extends State<Record> {
         sink.add(buffer.data!);
       }
     });
-
     await _recorder!.startRecorder(
       // скорее всего придется поменять со стрима на файл
       toStream: recordingDataController.sink,
@@ -98,15 +98,15 @@ class _RecordState extends State<Record> {
       numChannels: 1,
       sampleRate: sampleRate,
     );
-
-    StreamSubscription _recorderSubscription =
+    // можно сделать локальной переменной
+    // StreamSubscription _recorderSubscription =
     _recorder!.onProgress!.listen((event) {
       DateTime date = DateTime.fromMillisecondsSinceEpoch(
           event.duration.inMilliseconds,
           isUtc: true);
       String txt = DateFormat('mm:ss:SS', 'en_GB').format(date);
       setState(() {
-        _recorderTime = txt.substring(0, 8);
+        _recorderText = txt.substring(0, 8);
       });
     });
 
@@ -147,6 +147,21 @@ class _RecordState extends State<Record> {
         setState(() {});
       },
     );
+    _player!.setSubscriptionDuration(Duration(milliseconds: 100));
+    await initializeDateFormatting();
+
+    // переменная (можно реализовать на уровне класса)
+    // StreamSubscription _playerSubscription =
+    // можно реализовать слайдер через _addListeners() -> https://github.com/Canardoux/flutter_sound/blob/master/flutter_sound/example/lib/demo/demo.dart
+    _player!.onProgress!.listen((event) {
+      var date = DateTime.fromMillisecondsSinceEpoch(
+          event.position.inMilliseconds,
+          isUtc: true);
+      var txt = DateFormat('mm:ss:SS', 'en_GB').format(date);
+      setState(() {
+        _playerText = txt.substring(0, 8);
+      });
+    });
 
     setState(() {});
   }
@@ -159,6 +174,7 @@ class _RecordState extends State<Record> {
     if (!_playerIsInited || !_playbackReady || !_recorder!.isStopped) {
       return null;
     }
+
     return _player!.isStopped
         ? play
         : () {
@@ -194,7 +210,7 @@ class _RecordState extends State<Record> {
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
-                Radius.circular(15),
+                Radius.circular(25),
               ),
             ),
             margin: EdgeInsets.all(10),
@@ -221,6 +237,14 @@ class _RecordState extends State<Record> {
                     ),
                   ),
                 ),
+                // Container(
+                //   width: double.infinity,
+                //   child: Padding(
+                //     padding:
+                //         EdgeInsets.symmetric(vertical: 200, horizontal: 10),
+                //     child: Divider(color: Colors.black),
+                //   ),
+                // ),
                 Align(
                   alignment: Alignment.center,
                   child: ElevatedButton(
@@ -233,8 +257,9 @@ class _RecordState extends State<Record> {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
-                    padding: EdgeInsets.only(bottom: 200),
-                    child: Text('$_recorderTime'),
+                    padding: EdgeInsets.only(bottom: 100),
+                    child: Text(
+                        '${_recorder!.isRecording || _player!.isStopped ? _recorderText : _playerText}'),
                   ),
                 ),
               ],
