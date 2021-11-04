@@ -1,5 +1,6 @@
 import 'package:first_project_test/model/painter_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Home extends StatefulWidget {
@@ -33,15 +34,18 @@ class _HomeState extends State<Home> {
 
   Widget _getSliverAppBar() {
     return SliverAppBar(
+      systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarIconBrightness: Brightness.light
+      ),
       backgroundColor: Color(backgroundColor),
-      expandedHeight: 0.55.sh,
+      expandedHeight: 0.5.sh,
       automaticallyImplyLeading: false,
       flexibleSpace: FlexibleSpaceBar(
         background: Stack(
           children: <Widget>[
             Container(
               width: 1.sw,
-              height: 0.55.sh,
+              height: 0.7.sh,
               child: CustomPaint(
                 painter: CirclePainter(),
               ),

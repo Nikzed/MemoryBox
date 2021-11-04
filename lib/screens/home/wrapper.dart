@@ -5,6 +5,7 @@ import 'package:first_project_test/screens/home/profile.dart';
 import 'package:first_project_test/screens/home/record.dart';
 import 'package:first_project_test/screens/home/sample.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class Wrapper extends StatefulWidget {
@@ -32,7 +33,11 @@ class _WrapperState extends State<Wrapper> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarIconBrightness: Brightness.light
+    ));
     return Scaffold(
+      restorationId: "root",
       extendBody: true,
       drawerEnableOpenDragGesture: showDrawer,
       bottomNavigationBar: _getBottomNavigationBar(),
