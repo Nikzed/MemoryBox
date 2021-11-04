@@ -7,9 +7,9 @@ class CirclePainter extends CustomPainter {
     var paint = Paint()..color = Color(0xff8c84e2);
 
     var path = Path();
-    path.moveTo(0, size.height * 0.7);
-    path.quadraticBezierTo(size.width * 0.3, size.height * 0.9,
-        size.width * 1, size.height * 0.81);
+    path.moveTo(0, size.height * 0.6);
+    path.quadraticBezierTo(size.width * 0.3, size.height * 0.8,
+        size.width * 1, size.height * 0.71);
     path.lineTo(size.width, 0);
     path.lineTo(0, 0);
 
