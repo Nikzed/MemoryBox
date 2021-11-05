@@ -6,4 +6,4 @@ but you can create your own idea for compilations!
 
 ###     How it will look in few weeks!          How it looks now!
 
-<img src="https://user-images.githubusercontent.com/38156331/140504655-30452362-5727-45c2-9c5c-8b2cd496d210.png" alt="will be" width="218" height="900" /><img src="https://user-images.githubusercontent.com/38156331/140504670-f82fe93f-7330-490d-b676-cf0eeb547ca0.png" alt="now" width="218" height="900" />
+<img src="https://user-images.githubusercontent.com/38156331/140504655-30452362-5727-45c2-9c5c-8b2cd496d210.png" alt="will be" width="376" height="810" /><img src="https://user-images.githubusercontent.com/38156331/140504670-f82fe93f-7330-490d-b676-cf0eeb547ca0.png" alt="now" width="376" height="810" />
