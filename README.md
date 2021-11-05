@@ -5,4 +5,4 @@ but you can create your own idea for compilations!
 ## Take a look!
 
 ### How it will look in few weeks!   and   How it looks now!
-![img.png](img.png)Screenshot_1636108735.png
+![will be](img.png)![now](Screenshot_1636108735.png)
