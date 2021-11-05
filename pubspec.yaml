@@ -37,6 +37,7 @@ dependencies:
   flutter_sound: ^8.4.1+1
   permission_handler: ^8.1.6
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

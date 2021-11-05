@@ -96,32 +96,12 @@ class _WrapperState extends State<Wrapper> {
             padding: const EdgeInsets.only(top: 80, left: 40),
             child: Column(
               children: [
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      currentIndex = 0;
-                      _pageController.jumpToPage(0);
-                    });
-                  },
-                  child: RichText(
-                    text: TextSpan(
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                      children: [
-                        WidgetSpan(
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 2.0),
-                            child: SvgPicture.asset(
-                              'assets/Home.svg',
-                              color: drawerColor,
-                            ),
-                          ),
-                        ),
-                        TextSpan(text: 'Главная'),
-                      ],
-                    ),
-                  ),
-                ),
+                _getDrawerButton('assets/Home.svg', 'Главная'),
+                SizedBox(height: 15),
+                _getDrawerButton('assets/Profile.svg', 'Профиль'),
+                SizedBox(height: 15),
+                _getDrawerButton('assets/Category.svg', 'Подборки'),
+                SizedBox(height: 15),
                 InkWell(
                   onTap: () {
                     setState(() {
@@ -135,6 +115,37 @@ class _WrapperState extends State<Wrapper> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _getDrawerButton(String asset, String text){
+    return InkWell(
+      onTap: () {
+        setState(() {
+          currentIndex = 0;
+          _pageController.jumpToPage(0);
+        });
+      },
+      child: RichText(
+        text: TextSpan(
+          style: TextStyle(color: Colors.black, fontSize: 18),
+          children: [
+            WidgetSpan(
+              child: Container(
+                width: 50,
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: SvgPicture.asset(
+                    asset,
+                    color: drawerColor,
+                  ),
+                ),
+              ),
+            ),
+            TextSpan(text: text),
+          ],
+        ),
       ),
     );
   }

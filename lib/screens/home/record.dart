@@ -215,54 +215,38 @@ class _RecordState extends State<Record> {
             ),
             margin: EdgeInsets.all(10),
             color: Color(backgroundColor),
-            child: Column(
-              children: [
-                InkWell(
-                  onTap: getRecorderFunction(),
-                  child: Align(
-                    alignment: Alignment.topRight,
+            child: Align(
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  InkWell(
+                    onTap: getRecorderFunction(),
                     child: Padding(
-                      padding: EdgeInsets.only(top: 20, right: 30),
+                      padding: EdgeInsets.only(top: 20, left: 250),
                       child: Text('Отменить'),
                     ),
                   ),
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: Padding(
+                  Padding(
                     padding: EdgeInsets.only(top: 50),
                     child: Text(
                       'Запись',
                       style: TextStyle(fontSize: 24),
                     ),
                   ),
-                ),
-                // Container(
-                //   width: double.infinity,
-                //   child: Padding(
-                //     padding:
-                //         EdgeInsets.symmetric(vertical: 200, horizontal: 10),
-                //     child: Divider(color: Colors.black),
-                //   ),
-                // ),
-                Align(
-                  alignment: Alignment.center,
-                  child: ElevatedButton(
+                  SizedBox(height: 60),
+                  ElevatedButton(
                     onPressed: getPlaybackFunction(),
                     //color: Colors.white,
                     //disabledColor: Colors.grey,
                     child: Text(_player!.isPlaying ? 'Stop' : 'Play'),
                   ),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
+                  Padding(
                     padding: EdgeInsets.only(bottom: 100),
                     child: Text(
                         '${_recorder!.isRecording || _player!.isStopped ? _recorderText : _playerText}'),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
