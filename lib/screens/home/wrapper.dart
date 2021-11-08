@@ -3,10 +3,11 @@ import 'package:first_project_test/screens/additional_screens/search.dart';
 import 'package:first_project_test/screens/home/home.dart';
 import 'package:first_project_test/screens/home/profile.dart';
 import 'package:first_project_test/screens/home/record.dart';
-import 'package:first_project_test/screens/home/sample.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../main.dart';
 
 class Wrapper extends StatefulWidget {
   const Wrapper({Key? key}) : super(key: key);
@@ -37,40 +38,40 @@ class _WrapperState extends State<Wrapper> {
         statusBarIconBrightness: Brightness.light
     ));
     return Scaffold(
-      restorationId: "root",
-      extendBody: true,
-      drawerEnableOpenDragGesture: showDrawer,
-      bottomNavigationBar: _getBottomNavigationBar(),
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: (page) {
-          setState(() {
-            if(page < 5) currentIndex = page;
-            else currentIndex = 0;
-            if (page == 1) {
-              showDrawer = false;
-            } else {
-              showDrawer = true;
-            }
-            if (currentIndex == 2) {
-              recordLabelText = '';
-            } else {
-              recordLabelText = 'Запись';
-            }
-          });
-        },
-        children: [
-          Home(),
-          Profile(),
-          Record(),
-          RecordToStreamExample(),
-          Profile(),
-          // additional_screens
-          Search(),
-        ],
-      ),
-      drawer: _getDrawer(),
-    );
+        restorationId: "root",
+        extendBody: true,
+        drawerEnableOpenDragGesture: showDrawer,
+        bottomNavigationBar: _getBottomNavigationBar(),
+        body: PageView(
+          controller: _pageController,
+          onPageChanged: (page) {
+            setState(() {
+              if(page < 5) currentIndex = page;
+              else currentIndex = 0;
+              if (page == 1) {
+                showDrawer = false;
+              } else {
+                showDrawer = true;
+              }
+              if (currentIndex == 2) {
+                recordLabelText = '';
+              } else {
+                recordLabelText = 'Запись';
+              }
+            });
+          },
+          children: [
+            Home(),
+            Profile(),
+            Record(),
+            Search(),
+            Profile(),
+            // additional_screens
+            Search(),
+          ],
+        ),
+        drawer: _getDrawer(),
+      );
   }
 
   Widget _getDrawer() {

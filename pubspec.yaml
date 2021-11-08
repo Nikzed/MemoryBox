@@ -36,6 +36,9 @@ dependencies:
   flutter_svg: ^0.23.0+1
   flutter_sound: ^8.4.1+1
   permission_handler: ^8.1.6
+  firebase_storage: ^10.1.0
+  image_picker: ^0.8.4+4
+
 
 
 dev_dependencies:

@@ -1,7 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:first_project_test/database/firebase.dart';
 import 'package:first_project_test/model/painter_model.dart';
 import 'package:first_project_test/screens/authenticate/registration_splash.dart';
-import 'package:first_project_test/screens/home/home.dart';
 import 'package:first_project_test/screens/home/wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +56,16 @@ class _RegistrationState extends State<Registration> {
       });
 
       if (authCredential.user != null) {
+        // Проверяем есть ли данный пользователь уже в базе данных
+        getPhoneNumber(phoneController.text).then((value) => {
+              if (value == null)
+                {
+                  print('СОЗДАЁМ ЮЗЕРА!'),
+                  userSetup(phoneController.text),
+                }
+              else
+                {print('ЮЗЕР УЖЕ ЕСТЬ!')}
+            });
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -206,17 +217,15 @@ class _RegistrationState extends State<Registration> {
                 showLoading = true;
               });
               UserCredential userCredential = await _auth.signInAnonymously();
-              if (userCredential != null){
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Wrapper(),
-                  ),
-                );
-                setState(() {
-                  showLoading = false;
-                });
-              }
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Wrapper(),
+                ),
+              );
+              setState(() {
+                showLoading = false;
+              });
             },
           ),
         ),
@@ -320,24 +329,25 @@ class _RegistrationState extends State<Registration> {
           child: Padding(
             padding: EdgeInsets.only(top: 280),
             child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  primary: Color(0xffF1B488),
-                  fixedSize: Size(269.w, 49.h),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50)),
-                ),
-                onPressed: () async {
-                  PhoneAuthCredential phoneAuthCredential =
-                      PhoneAuthProvider.credential(
-                    verificationId: verificationId,
-                    smsCode: otpController.text,
-                  );
-                  signInWithPhoneAuthCredential(phoneAuthCredential);
-                },
-                child: Text(
-                  'Продолжить',
-                  style: TextStyle(fontSize: 18, color: Colors.white),
-                )),
+              style: ElevatedButton.styleFrom(
+                primary: Color(0xffF1B488),
+                fixedSize: Size(269.w, 49.h),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50)),
+              ),
+              onPressed: () async {
+                PhoneAuthCredential phoneAuthCredential =
+                    PhoneAuthProvider.credential(
+                  verificationId: verificationId,
+                  smsCode: otpController.text,
+                );
+                signInWithPhoneAuthCredential(phoneAuthCredential);
+              },
+              child: Text(
+                'Продолжить',
+                style: TextStyle(fontSize: 18, color: Colors.white),
+              ),
+            ),
           ),
         ),
         Align(

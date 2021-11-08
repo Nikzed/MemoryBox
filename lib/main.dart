@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_project_test/screens/authenticate/sign_in.dart';
 import 'package:first_project_test/screens/home/splash.dart';
+import 'package:first_project_test/screens/home/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   SystemChrome.setSystemUIOverlayStyle(
@@ -20,9 +21,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      initialRoute: '/',
+      routes: {
+        '/': (context) => InitializerWidget(),
+        // 'wrapper': (context) => Wrapper(),
+      },
       title: 'MemoryBox',
       debugShowCheckedModeBanner: false,
-      home: InitializerWidget(),
+      // home: InitializerWidget(),
     );
   }
 }
