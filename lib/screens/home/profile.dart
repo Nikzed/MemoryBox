@@ -18,6 +18,7 @@ class _ProfileState extends State<Profile> {
   var _image;
   ImagePicker picker = ImagePicker();
   bool isEditing = false;
+  TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -96,13 +97,12 @@ class _ProfileState extends State<Profile> {
                             decoration: BoxDecoration(
                               color: Colors.black,
                               image: DecorationImage(
-                                fit: BoxFit.cover,
-                                colorFilter: ColorFilter.mode(
-                                    Colors.black.withOpacity(0.6),
-                                    BlendMode.dstATop),
-                                image:
-                                      NetworkImage('https://firebasestorage.googleapis.com/v0/b/my-app-59705.appspot.com/o/CROPPED-nebo-oblaka-ozero-pirs.jpg?alt=media&token=4e4ecb89-98a6-4fd2-84af-cade727ee090')
-                              ),
+                                  fit: BoxFit.cover,
+                                  colorFilter: ColorFilter.mode(
+                                      Colors.black.withOpacity(0.6),
+                                      BlendMode.dstATop),
+                                  image: NetworkImage(
+                                      'https://firebasestorage.googleapis.com/v0/b/my-app-59705.appspot.com/o/CROPPED-nebo-oblaka-ozero-pirs.jpg?alt=media&token=4e4ecb89-98a6-4fd2-84af-cade727ee090')),
                             ),
                             child: GestureDetector(
                               onTap: () async {
@@ -136,23 +136,38 @@ class _ProfileState extends State<Profile> {
                   'Имя',
                   style: TextStyle(fontSize: 24),
                 ),
+                SizedBox(height: 20,),
                 Container(
-                  width: 292,
-                  height: 22,
-                  margin: EdgeInsets.only(top: 10),
+                  height: 50,
+                  width: 300,
                   alignment: Alignment.center,
-                  child: Material(
-                    borderRadius: BorderRadius.all(Radius.circular(100)),
-                    elevation: 9,
-                    shadowColor: Colors.black.withOpacity(0.4),
-                    child: Container(
-                      child: Text(FirebaseAuth
-                                  .instance.currentUser!.phoneNumber ==
-                              null
-                          ? '+38 0?? ?? ?? ???'
-                          : '${FirebaseAuth.instance.currentUser!.phoneNumber}'),
-                    ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 5,
+                        spreadRadius: 2,
+                        offset: Offset(0, 5),
+                      )
+                    ],
                   ),
+                  child: isEditing
+                      ? TextField(
+                    controller: _controller,
+                    textAlign: TextAlign.center,
+                    keyboardType: TextInputType.phone,
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(100.0),
+                      ),
+                    ),
+                  )
+                      : Text(FirebaseAuth.instance.currentUser!.phoneNumber == null?'?????':'${FirebaseAuth.instance.currentUser!.phoneNumber}'),
                 ),
                 TextButton(
                   onPressed: () {

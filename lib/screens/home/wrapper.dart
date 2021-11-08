@@ -34,118 +34,153 @@ class _WrapperState extends State<Wrapper> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarIconBrightness: Brightness.light
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light));
     return Scaffold(
-        restorationId: "root",
-        extendBody: true,
-        drawerEnableOpenDragGesture: showDrawer,
-        bottomNavigationBar: _getBottomNavigationBar(),
-        body: PageView(
-          controller: _pageController,
-          onPageChanged: (page) {
-            setState(() {
-              if(page < 5) currentIndex = page;
-              else currentIndex = 0;
-              if (page == 1) {
-                showDrawer = false;
-              } else {
-                showDrawer = true;
-              }
-              if (currentIndex == 2) {
-                recordLabelText = '';
-              } else {
-                recordLabelText = 'Запись';
-              }
-            });
-          },
-          children: [
-            Home(),
-            Profile(),
-            Record(),
-            Search(),
-            Profile(),
-            // additional_screens
-            Search(),
-          ],
-        ),
-        drawer: _getDrawer(),
-      );
+      resizeToAvoidBottomInset: false,
+      restorationId: "root",
+      extendBody: true,
+      drawerEnableOpenDragGesture: showDrawer,
+      bottomNavigationBar: _getBottomNavigationBar(),
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (page) {
+          setState(() {
+            if (page < 5)
+              currentIndex = page;
+            else
+              currentIndex = 0;
+            if (page == 1) {
+              showDrawer = false;
+            } else {
+              showDrawer = true;
+            }
+            if (currentIndex == 2) {
+              recordLabelText = '';
+            } else {
+              recordLabelText = 'Запись';
+            }
+          });
+        },
+        children: [
+          Home(),
+          Profile(),
+          Record(),
+          Search(),
+          Profile(),
+          // additional_screens
+          Search(),
+        ],
+      ),
+      drawer: _getDrawer(),
+    );
   }
 
   Widget _getDrawer() {
-    return Drawer(
-      child: ListView(
-        children: [
-          Container(
+    return ClipRRect(
+      borderRadius: BorderRadius.only(
+        topRight: Radius.circular(20.0),
+        bottomRight: Radius.circular(20.0),
+      ),
+      child: Drawer(
+        child: ListView(
+          children: [
+            Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.only(top: 40),
+                child: Text(
+                  'Аудисказки',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                  ),
+                )),
+            Container(
               alignment: Alignment.center,
-              padding: const EdgeInsets.only(top: 90),
+              padding: const EdgeInsets.only(top: 40),
               child: Text(
-                'Аудисказки',
-                style: TextStyle(fontSize: 24),
-              )),
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.only(top: 40),
-            child: Text(
-              'Меню',
-              style: TextStyle(fontSize: 22, color: Color(0xd93A3A5580)),
+                'Меню',
+                style: TextStyle(
+                  fontSize: 22,
+                  color: Color(0xd93A3A5580),
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.only(top: 80, left: 40),
-            child: Column(
-              children: [
-                _getDrawerButton('assets/Home.svg', 'Главная'),
-                SizedBox(height: 15),
-                _getDrawerButton('assets/Profile.svg', 'Профиль'),
-                SizedBox(height: 15),
-                _getDrawerButton('assets/Category.svg', 'Подборки'),
-                SizedBox(height: 15),
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      currentIndex = 5;
-                      _pageController.jumpToPage(5);
-                    });
-                  },
-                  child: Padding(padding: EdgeInsets.only(top: 50),child: Text('SEARCH')),
-                )
-              ],
+            Container(
+              padding: const EdgeInsets.only(top: 70, left: 30, right: 50),
+              child: Column(
+                children: [
+                  _getDrawerButton('assets/Home.svg', 'Главная', 0),
+                  SizedBox(height: 15),
+                  _getDrawerButton('assets/Profile.svg', 'Профиль', 4),
+                  SizedBox(height: 15),
+                  _getDrawerButton('assets/Category.svg', 'Подборки', 1),
+                  SizedBox(height: 15),
+                  _getDrawerButton('assets/Paper.svg', 'Все аудиофалы', 1),
+                  SizedBox(height: 15),
+                  _getDrawerButton('assets/Search.svg', 'Поиск', 5),
+                  SizedBox(height: 15),
+                  _getDrawerButton('assets/Delete.svg', 'Недавно удаленные', 0),
+                  SizedBox(height: 40),
+                  _getDrawerButton('assets/Wallet.svg', 'Подписка', 0),
+                  SizedBox(height: 40),
+                  _getDrawerButton(
+                      'assets/Edit.svg', 'Написать в поддержку', 0),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _getDrawerButton(String asset, String text){
+  Widget _getDrawerButton(String asset, String text, int page) {
     return InkWell(
       onTap: () {
         setState(() {
           currentIndex = 0;
-          _pageController.jumpToPage(0);
+          _pageController.jumpToPage(page);
         });
       },
-      child: RichText(
-        text: TextSpan(
-          style: TextStyle(color: Colors.black, fontSize: 18),
-          children: [
-            WidgetSpan(
-              child: Container(
-                width: 50,
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: SvgPicture.asset(
-                    asset,
-                    color: drawerColor,
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: RichText(
+          text: TextSpan(
+            // style: TextStyle(color: Colors.black, fontSize: 18),
+            children: [
+              WidgetSpan(
+                child: Container(
+                  width: 50,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: SvgPicture.asset(
+                      asset,
+                      color: drawerColor,
+                    ),
                   ),
                 ),
               ),
-            ),
-            TextSpan(text: text),
-          ],
+              WidgetSpan(
+                child: Container(
+                  width: 150,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      text,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              // TextSpan(text: text),
+            ],
+          ),
         ),
       ),
     );
