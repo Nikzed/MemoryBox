@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:first_project_test/database/firebase.dart';
 import 'package:first_project_test/model/painter_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ class _ProfileState extends State<Profile> {
   ImagePicker picker = ImagePicker();
   bool isEditing = false;
   TextEditingController _controller = TextEditingController();
+  String? number = FirebaseAuth.instance.currentUser?.phoneNumber;
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +138,9 @@ class _ProfileState extends State<Profile> {
                   'Имя',
                   style: TextStyle(fontSize: 24),
                 ),
-                SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
                 Container(
                   height: 50,
                   width: 300,
@@ -155,34 +159,39 @@ class _ProfileState extends State<Profile> {
                   ),
                   child: isEditing
                       ? TextField(
-                    controller: _controller,
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(100.0),
-                      ),
-                    ),
-                  )
-                      : Text(FirebaseAuth.instance.currentUser!.phoneNumber == null?'?????':'${FirebaseAuth.instance.currentUser!.phoneNumber}'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      isEditing = !isEditing;
-                    });
-                  },
-                  child: Text('Редактировать'),
+                          controller: _controller,
+                          textAlign: TextAlign.center,
+                          keyboardType: TextInputType.phone,
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(100.0),
+                            ),
+                          ),
+                        )
+                      : Text(number == null
+                          ? '+00 000 000 00 00'
+                          : '${FirebaseAuth.instance.currentUser!.phoneNumber}'),
                 ),
                 SizedBox(
                   height: 10,
                 ),
-                TextButton(
-                  onPressed: () {
-                    print(FirebaseAuth.instance.currentUser!.uid);
+                InkWell(
+                  child: Text('Редактировать'),
+                  onTap: () {
+                    setState(() {
+                      isEditing = !isEditing;
+                    });
+                  },
+                ),
+                SizedBox(
+                  height: 40,
+                ),
+                InkWell(
+                  onTap: () {
+                    print(FirebaseAuth.instance.currentUser?.uid);
                   },
                   child: Text('Подписка'),
                 ),
@@ -207,9 +216,13 @@ class _ProfileState extends State<Profile> {
                   padding: EdgeInsets.symmetric(horizontal: 40),
                   child: Row(
                     children: [
-                      TextButton(
-                        onPressed: () async {
-                          await FirebaseAuth.instance.signOut();
+                      InkWell(
+                        onTap: () async {
+                          if (FirebaseAuth.instance.currentUser?.isAnonymous == true) {
+                            FirebaseAuth.instance.currentUser!.delete();
+                          } else {
+                            await FirebaseAuth.instance.signOut();
+                          }
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                               builder: (context) => MyApp(),
@@ -220,14 +233,24 @@ class _ProfileState extends State<Profile> {
                           //   ModalRoute.withName('init')
                           // );
                         },
-                        child: Text('Выйти из приложения'),
+                        child: Text(
+                          'Выйти из приложения',
+                        ),
                       ),
                       Spacer(),
-                      TextButton(
-                        onPressed: () async {
-                          print(FirebaseAuth.instance.currentUser!.isAnonymous);
+                      InkWell(
+                        onTap: () async {
+                          _deleteAccount();
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => MyApp(),
+                            ),
+                          );
                         },
-                        child: Text('Удалить аккаунт'),
+                        child: Text(
+                          'Удалить аккаунт',
+                          style: TextStyle(color: Colors.red),
+                        ),
                       ),
                     ],
                   ),
@@ -239,4 +262,16 @@ class _ProfileState extends State<Profile> {
       ),
     );
   }
+
+  Future<void> _deleteAccount() async {
+    CollectionReference collection =
+    FirebaseFirestore.instance.collection('users');
+
+    QuerySnapshot eventsQuery =
+        await collection.where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
+    eventsQuery.docs.first.reference.delete();
+
+    FirebaseAuth.instance.currentUser!.delete();
+  }
+
 }

@@ -43,6 +43,7 @@ class _WrapperState extends State<Wrapper> {
       drawerEnableOpenDragGesture: showDrawer,
       bottomNavigationBar: _getBottomNavigationBar(),
       body: PageView(
+        physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
         onPageChanged: (page) {
           setState(() {
