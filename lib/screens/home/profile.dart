@@ -1,6 +1,11 @@
+import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_project_test/model/painter_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import '../../main.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -10,6 +15,10 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  var _image;
+  ImagePicker picker = ImagePicker();
+  bool isEditing = false;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -65,7 +74,7 @@ class _ProfileState extends State<Profile> {
                   height: 228,
                   width: 228,
                   decoration: BoxDecoration(
-                    color: Colors.purple,
+                    color: Colors.white,
                     borderRadius: BorderRadius.all(
                       Radius.circular(15.0),
                     ),
@@ -77,6 +86,47 @@ class _ProfileState extends State<Profile> {
                         offset: Offset(0, 5),
                       ),
                     ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(15.0),
+                    ),
+                    child: isEditing
+                        ? Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black,
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                colorFilter: ColorFilter.mode(
+                                    Colors.black.withOpacity(0.6),
+                                    BlendMode.dstATop),
+                                image:
+                                      NetworkImage('https://firebasestorage.googleapis.com/v0/b/my-app-59705.appspot.com/o/CROPPED-nebo-oblaka-ozero-pirs.jpg?alt=media&token=4e4ecb89-98a6-4fd2-84af-cade727ee090')
+                              ),
+                            ),
+                            child: GestureDetector(
+                              onTap: () async {
+                                XFile? image = await picker.pickImage(
+                                    source: ImageSource.gallery,
+                                    imageQuality: 50);
+                                setState(() {
+                                  _image = File(image!.path);
+                                });
+                              },
+                            ),
+                          )
+                        : _image == null
+                            ? FadeInImage.assetNetwork(
+                                placeholder: 'assets/loader.png',
+                                image:
+                                    'https://firebasestorage.googleapis.com/v0/b/my-app-59705.appspot.com/o/CROPPED-nebo-oblaka-ozero-pirs.jpg?alt=media&token=4e4ecb89-98a6-4fd2-84af-cade727ee090',
+                                // 'http://ic.pics.livejournal.com/matchgirl_ru/19647654/307286/307286_original.jpg',
+                                fit: BoxFit.cover,
+                              )
+                            : Image.file(
+                                _image,
+                                fit: BoxFit.cover,
+                              ),
                   ),
                 ),
                 SizedBox(
@@ -95,20 +145,30 @@ class _ProfileState extends State<Profile> {
                     borderRadius: BorderRadius.all(Radius.circular(100)),
                     elevation: 9,
                     shadowColor: Colors.black.withOpacity(0.4),
-                    child: Text(
-                      '+380936728934',
+                    child: Container(
+                      child: Text(FirebaseAuth
+                                  .instance.currentUser!.phoneNumber ==
+                              null
+                          ? '+38 0?? ?? ?? ???'
+                          : '${FirebaseAuth.instance.currentUser!.phoneNumber}'),
                     ),
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      isEditing = !isEditing;
+                    });
+                  },
                   child: Text('Редактировать'),
                 ),
                 SizedBox(
-                  height: 40,
+                  height: 10,
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    print(FirebaseAuth.instance.currentUser!.uid);
+                  },
                   child: Text('Подписка'),
                 ),
                 Container(
@@ -131,7 +191,30 @@ class _ProfileState extends State<Profile> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 40),
                   child: Row(
-                    children: [Text('Выйти из приложения'),Spacer(), Text('Удалить аккаунт')],
+                    children: [
+                      TextButton(
+                        onPressed: () async {
+                          await FirebaseAuth.instance.signOut();
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => MyApp(),
+                            ),
+                          );
+                          // Navigator.popUntil(
+                          //   context,
+                          //   ModalRoute.withName('init')
+                          // );
+                        },
+                        child: Text('Выйти из приложения'),
+                      ),
+                      Spacer(),
+                      TextButton(
+                        onPressed: () async {
+                          print(FirebaseAuth.instance.currentUser!.isAnonymous);
+                        },
+                        child: Text('Удалить аккаунт'),
+                      ),
+                    ],
                   ),
                 ),
               ],
