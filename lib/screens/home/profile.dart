@@ -218,7 +218,8 @@ class _ProfileState extends State<Profile> {
                     children: [
                       InkWell(
                         onTap: () async {
-                          if (FirebaseAuth.instance.currentUser?.isAnonymous == true) {
+                          if (FirebaseAuth.instance.currentUser?.isAnonymous ==
+                              true) {
                             FirebaseAuth.instance.currentUser!.delete();
                           } else {
                             await FirebaseAuth.instance.signOut();
@@ -240,12 +241,74 @@ class _ProfileState extends State<Profile> {
                       Spacer(),
                       InkWell(
                         onTap: () async {
-                          _deleteAccount();
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) => MyApp(),
-                            ),
-                          );
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  title: Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      'Вы уверенны?',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  content: Container(
+                                    height: 170,
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          'Все аудиофайлы исчезнут и восстановить аккаунт будет невозможно',
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        SizedBox(height: 50),
+                                        Row(
+                                          children: [
+                                            ElevatedButton(
+                                              onPressed: () {},
+                                              child: Text('Удалить'),
+                                              style: ButtonStyle(
+                                                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                                                backgroundColor: MaterialStateProperty.all<Color>(Color(0xffE27777)),
+                                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                  RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(40),
+                                                    side: BorderSide(color: Colors.black)
+                                                  )
+                                                ),
+                                              ),
+                                            ),
+                                            ElevatedButton(
+                                              onPressed: (){},
+                                              child: Text('Нет'),
+                                              style: ButtonStyle(
+                                                foregroundColor: MaterialStateProperty.all<Color>(Color(0xff8C84E2)),
+                                                backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                  RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(40),
+                                                    side: BorderSide(color: Color(0xff8C84E2)),
+                                                  )
+                                                )
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              });
+                          // _deleteAccount();
+                          // Navigator.of(context).pushReplacement(
+                          //   MaterialPageRoute(
+                          //     builder: (context) => MyApp(),
+                          //   ),
+                          // );
                         },
                         child: Text(
                           'Удалить аккаунт',
@@ -265,13 +328,13 @@ class _ProfileState extends State<Profile> {
 
   Future<void> _deleteAccount() async {
     CollectionReference collection =
-    FirebaseFirestore.instance.collection('users');
+        FirebaseFirestore.instance.collection('users');
 
-    QuerySnapshot eventsQuery =
-        await collection.where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
+    QuerySnapshot eventsQuery = await collection
+        .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
     eventsQuery.docs.first.reference.delete();
 
     FirebaseAuth.instance.currentUser!.delete();
   }
-
 }

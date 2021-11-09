@@ -10,15 +10,15 @@ class RegistrationSplash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.popUntil(
-        context,
-        ModalRoute.withName('/'),
-      );
-      // Navigator.of(context).push(
-      //   MaterialPageRoute(
-      //     builder: (context) => Wrapper(),
-      //   ),
+      // Navigator.popUntil(
+      //   context,
+      //   ModalRoute.withName('/'),
       // );
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => Wrapper(),
+        ),
+      );
     });
 
     return ScreenUtilInit(
