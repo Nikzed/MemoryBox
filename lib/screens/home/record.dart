@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:first_project_test/model/painter_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:noise_meter/noise_meter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
@@ -31,6 +32,86 @@ class _RecordState extends State<Record> {
   String _recorderText = '00:00:00';
   String _playerText = '00:00:00';
 
+  bool _isRecording = false;
+  StreamSubscription<NoiseReading>? _noiseSubscription;
+  NoiseMeter? _noiseMeter;
+  int currentNoise = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // added  for listener
+    _noiseMeter = NoiseMeter(onErrorListener);
+
+    startListener();
+
+    // openAudioSession возвращает Future
+    // Не открывать FlutterSoundPlayer или FlutterSoundRecorder до завершения Future метода
+    _player!.openAudioSession().then((value) => {
+          setState(() {
+            _playerIsInited = true;
+          }),
+        });
+    _openRecorder().then((value) => record());
+  }
+
+  void startListener() async {
+    try {
+      _noiseSubscription = _noiseMeter!.noiseStream.listen(onDataListener);
+    } on Exception catch (exception) {
+      print(exception);
+    }
+  }
+
+  void onDataListener(NoiseReading noiseReading) {
+    this.setState(() {
+      if (!this._isRecording) {
+        this._isRecording = true;
+      }
+    });
+
+    /// Do someting with the noiseReading object
+    currentNoise = (noiseReading.meanDecibel.ceil() - 70)*2;
+    print(noiseReading.toString());
+    // noiseReading.meanDecibel = 5;
+    // print(noiseReading.meanDecibel);
+  }
+
+  void onErrorListener(Object error) {
+    print(error.toString());
+    _isRecording = false;
+  }
+
+  void stopRecorderListener() async {
+    try {
+      if (_noiseSubscription != null) {
+        _noiseSubscription!.cancel();
+        _noiseSubscription = null;
+      }
+      this.setState(() {
+        this._isRecording = false;
+      });
+    } catch (err) {
+      print('stopRecorder error: $err');
+    }
+  }
+
+  @override
+  void dispose() {
+
+    _noiseSubscription?.cancel();
+
+    stopPlayer();
+    _player!.closeAudioSession();
+    _player = null;
+
+    stopRecorder();
+    _recorder!.closeAudioSession();
+    _recorder = null;
+    super.dispose();
+  }
+
   Future<void> _openRecorder() async {
     var status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
@@ -42,31 +123,6 @@ class _RecordState extends State<Record> {
     setState(() {
       _recorderIsInited = true;
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    // openAudioSession возвращает Future
-    // Не открывать FlutterSoundPlayer или FlutterSoundRecorder до завершения Future метода
-    _player!.openAudioSession().then((value) => {
-          setState(() {
-            _playerIsInited = true;
-          }),
-        });
-    _openRecorder().then((value) => record());
-  }
-
-  @override
-  void dispose() {
-    stopPlayer();
-    _player!.closeAudioSession();
-    _player = null;
-
-    stopRecorder();
-    _recorder!.closeAudioSession();
-    _recorder = null;
-    super.dispose();
   }
 
   Future<IOSink> createFile() async {
@@ -233,7 +289,13 @@ class _RecordState extends State<Record> {
                       style: TextStyle(fontSize: 24),
                     ),
                   ),
+                  Text('noise is : ${currentNoise}'),
                   SizedBox(height: 60),
+                  CustomPaint(
+                    painter: ShapePainter(currentNoise),
+                  ),
+                  SizedBox(height: 60),
+
                   ElevatedButton(
                     onPressed: getPlaybackFunction(),
                     //color: Colors.white,
@@ -253,4 +315,30 @@ class _RecordState extends State<Record> {
       ],
     );
   }
+}
+
+class ShapePainter extends CustomPainter{
+  int maxPoint = 0;
+
+  ShapePainter(this.maxPoint);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    maxPoint<=0?maxPoint = 0 : null;
+    var paint = Paint()
+        ..color = Colors.black
+        ..strokeWidth = 5
+        ..strokeCap = StrokeCap.round;
+
+    Offset startPoint = Offset (size.width/2, size.height/2);
+    Offset endPoint = Offset (size.width/2, size.height/2 + maxPoint);
+
+    canvas.drawLine(startPoint, endPoint, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
+  }
+
 }

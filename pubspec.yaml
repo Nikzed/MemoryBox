@@ -38,6 +38,7 @@ dependencies:
   permission_handler: ^8.1.6
   firebase_storage: ^10.1.0
   image_picker: ^0.8.4+4
+  noise_meter: ^3.0.3
 
 
 

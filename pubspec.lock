@@ -8,6 +8,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.8.1"
+  audio_streamer:
+    dependency: transitive
+    description:
+      name: audio_streamer
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.3"
   boolean_selector:
     dependency: transitive
     description:
@@ -310,6 +317,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  noise_meter:
+    dependency: "direct main"
+    description:
+      name: noise_meter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.3"
   path:
     dependency: transitive
     description:
