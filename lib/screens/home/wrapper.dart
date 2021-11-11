@@ -7,8 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../main.dart';
-
 class Wrapper extends StatefulWidget {
   const Wrapper({Key? key}) : super(key: key);
 

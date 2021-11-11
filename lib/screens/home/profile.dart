@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_project_test/database/firebase.dart';
 import 'package:first_project_test/model/painter_model.dart';
+import 'package:first_project_test/screens/authenticate/sign_in.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -94,6 +95,7 @@ class _ProfileState extends State<Profile> {
                     borderRadius: BorderRadius.all(
                       Radius.circular(15.0),
                     ),
+                    // TODO make image in base64 and store in Firebase
                     child: isEditing
                         ? Container(
                             decoration: BoxDecoration(
@@ -226,12 +228,12 @@ class _ProfileState extends State<Profile> {
                           }
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
-                              builder: (context) => MyApp(),
+                              builder: (context) => SignIn(),
                             ),
                           );
                           // Navigator.popUntil(
                           //   context,
-                          //   ModalRoute.withName('init')
+                          //   ModalRoute.withName('/')
                           // );
                         },
                         child: Text(

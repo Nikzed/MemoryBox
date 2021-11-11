@@ -72,7 +72,10 @@ class _RecordState extends State<Record> {
     });
 
     /// Do someting with the noiseReading object
-    currentNoise = (noiseReading.meanDecibel.ceil() - 70)*2;
+    noiseReading.meanDecibel == double.negativeInfinity
+        ? currentNoise = 0
+        : currentNoise = (noiseReading.meanDecibel.ceil() - 50) * 2;
+    currentNoise < 0 ? currentNoise = 0 : null;
     print(noiseReading.toString());
     // noiseReading.meanDecibel = 5;
     // print(noiseReading.meanDecibel);
@@ -99,7 +102,6 @@ class _RecordState extends State<Record> {
 
   @override
   void dispose() {
-
     _noiseSubscription?.cancel();
 
     stopPlayer();
@@ -295,7 +297,6 @@ class _RecordState extends State<Record> {
                     painter: ShapePainter(currentNoise),
                   ),
                   SizedBox(height: 60),
-
                   ElevatedButton(
                     onPressed: getPlaybackFunction(),
                     //color: Colors.white,
@@ -317,21 +318,21 @@ class _RecordState extends State<Record> {
   }
 }
 
-class ShapePainter extends CustomPainter{
+class ShapePainter extends CustomPainter {
   int maxPoint = 0;
 
   ShapePainter(this.maxPoint);
 
   @override
   void paint(Canvas canvas, Size size) {
-    maxPoint<=0?maxPoint = 0 : null;
+    maxPoint <= 0 ? maxPoint = 0 : null;
     var paint = Paint()
-        ..color = Colors.black
-        ..strokeWidth = 5
-        ..strokeCap = StrokeCap.round;
+      ..color = Colors.black
+      ..strokeWidth = 5
+      ..strokeCap = StrokeCap.round;
 
-    Offset startPoint = Offset (size.width/2, size.height/2);
-    Offset endPoint = Offset (size.width/2, size.height/2 + maxPoint);
+    Offset startPoint = Offset(size.width / 2, size.height / 2);
+    Offset endPoint = Offset(size.width / 2, size.height / 2 + maxPoint);
 
     canvas.drawLine(startPoint, endPoint, paint);
   }
@@ -340,5 +341,4 @@ class ShapePainter extends CustomPainter{
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return false;
   }
-
 }
