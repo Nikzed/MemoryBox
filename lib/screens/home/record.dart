@@ -172,7 +172,7 @@ class _RecordState extends State<Record> {
           event.duration.inMilliseconds,
           isUtc: true);
       String txt = DateFormat('mm:ss:SS', 'en_GB').format(date);
-      // TODO проверить почему вызывает ошибку при dispose
+      // TODO вызывает ли ошибку при dispose
       setState(() {
         _recorderText = txt.substring(0, 8);
       });
