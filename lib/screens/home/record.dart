@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:io';
 import 'package:first_project_test/model/painter_model.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,8 @@ class _RecordState extends State<Record> {
   NoiseMeter? _noiseMeter;
   int currentNoise = 0;
 
+  List noisesList = [0,0,0,0,0,0,0,0,0,0];
+
   @override
   void initState() {
     super.initState();
@@ -69,14 +72,20 @@ class _RecordState extends State<Record> {
       if (!this._isRecording) {
         this._isRecording = true;
       }
+
     });
 
     /// Do someting with the noiseReading object
     noiseReading.meanDecibel == double.negativeInfinity
         ? currentNoise = 0
-        : currentNoise = (noiseReading.meanDecibel.ceil() - 50) * 2;
+        : currentNoise = ((noiseReading.meanDecibel - 50) * 2).toInt();
     currentNoise < 0 ? currentNoise = 0 : null;
-    print(noiseReading.toString());
+    for (int i=0; i<9; i++){
+      noisesList[i] = noisesList[i+1];
+    }
+    noisesList.removeLast();
+    noisesList.add(currentNoise);
+    // print(noiseReading.toString());
     // noiseReading.meanDecibel = 5;
     // print(noiseReading.meanDecibel);
   }
@@ -163,6 +172,7 @@ class _RecordState extends State<Record> {
           event.duration.inMilliseconds,
           isUtc: true);
       String txt = DateFormat('mm:ss:SS', 'en_GB').format(date);
+      // TODO проверить почему вызывает ошибку при dispose
       setState(() {
         _recorderText = txt.substring(0, 8);
       });
@@ -294,7 +304,8 @@ class _RecordState extends State<Record> {
                   Text('noise is : ${currentNoise}'),
                   SizedBox(height: 60),
                   CustomPaint(
-                    painter: ShapePainter(currentNoise),
+                    // painter: ShapePainter(currentNoise),
+                    painter: ShapePainter(noisesList),
                   ),
                   SizedBox(height: 60),
                   ElevatedButton(
@@ -319,22 +330,25 @@ class _RecordState extends State<Record> {
 }
 
 class ShapePainter extends CustomPainter {
-  int maxPoint = 0;
+  List maxPoints = [];
 
-  ShapePainter(this.maxPoint);
+  ShapePainter(this.maxPoints);
 
   @override
   void paint(Canvas canvas, Size size) {
-    maxPoint <= 0 ? maxPoint = 0 : null;
+    // maxPoint <= 0 ? maxPoint = 0 : null;
+
     var paint = Paint()
       ..color = Colors.black
       ..strokeWidth = 5
       ..strokeCap = StrokeCap.round;
 
-    Offset startPoint = Offset(size.width / 2, size.height / 2);
-    Offset endPoint = Offset(size.width / 2, size.height / 2 + maxPoint);
+    for(int i=0; i<10; i++){
+      Offset startPoint = Offset(size.width / 2 + i*10, size.height / 2);
+      Offset endPoint = Offset(size.width / 2 + i*10, size.height / 2 + maxPoints[i]);
 
-    canvas.drawLine(startPoint, endPoint, paint);
+      canvas.drawLine(startPoint, endPoint, paint);
+    }
   }
 
   @override
