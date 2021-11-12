@@ -38,7 +38,8 @@ class _RecordState extends State<Record> {
   NoiseMeter? _noiseMeter;
   int currentNoise = 0;
 
-  List noisesList = [0,0,0,0,0,0,0,0,0,0];
+  // List noisesList = [0,0,0,0,0,0,0,0,0,0];
+  List noisesList = List.generate(20, (index) => 0);
 
   @override
   void initState() {
@@ -80,7 +81,7 @@ class _RecordState extends State<Record> {
         ? currentNoise = 0
         : currentNoise = ((noiseReading.meanDecibel - 50) * 2).toInt();
     currentNoise < 0 ? currentNoise = 0 : null;
-    for (int i=0; i<9; i++){
+    for (int i=0; i<19; i++){
       noisesList[i] = noisesList[i+1];
     }
     noisesList.removeLast();
@@ -301,7 +302,7 @@ class _RecordState extends State<Record> {
                       style: TextStyle(fontSize: 24),
                     ),
                   ),
-                  Text('noise is : ${currentNoise}'),
+                  Text('noise is : $currentNoise'),
                   SizedBox(height: 60),
                   CustomPaint(
                     // painter: ShapePainter(currentNoise),
@@ -340,14 +341,15 @@ class ShapePainter extends CustomPainter {
 
     var paint = Paint()
       ..color = Colors.black
-      ..strokeWidth = 5
+      ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
 
-    for(int i=0; i<10; i++){
-      Offset startPoint = Offset(size.width / 2 + i*10, size.height / 2);
-      Offset endPoint = Offset(size.width / 2 + i*10, size.height / 2 + maxPoints[i]);
+    for(int i=0; i<20; i++){
+      Offset startPoint = Offset(size.width / 2 + i*10 - 100, size.height / 2);
+      Offset endPoint = Offset(size.width / 2 + i*10 - 100, size.height / 2 + maxPoints[i]);
 
       canvas.drawLine(startPoint, endPoint, paint);
+      canvas.drawLine(startPoint, endPoint.scale(1, -1), paint);
     }
   }
 
