@@ -119,7 +119,7 @@ class _ProfileState extends State<Profile> {
                               },
                             ),
                           )
-                        : _image == null
+                        : _image == null // ? CachedNetworkImage
                             ? FadeInImage.assetNetwork(
                                 placeholder: 'assets/loader.png',
                                 image:

@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:collection';
 import 'dart:io';
 import 'package:first_project_test/model/painter_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:noise_meter/noise_meter.dart';
@@ -21,7 +21,7 @@ class Record extends StatefulWidget {
   _RecordState createState() => _RecordState();
 }
 
-class _RecordState extends State<Record> {
+class _RecordState extends State<Record> with TickerProviderStateMixin {
   final backgroundColor = 0xffF6F6F6;
   FlutterSoundPlayer? _player = FlutterSoundPlayer();
   FlutterSoundRecorder? _recorder = FlutterSoundRecorder();
@@ -38,8 +38,23 @@ class _RecordState extends State<Record> {
   NoiseMeter? _noiseMeter;
   int currentNoise = 0;
 
-  // List noisesList = [0,0,0,0,0,0,0,0,0,0];
   List noisesList = List.generate(20, (index) => 0);
+
+  final DecorationTween decorationTween = DecorationTween(
+    begin: BoxDecoration(
+      color: Colors.red,
+      shape: BoxShape.circle,
+    ),
+    end: BoxDecoration(
+      color: Colors.white,
+      shape: BoxShape.circle,
+    ),
+  );
+
+  late final AnimationController _animationController = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 1),
+  )..repeat(reverse: true);
 
   @override
   void initState() {
@@ -47,8 +62,6 @@ class _RecordState extends State<Record> {
 
     // added  for listener
     _noiseMeter = NoiseMeter(onErrorListener);
-
-    startListener();
 
     // openAudioSession возвращает Future
     // Не открывать FlutterSoundPlayer или FlutterSoundRecorder до завершения Future метода
@@ -73,7 +86,6 @@ class _RecordState extends State<Record> {
       if (!this._isRecording) {
         this._isRecording = true;
       }
-
     });
 
     /// Do someting with the noiseReading object
@@ -81,8 +93,8 @@ class _RecordState extends State<Record> {
         ? currentNoise = 0
         : currentNoise = ((noiseReading.meanDecibel - 50) * 2).toInt();
     currentNoise < 0 ? currentNoise = 0 : null;
-    for (int i=0; i<19; i++){
-      noisesList[i] = noisesList[i+1];
+    for (int i = 0; i < 19; i++) {
+      noisesList[i] = noisesList[i + 1];
     }
     noisesList.removeLast();
     noisesList.add(currentNoise);
@@ -97,6 +109,7 @@ class _RecordState extends State<Record> {
   }
 
   void stopRecorderListener() async {
+    noisesList = List.generate(20, (index) => 0);
     try {
       if (_noiseSubscription != null) {
         _noiseSubscription!.cancel();
@@ -112,6 +125,8 @@ class _RecordState extends State<Record> {
 
   @override
   void dispose() {
+    _animationController.dispose();
+
     _noiseSubscription?.cancel();
 
     stopPlayer();
@@ -179,6 +194,7 @@ class _RecordState extends State<Record> {
       });
     });
 
+    startListener();
     setState(() {});
   }
 
@@ -189,6 +205,8 @@ class _RecordState extends State<Record> {
       _recordingDataSubscription = null;
     }
     _playbackReady = true;
+
+    stopRecorderListener();
   }
 
   _Fn? getRecorderFunction() {
@@ -309,16 +327,34 @@ class _RecordState extends State<Record> {
                     painter: ShapePainter(noisesList),
                   ),
                   SizedBox(height: 60),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (_isRecording) ...[
+                        _getRecordAnimatedDot(),
+                        SizedBox(
+                          width: 5,
+                        ),
+                      ],
+                      Text(
+                        '${_recorder!.isRecording || _player!.isStopped ? _recorderText : _playerText}',
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 180,
+                  ),
                   ElevatedButton(
+                    style: ButtonStyle(
+                      // shape:
+                    ),
                     onPressed: getPlaybackFunction(),
                     //color: Colors.white,
                     //disabledColor: Colors.grey,
                     child: Text(_player!.isPlaying ? 'Stop' : 'Play'),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 100),
-                    child: Text(
-                        '${_recorder!.isRecording || _player!.isStopped ? _recorderText : _playerText}'),
                   ),
                 ],
               ),
@@ -326,6 +362,19 @@ class _RecordState extends State<Record> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _getRecordAnimatedDot() {
+    return Padding(
+      padding: EdgeInsets.only(right: 10),
+      child: DecoratedBoxTransition(
+        decoration: decorationTween.animate(_animationController),
+        child: Container(
+          height: 10,
+          width: 10,
+        ),
+      ),
     );
   }
 }
@@ -344,13 +393,17 @@ class ShapePainter extends CustomPainter {
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
 
-    for(int i=0; i<20; i++){
-      Offset startPoint = Offset(size.width / 2 + i*10 - 100, size.height / 2);
-      Offset endPoint = Offset(size.width / 2 + i*10 - 100, size.height / 2 + maxPoints[i]);
+    for (int i = 0; i < 20; i++) {
+      Offset startPoint =
+          Offset(size.width / 2 + i * 10 - 100, size.height / 2);
+      Offset endPoint =
+          Offset(size.width / 2 + i * 10 - 100, size.height / 2 + maxPoints[i]);
 
       canvas.drawLine(startPoint, endPoint, paint);
       canvas.drawLine(startPoint, endPoint.scale(1, -1), paint);
     }
+    canvas.drawLine(Offset(size.width / 2 - 100, size.height / 2),
+        Offset(size.width / 2 + 90, size.height / 2), paint);
   }
 
   @override

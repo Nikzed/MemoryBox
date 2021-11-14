@@ -39,6 +39,8 @@ dependencies:
   firebase_storage: ^10.1.0
   image_picker: ^0.8.4+4
   noise_meter: ^3.0.3
+  cached_network_image: ^3.1.0+1
+
 
 
 
