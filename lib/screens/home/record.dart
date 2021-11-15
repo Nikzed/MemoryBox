@@ -1,14 +1,12 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:typed_data';
 import 'package:first_project_test/model/painter_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:noise_meter/noise_meter.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter/services.dart' show rootBundle;
 
 typedef Fn = void Function();
 
@@ -38,17 +36,15 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
   // -- Recorder --
   FlutterSoundRecorder _mRecorder = FlutterSoundRecorder();
   Codec _codec = Codec.aacADTS;
-  String _fileName = 'Recording_.aac';
-  String _path = '/storage/emulated/0/SoundRecorder';
   bool _mRecorderIsInited = false;
   int pos = 0;
   double dbLevel = 0;
+  var tempDir;
+  String? tempPath;
 
   // -- Player --
   final FlutterSoundPlayer _mPlayer = FlutterSoundPlayer();
   bool _mPlayerIsInited = false;
-  int playerPos = 0;
-  double? _duration;
 
   // -- NoiseListener --
   bool _isRecording = false;
@@ -78,11 +74,11 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
     super.initState();
     init().then((value) {
       setState(() {
+        print('ПРОШЛО!!!!!!!!!!!!!!!!!!!!!!');
         _mRecorderIsInited = true;
         _mPlayerIsInited = true;
       });
     });
-
     // added  for listener
     _noiseMeter = NoiseMeter(onErrorListener);
 
@@ -90,6 +86,9 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
   }
 
   Future<void> init() async {
+    tempDir = await getTemporaryDirectory();
+    tempPath = '${tempDir.path}/flutter_sound.aac';
+
     // recorder init
     await openRecorder();
     await _mRecorder.setSubscriptionDuration(Duration(milliseconds: 10));
@@ -103,59 +102,41 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
       });
     });
 
+
     // player init
     await _mPlayer.openAudioSession();
     await _mPlayer.setSubscriptionDuration(Duration(milliseconds: 50));
     _mPlayerSubscription = _mPlayer.onProgress!.listen((e) {
-      setPos(e.position.inMilliseconds);
       setState(() {});
     });
   }
 
-  Future<void> setPos(int d) async {
-    if (d > _duration!) {
-      d = _duration!.toInt();
-    }
-    setState(() {
-      playerPos = d;
-    });
-  }
-
-  Future<void> seek(double d) async {
-    await _mPlayer.seekToPlayer(Duration(milliseconds: d.floor()));
-    await setPos(d.floor());
-  }
-
-  Future<void> getDuration() async {
-    var path = _path[_codec.index];
-    var d = path != null ? await flutterSoundHelper.duration(path) : null;
-    _duration = d != null ? d.inMilliseconds / 1000.0 : null;
-
-    setState(() {});
-  }
 
   void play(FlutterSoundPlayer? player) async {
     await player!.startPlayer(
-      fromURI: ('$_path/$_fileName'),
-        // fromDataBuffer: _boumData,
+        fromURI: tempPath,
         codec: Codec.aacADTS,
         whenFinished: () {
           setState(() {});
         });
     setState(() {});
   }
+
   Future<void> stopPlayer(FlutterSoundPlayer player) async {
     await player.stopPlayer();
   }
 
   Future<void> openRecorder() async {
-    var status = await Permission.microphone.request();
-    if (status != PermissionStatus.granted) {
+     await Permission.microphone.request();
+     getStatus();
+    await _mRecorder.openAudioSession();
+    _mRecorderIsInited = true;
+  }
+
+  Future<void> getStatus() async{
+    if (Permission.microphone.isGranted != PermissionStatus.granted) {
       throw RecordingPermissionException('Доступ к микрофону не получен!');
     }
-    await _mRecorder.openAudioSession();
-
-    _mRecorderIsInited = true;
   }
 
   void cancelRecorderSubscription() {
@@ -164,12 +145,14 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
       _recorderSubscription = null;
     }
   }
+
   void cancelPlayerSubscriptions() {
     if (_mPlayerSubscription != null) {
       _mPlayerSubscription!.cancel();
       _mPlayerSubscription = null;
     }
   }
+
   // ----- LISTENER START -----
 
   void startListener() async {
@@ -181,9 +164,9 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
   }
 
   void onDataListener(NoiseReading noiseReading) {
-    this.setState(() {
-      if (!this._isRecording) {
-        this._isRecording = true;
+    setState(() {
+      if (!_isRecording) {
+        _isRecording = true;
       }
     });
 
@@ -225,77 +208,14 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
   // ----- RECORDER START -----
 
   void record(FlutterSoundRecorder? recorder) async {
-    await recorder!.startRecorder(codec: _codec, toFile: _fileName);
+    await recorder!.startRecorder(codec: _codec, toFile: tempPath);
     setState(() {});
   }
 
   Future<void> stopRecorder(FlutterSoundRecorder recorder) async {
     await recorder.stopRecorder();
-    // _boumData = await getAssetData('$_path/$_fileName');
-    _writeFileToStorage();
   }
 
-  void _createFile() async {
-    File(_path + '/' + _fileName)
-        .create(recursive: true)
-        .then((File file) async {
-      //write to file
-      Uint8List bytes = await file.readAsBytes();
-      file.writeAsBytes(bytes);
-      print(file.path);
-    });
-  }
-
-  void _createDirectory() async {
-    bool isDirectoryCreated = await Directory(_path).exists();
-    if (!isDirectoryCreated) {
-      Directory(_path).create()
-      // The created directory is returned as a Future.
-          .then((Directory directory) {
-        print(directory.path);
-      });
-    }
-  }
-
-  Future<bool> _hasAcceptedPermissions() async {
-    if (Platform.isAndroid) {
-      await Permission.storage.request();
-      await Permission.accessMediaLocation.request();
-      await Permission.manageExternalStorage.request();
-
-      return true;
-
-      if (await Permission.storage.isGranted &&
-          // access media location needed for android 10/Q
-          await Permission.accessMediaLocation.isGranted &&
-          // manage external storage needed for android 11/R
-          await Permission.manageExternalStorage.isGranted) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-    if (Platform.isIOS) {
-      // if (await _requestPermission(Permission.photos)) {
-      //   return true;
-      // } else {
-      //   return false;
-      // }
-      return true;
-    } else {
-      // not android or ios
-      return false;
-    }}
-
-  void _writeFileToStorage() async {
-    if (await _hasAcceptedPermissions()) {
-      _createDirectory();
-      _createFile();
-    }
-    else {
-      print('НЕ ПРОШЛО!!!!!!!!');
-    }
-  }
 
   // ----- RECORDER END -----
 
@@ -318,11 +238,11 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
     }
     return player!.isStopped
         ? () {
-      play(player);
-    }
+            play(player);
+          }
         : () {
-      stopPlayer(player).then((value) => setState(() {}));
-    };
+            stopPlayer(player).then((value) => setState(() {}));
+          };
   }
 
   @override
@@ -334,7 +254,6 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
     stopPlayer(_mPlayer);
     cancelPlayerSubscriptions();
     _mPlayer.closeAudioSession();
-
 
     _animationController.dispose();
 
@@ -452,7 +371,9 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
                           child:
                               Text(_mRecorder.isRecording ? 'Stop' : 'Record'),
                         ),
-                        ElevatedButton(onPressed: getPlaybackFn(_mPlayer), child: Text('Play')),
+                        ElevatedButton(
+                            onPressed: getPlaybackFn(_mPlayer),
+                            child: Text('Play')),
                         SizedBox(
                           width: 10,
                         ),
