@@ -1,18 +1,19 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:first_project_test/model/painter_model.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:noise_meter/noise_meter.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
-const int sampleRate = 44000;
+typedef Fn = void Function();
 
-typedef _Fn = void Function();
+StreamSubscription? _recorderSubscription;
+StreamSubscription? _mPlayerSubscription;
 
 class Record extends StatefulWidget {
   const Record({Key? key}) : super(key: key);
@@ -23,23 +24,40 @@ class Record extends StatefulWidget {
 
 class _RecordState extends State<Record> with TickerProviderStateMixin {
   final backgroundColor = 0xffF6F6F6;
-  FlutterSoundPlayer? _player = FlutterSoundPlayer();
-  FlutterSoundRecorder? _recorder = FlutterSoundRecorder();
-  bool _playerIsInited = false;
-  bool _recorderIsInited = false;
-  bool _playbackReady = false;
-  String? _path;
-  StreamSubscription? _recordingDataSubscription;
-  String _recorderText = '00:00:00';
-  String _playerText = '00:00:00';
 
+  // FlutterSoundPlayer? _player = FlutterSoundPlayer();
+  // FlutterSoundRecorder? _recorder = FlutterSoundRecorder();
+  // bool _playerIsInited = false;
+  // bool _recorderIsInited = false;
+  // bool _playbackReady = false;
+  // String? _path;
+  // StreamSubscription? _recordingDataSubscription;
+  // String _recorderText = '00:00:00';
+  // String _playerText = '00:00:00';
+
+  // -- Recorder --
+  FlutterSoundRecorder _mRecorder = FlutterSoundRecorder();
+  Codec _codec = Codec.aacADTS;
+  String _fileName = 'Recording_.aac';
+  String _path = '/storage/emulated/0/SoundRecorder';
+  bool _mRecorderIsInited = false;
+  int pos = 0;
+  double dbLevel = 0;
+
+  // -- Player --
+  final FlutterSoundPlayer _mPlayer = FlutterSoundPlayer();
+  bool _mPlayerIsInited = false;
+  int playerPos = 0;
+  double? _duration;
+
+  // -- NoiseListener --
   bool _isRecording = false;
   StreamSubscription<NoiseReading>? _noiseSubscription;
   NoiseMeter? _noiseMeter;
   int currentNoise = 0;
-
   List noisesList = List.generate(20, (index) => 0);
 
+  // -- recording animation --
   final DecorationTween decorationTween = DecorationTween(
     begin: BoxDecoration(
       color: Colors.red,
@@ -50,7 +68,6 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
       shape: BoxShape.circle,
     ),
   );
-
   late final AnimationController _animationController = AnimationController(
     vsync: this,
     duration: const Duration(seconds: 1),
@@ -59,19 +76,101 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    init().then((value) {
+      setState(() {
+        _mRecorderIsInited = true;
+        _mPlayerIsInited = true;
+      });
+    });
 
     // added  for listener
     _noiseMeter = NoiseMeter(onErrorListener);
 
-    // openAudioSession возвращает Future
-    // Не открывать FlutterSoundPlayer или FlutterSoundRecorder до завершения Future метода
-    _player!.openAudioSession().then((value) => {
-          setState(() {
-            _playerIsInited = true;
-          }),
-        });
-    _openRecorder().then((value) => record());
+    startListener();
   }
+
+  Future<void> init() async {
+    // recorder init
+    await openRecorder();
+    await _mRecorder.setSubscriptionDuration(Duration(milliseconds: 10));
+    _recorderSubscription = _mRecorder.onProgress!.listen((event) {
+      setState(() {
+        pos = event.duration.inMilliseconds;
+        // СТАНДАРТНЫЙ ПАКЕТ В КОТОРОМ ЕСТЬ ТЕКУЩАЯ ГРОМКОСТЬ
+        if (event.decibels != null) {
+          dbLevel = event.decibels as double;
+        }
+      });
+    });
+
+    // player init
+    await _mPlayer.openAudioSession();
+    await _mPlayer.setSubscriptionDuration(Duration(milliseconds: 50));
+    _mPlayerSubscription = _mPlayer.onProgress!.listen((e) {
+      setPos(e.position.inMilliseconds);
+      setState(() {});
+    });
+  }
+
+  Future<void> setPos(int d) async {
+    if (d > _duration!) {
+      d = _duration!.toInt();
+    }
+    setState(() {
+      playerPos = d;
+    });
+  }
+
+  Future<void> seek(double d) async {
+    await _mPlayer.seekToPlayer(Duration(milliseconds: d.floor()));
+    await setPos(d.floor());
+  }
+
+  Future<void> getDuration() async {
+    var path = _path[_codec.index];
+    var d = path != null ? await flutterSoundHelper.duration(path) : null;
+    _duration = d != null ? d.inMilliseconds / 1000.0 : null;
+
+    setState(() {});
+  }
+
+  void play(FlutterSoundPlayer? player) async {
+    await player!.startPlayer(
+      fromURI: ('$_path/$_fileName'),
+        // fromDataBuffer: _boumData,
+        codec: Codec.aacADTS,
+        whenFinished: () {
+          setState(() {});
+        });
+    setState(() {});
+  }
+  Future<void> stopPlayer(FlutterSoundPlayer player) async {
+    await player.stopPlayer();
+  }
+
+  Future<void> openRecorder() async {
+    var status = await Permission.microphone.request();
+    if (status != PermissionStatus.granted) {
+      throw RecordingPermissionException('Доступ к микрофону не получен!');
+    }
+    await _mRecorder.openAudioSession();
+
+    _mRecorderIsInited = true;
+  }
+
+  void cancelRecorderSubscription() {
+    if (_recorderSubscription != null) {
+      _recorderSubscription!.cancel();
+      _recorderSubscription = null;
+    }
+  }
+  void cancelPlayerSubscriptions() {
+    if (_mPlayerSubscription != null) {
+      _mPlayerSubscription!.cancel();
+      _mPlayerSubscription = null;
+    }
+  }
+  // ----- LISTENER START -----
 
   void startListener() async {
     try {
@@ -99,8 +198,6 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
     noisesList.removeLast();
     noisesList.add(currentNoise);
     // print(noiseReading.toString());
-    // noiseReading.meanDecibel = 5;
-    // print(noiseReading.meanDecibel);
   }
 
   void onErrorListener(Object error) {
@@ -123,150 +220,127 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
     }
   }
 
+  // ----- LISTENER END -----
+
+  // ----- RECORDER START -----
+
+  void record(FlutterSoundRecorder? recorder) async {
+    await recorder!.startRecorder(codec: _codec, toFile: _fileName);
+    setState(() {});
+  }
+
+  Future<void> stopRecorder(FlutterSoundRecorder recorder) async {
+    await recorder.stopRecorder();
+    // _boumData = await getAssetData('$_path/$_fileName');
+    _writeFileToStorage();
+  }
+
+  void _createFile() async {
+    File(_path + '/' + _fileName)
+        .create(recursive: true)
+        .then((File file) async {
+      //write to file
+      Uint8List bytes = await file.readAsBytes();
+      file.writeAsBytes(bytes);
+      print(file.path);
+    });
+  }
+
+  void _createDirectory() async {
+    bool isDirectoryCreated = await Directory(_path).exists();
+    if (!isDirectoryCreated) {
+      Directory(_path).create()
+      // The created directory is returned as a Future.
+          .then((Directory directory) {
+        print(directory.path);
+      });
+    }
+  }
+
+  Future<bool> _hasAcceptedPermissions() async {
+    if (Platform.isAndroid) {
+      await Permission.storage.request();
+      await Permission.accessMediaLocation.request();
+      await Permission.manageExternalStorage.request();
+
+      return true;
+
+      if (await Permission.storage.isGranted &&
+          // access media location needed for android 10/Q
+          await Permission.accessMediaLocation.isGranted &&
+          // manage external storage needed for android 11/R
+          await Permission.manageExternalStorage.isGranted) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    if (Platform.isIOS) {
+      // if (await _requestPermission(Permission.photos)) {
+      //   return true;
+      // } else {
+      //   return false;
+      // }
+      return true;
+    } else {
+      // not android or ios
+      return false;
+    }}
+
+  void _writeFileToStorage() async {
+    if (await _hasAcceptedPermissions()) {
+      _createDirectory();
+      _createFile();
+    }
+    else {
+      print('НЕ ПРОШЛО!!!!!!!!');
+    }
+  }
+
+  // ----- RECORDER END -----
+
+  Fn? getRecorderFn(FlutterSoundRecorder? recorder) {
+    if (!_mRecorderIsInited) {
+      return null;
+    }
+    return recorder!.isStopped
+        ? () {
+            record(recorder);
+          }
+        : () {
+            stopRecorder(recorder);
+          };
+  }
+
+  Fn? getPlaybackFn(FlutterSoundPlayer? player) {
+    if (!_mPlayerIsInited) {
+      return null;
+    }
+    return player!.isStopped
+        ? () {
+      play(player);
+    }
+        : () {
+      stopPlayer(player).then((value) => setState(() {}));
+    };
+  }
+
   @override
   void dispose() {
+    stopRecorder(_mRecorder);
+    cancelRecorderSubscription();
+    _mRecorder.closeAudioSession();
+
+    stopPlayer(_mPlayer);
+    cancelPlayerSubscriptions();
+    _mPlayer.closeAudioSession();
+
+
     _animationController.dispose();
 
     _noiseSubscription?.cancel();
 
-    stopPlayer();
-    _player!.closeAudioSession();
-    _player = null;
-
-    stopRecorder();
-    _recorder!.closeAudioSession();
-    _recorder = null;
     super.dispose();
-  }
-
-  Future<void> _openRecorder() async {
-    var status = await Permission.microphone.request();
-    if (status != PermissionStatus.granted) {
-      throw RecordingPermissionException('Microphone permission not granted');
-    }
-    await _recorder!.openAudioSession();
-    await _recorder!.setSubscriptionDuration(Duration(milliseconds: 100));
-    await initializeDateFormatting();
-    setState(() {
-      _recorderIsInited = true;
-    });
-  }
-
-  Future<IOSink> createFile() async {
-    Directory tempDir = await getTemporaryDirectory();
-    _path = '${tempDir.path}/temp.pcm';
-    File outputFile = File(_path!);
-    if (outputFile.existsSync()) {
-      await outputFile.delete();
-    }
-    return outputFile.openWrite();
-  }
-
-  // Методы для работы с аудио
-  Future<void> record() async {
-    assert(_recorderIsInited && _player!.isStopped);
-    IOSink sink = await createFile();
-    StreamController<Food> recordingDataController = StreamController<Food>();
-    _recordingDataSubscription =
-        recordingDataController.stream.listen((buffer) {
-      if (buffer is FoodData) {
-        sink.add(buffer.data!);
-      }
-    });
-    await _recorder!.startRecorder(
-      // скорее всего придется поменять со стрима на файл
-      toStream: recordingDataController.sink,
-      // и попробовать с другим кодеком
-      codec: Codec.pcm16,
-      numChannels: 1,
-      sampleRate: sampleRate,
-    );
-    // можно сделать локальной переменной
-    // StreamSubscription _recorderSubscription =
-    _recorder!.onProgress!.listen((event) {
-      DateTime date = DateTime.fromMillisecondsSinceEpoch(
-          event.duration.inMilliseconds,
-          isUtc: true);
-      String txt = DateFormat('mm:ss:SS', 'en_GB').format(date);
-      // TODO вызывает ли ошибку при dispose
-      setState(() {
-        _recorderText = txt.substring(0, 8);
-      });
-    });
-
-    startListener();
-    setState(() {});
-  }
-
-  Future<void> stopRecorder() async {
-    await _recorder!.stopRecorder();
-    if (_recordingDataSubscription != null) {
-      await _recordingDataSubscription!.cancel();
-      _recordingDataSubscription = null;
-    }
-    _playbackReady = true;
-
-    stopRecorderListener();
-  }
-
-  _Fn? getRecorderFunction() {
-    if (!_recorderIsInited || !_player!.isStopped) {
-      return null;
-    }
-    return _recorder!.isStopped
-        ? record
-        : () {
-            stopRecorder().then((value) => setState(() {}));
-          };
-  }
-
-  void play() async {
-    assert(_playerIsInited &&
-        _playbackReady &&
-        _recorder!.isStopped &&
-        _player!.isStopped);
-    await _player!.startPlayer(
-      fromURI: _path,
-      sampleRate: sampleRate,
-      codec: Codec.pcm16,
-      numChannels: 1,
-      whenFinished: () {
-        setState(() {});
-      },
-    );
-    _player!.setSubscriptionDuration(Duration(milliseconds: 100));
-    await initializeDateFormatting();
-
-    // переменная (можно реализовать на уровне класса)
-    // StreamSubscription _playerSubscription =
-    // можно реализовать слайдер через _addListeners() -> https://github.com/Canardoux/flutter_sound/blob/master/flutter_sound/example/lib/demo/demo.dart
-    _player!.onProgress!.listen((event) {
-      var date = DateTime.fromMillisecondsSinceEpoch(
-          event.position.inMilliseconds,
-          isUtc: true);
-      var txt = DateFormat('mm:ss:SS', 'en_GB').format(date);
-      setState(() {
-        _playerText = txt.substring(0, 8);
-      });
-    });
-
-    setState(() {});
-  }
-
-  Future<void> stopPlayer() async {
-    await _player!.stopPlayer();
-  }
-
-  _Fn? getPlaybackFunction() {
-    if (!_playerIsInited || !_playbackReady || !_recorder!.isStopped) {
-      return null;
-    }
-
-    return _player!.isStopped
-        ? play
-        : () {
-            stopPlayer().then((value) => setState(() {}));
-          };
   }
 
   @override
@@ -307,7 +381,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
               child: Column(
                 children: [
                   InkWell(
-                    onTap: getRecorderFunction(),
+                    // onTap: getRecorderFunction(),
                     child: Padding(
                       padding: EdgeInsets.only(top: 20, left: 250),
                       child: Text('Отменить'),
@@ -320,8 +394,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
                       style: TextStyle(fontSize: 24),
                     ),
                   ),
-                  Text('noise is : $currentNoise'),
-                  SizedBox(height: 60),
+                  SizedBox(height: 20),
                   CustomPaint(
                     // painter: ShapePainter(currentNoise),
                     painter: ShapePainter(noisesList),
@@ -336,26 +409,64 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
                           width: 5,
                         ),
                       ],
-                      Text(
-                        '${_recorder!.isRecording || _player!.isStopped ? _recorderText : _playerText}',
-                        style: TextStyle(
-                          fontSize: 16,
-                        ),
-                      ),
+                      Text('test'),
+                      // Text(
+                      //   '${_recorder!.isRecording || _player!.isStopped ? _recorderText : _playerText}',
+                      //   style: TextStyle(
+                      //     fontSize: 16,
+                      //   ),
+                      // ),
                     ],
                   ),
                   SizedBox(
-                    height: 180,
+                    height: 0,
                   ),
                   ElevatedButton(
                     style: ButtonStyle(
-                      // shape:
-                    ),
-                    onPressed: getPlaybackFunction(),
+                        // shape:
+                        ),
+                    onPressed: null,
+                    // onPressed: getPlaybackFunction(),
                     //color: Colors.white,
                     //disabledColor: Colors.grey,
-                    child: Text(_player!.isPlaying ? 'Stop' : 'Play'),
+                    child: Text('test'),
+                    // child: Text(_player!.isPlaying ? 'Stop' : 'Play'),
                   ),
+                  Container(
+                    margin: const EdgeInsets.all(3),
+                    padding: const EdgeInsets.all(3),
+                    height: 140,
+                    width: double.infinity,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Color(0xFFFAF0E6),
+                      border: Border.all(
+                        color: Colors.indigo,
+                        width: 3,
+                      ),
+                    ),
+                    child: Column(children: [
+                      Row(children: [
+                        ElevatedButton(
+                          onPressed: getRecorderFn(_mRecorder),
+                          child:
+                              Text(_mRecorder.isRecording ? 'Stop' : 'Record'),
+                        ),
+                        ElevatedButton(onPressed: getPlaybackFn(_mPlayer), child: Text('Play')),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                            'Pos: $pos  dbLevel: ${((dbLevel * 100.0).floor()) / 100}'),
+                      ]),
+                      Text('Subscription Duration:'),
+                    ]),
+                    //),
+                    //],
+                  )
                 ],
               ),
             ),
@@ -394,16 +505,15 @@ class ShapePainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     for (int i = 0; i < 20; i++) {
-      Offset startPoint =
-          Offset(size.width / 2 + i * 10 - 100, size.height / 2);
+      Offset startPoint = Offset(size.width / 2 + i * 10 - 90, size.height / 2);
       Offset endPoint =
-          Offset(size.width / 2 + i * 10 - 100, size.height / 2 + maxPoints[i]);
+          Offset(size.width / 2 + i * 10 - 90, size.height / 2 + maxPoints[i]);
 
       canvas.drawLine(startPoint, endPoint, paint);
       canvas.drawLine(startPoint, endPoint.scale(1, -1), paint);
     }
-    canvas.drawLine(Offset(size.width / 2 - 100, size.height / 2),
-        Offset(size.width / 2 + 90, size.height / 2), paint);
+    canvas.drawLine(Offset(size.width / 2 - 90, size.height / 2),
+        Offset(size.width / 2 + 100, size.height / 2), paint);
   }
 
   @override
