@@ -71,18 +71,17 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    super.initState();
     init().then((value) {
       setState(() {
-        print('ПРОШЛО!!!!!!!!!!!!!!!!!!!!!!');
+        print('_mRecorderIsInited = true;');
         _mRecorderIsInited = true;
         _mPlayerIsInited = true;
       });
     });
     // added  for listener
     _noiseMeter = NoiseMeter(onErrorListener);
-
     startListener();
+    super.initState();
   }
 
   Future<void> init() async {
@@ -102,6 +101,10 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
       });
     });
 
+
+    print('ДО getRecorderFn!');
+    await getRecorderFn(_mRecorder);
+    print('ПОСЛЕ getRecorderFn!!!');
 
     // player init
     await _mPlayer.openAudioSession();
@@ -209,10 +212,12 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
 
   void record(FlutterSoundRecorder? recorder) async {
     await recorder!.startRecorder(codec: _codec, toFile: tempPath);
+    print('ЗАШЛО?!!!!!!!');
     setState(() {});
   }
 
   Future<void> stopRecorder(FlutterSoundRecorder recorder) async {
+    print('ЗАШЛО В СТОП!');
     await recorder.stopRecorder();
   }
 
@@ -221,14 +226,20 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
 
   Fn? getRecorderFn(FlutterSoundRecorder? recorder) {
     if (!_mRecorderIsInited) {
+      print('getRecorderFn ВЕРНУЛО НАЛЛ');
       return null;
     }
+    print('getRecorderFn ПРОШЛО НОРМАЛЬНО');
+
+    // TODO решить тут ошибку н входит
     return recorder!.isStopped
         ? () {
+      print('ИЗ СТОППЕД!');
             record(recorder);
           }
         : () {
-            stopRecorder(recorder);
+      print('УЖЕ ИГРАЕТ!');
+      stopRecorder(recorder);
           };
   }
 
