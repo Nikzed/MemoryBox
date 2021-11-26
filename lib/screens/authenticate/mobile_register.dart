@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_project_test/database/firebase.dart';
 import 'package:first_project_test/model/painter_model.dart';
@@ -7,7 +6,6 @@ import 'package:first_project_test/screens/home/wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 enum MobileVerificationState {
@@ -91,38 +89,41 @@ class _RegistrationState extends State<Registration> {
       children: [
         Container(
           width: double.infinity,
-          height: 400,
+          height: 350,
           child: CustomPaint(
             painter: CirclePainter(),
-          ),
-        ),
-        Container(
-          margin: EdgeInsets.symmetric(vertical: 127.h, horizontal: 20.w),
-          child: Text(
-            'Регистрация',
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: 48.sp,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 3.w),
           ),
         ),
         Align(
           alignment: Alignment.topCenter,
           child: Padding(
-            padding: EdgeInsets.only(top: 295.h),
+            padding: EdgeInsets.only(top: 100),
+            child: Text(
+              'Регистрация',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 46,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 3),
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.topCenter,
+          child: Padding(
+            padding: EdgeInsets.only(top: 325),
             child: Text(
               'Введи номер телефона',
-              style: TextStyle(fontSize: 14.sp),
+              style: TextStyle(fontSize: 14),
             ),
           ),
         ),
         Align(
           alignment: Alignment.center,
           child: Container(
-            width: 279.w,
-            height: 62.h,
-            margin: EdgeInsets.only(top: 10.h),
+            width: 279,
+            height: 62,
+            margin: EdgeInsets.only(top: 10),
             alignment: Alignment.center,
             child: Material(
               borderRadius: BorderRadius.all(Radius.circular(100)),
@@ -151,7 +152,7 @@ class _RegistrationState extends State<Registration> {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 primary: Color(0xffF1B488),
-                fixedSize: Size(269.w, 49.h),
+                fixedSize: Size(269, 49),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(50),
                 ),
@@ -208,7 +209,7 @@ class _RegistrationState extends State<Registration> {
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 letterSpacing: 2,
-                fontSize: 18.sp,
+                fontSize: 16,
                 color: Color(0xff3A3A55),
               ),
             ),
@@ -232,10 +233,10 @@ class _RegistrationState extends State<Registration> {
         Align(
           alignment: Alignment.bottomCenter,
           child: Padding(
-            padding: EdgeInsets.only(bottom: 50.h),
+            padding: EdgeInsets.only(bottom: 50),
             child: Container(
-              width: 250.w,
-              height: 90.h,
+              width: 250,
+              height: 115,
               padding: EdgeInsets.all(25),
               decoration: BoxDecoration(
                 color: Color(backgroundColor),
@@ -253,7 +254,7 @@ class _RegistrationState extends State<Registration> {
                 alignment: Alignment.center,
                 child: Text(
                   'Регистрация привяжет твои сказки к облаку, после чего они всегда будут с тобой',
-                  style: TextStyle(fontSize: 12.sp),
+                  style: TextStyle(fontSize: 14),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -275,32 +276,32 @@ class _RegistrationState extends State<Registration> {
           ),
         ),
         Container(
-          margin: EdgeInsets.symmetric(vertical: 127.h, horizontal: 20.w),
+          margin: EdgeInsets.symmetric(vertical: 127, horizontal: 20),
           child: Text(
             'Регистрация',
             style: TextStyle(
                 color: Colors.white,
-                fontSize: 48.sp,
+                fontSize: 46,
                 fontWeight: FontWeight.w700,
-                letterSpacing: 3.w),
+                letterSpacing: 3),
           ),
         ),
         Align(
             alignment: Alignment.topCenter,
             child: Padding(
-              padding: EdgeInsets.only(top: 275.h, left: 80.w, right: 80.w),
+              padding: EdgeInsets.only(top: 275, left: 80, right: 80),
               child: Text(
                 'Введи код из смс, чтобы мы тебя запомнили',
-                style: TextStyle(fontSize: 14.sp),
+                style: TextStyle(fontSize: 12),
                 textAlign: TextAlign.center,
               ),
             )),
         Align(
           alignment: Alignment.center,
           child: Container(
-            width: 279.w,
-            height: 62.h,
-            margin: EdgeInsets.only(top: 10.h),
+            width: 279,
+            height: 62,
+            margin: EdgeInsets.only(top: 10),
             alignment: Alignment.center,
             child: Material(
               borderRadius: BorderRadius.all(Radius.circular(100)),
@@ -331,7 +332,7 @@ class _RegistrationState extends State<Registration> {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 primary: Color(0xffF1B488),
-                fixedSize: Size(269.w, 49.h),
+                fixedSize: Size(269, 49),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50)),
               ),
@@ -353,10 +354,10 @@ class _RegistrationState extends State<Registration> {
         Align(
           alignment: Alignment.bottomCenter,
           child: Padding(
-            padding: EdgeInsets.only(bottom: 50.h),
+            padding: EdgeInsets.only(bottom: 50),
             child: Container(
-              width: 250.w,
-              height: 90.h,
+              width: 250,
+              height: 90,
               padding: EdgeInsets.all(25),
               decoration: BoxDecoration(
                 color: Color(backgroundColor),
@@ -374,7 +375,7 @@ class _RegistrationState extends State<Registration> {
                 alignment: Alignment.center,
                 child: Text(
                   'Регистрация привяжет твои сказки  к облаку, после чего они всегда будут с тобой',
-                  style: TextStyle(fontSize: 12.sp),
+                  style: TextStyle(fontSize: 12),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -394,8 +395,7 @@ class _RegistrationState extends State<Registration> {
         ? Center(
             child: CircularProgressIndicator(),
           )
-        : ScreenUtilInit(
-            builder: () => MaterialApp(
+        : MaterialApp(
               debugShowCheckedModeBanner: false,
               theme: ThemeData(fontFamily: 'Roboto'),
               home: Scaffold(
@@ -406,7 +406,6 @@ class _RegistrationState extends State<Registration> {
                     ? getMobileFormWidget(context)
                     : getOtpFormWidget(context),
               ),
-            ),
-          );
+            );
   }
 }

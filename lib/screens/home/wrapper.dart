@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:first_project_test/screens/additional_screens/search.dart';
+import 'package:first_project_test/screens/home/collections.dart';
 import 'package:first_project_test/screens/home/home.dart';
 import 'package:first_project_test/screens/home/profile.dart';
 import 'package:first_project_test/screens/home/record.dart';
@@ -49,11 +50,11 @@ class _WrapperState extends State<Wrapper> {
               currentIndex = page;
             else
               currentIndex = 0;
-            if (page == 1) {
-              showDrawer = false;
-            } else {
-              showDrawer = true;
-            }
+            // if (page == 1) {
+            //   showDrawer = false;
+            // } else {
+            //   showDrawer = true;
+            // }
             if (currentIndex == 2) {
               recordLabelText = '';
             } else {
@@ -63,7 +64,7 @@ class _WrapperState extends State<Wrapper> {
         },
         children: [
           Home(),
-          Profile(),
+          Compilations(),
           Record(),
           Search(),
           Profile(),
