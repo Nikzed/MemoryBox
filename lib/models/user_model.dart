@@ -1,10 +1,10 @@
 class UserModel {
   final String uid;
-  final String number;
+  final String phoneNumber;
   final String name;
 
   const UserModel({
-    required this.number,
+    required this.phoneNumber,
     required this.name,
     required this.uid,
   });
@@ -12,7 +12,7 @@ class UserModel {
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       uid: json['uid'].toString(),
-      number: json['number'].toString(),
+      phoneNumber: json['phoneNumber'].toString(),
       name: json['name'].toString(),
     );
   }

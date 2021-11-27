@@ -1,4 +1,4 @@
-import 'package:first_project_test/model/painter_model.dart';
+import 'package:first_project_test/models/painter_model.dart';
 import 'package:first_project_test/screens/home/home.dart';
 import 'package:first_project_test/screens/home/wrapper.dart';
 import 'package:flutter/material.dart';

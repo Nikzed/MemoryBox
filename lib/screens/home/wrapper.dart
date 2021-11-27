@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:first_project_test/controllers/wrapper_controller.dart';
 import 'package:first_project_test/screens/additional_screens/search.dart';
 import 'package:first_project_test/screens/home/collections.dart';
 import 'package:first_project_test/screens/home/home.dart';
@@ -7,6 +8,7 @@ import 'package:first_project_test/screens/home/record.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 class Wrapper extends StatefulWidget {
   const Wrapper({Key? key}) : super(key: key);
@@ -16,18 +18,20 @@ class Wrapper extends StatefulWidget {
 }
 
 class _WrapperState extends State<Wrapper> {
-  PageController _pageController = PageController(
-    initialPage: 0,
-  );
+  final _wrapperController = WrapperController();
+
+  // PageController _pageController = PageController(
+  //   initialPage: 0,
+  // );
   var accentColor = Color(0xff8c84e2);
-  int currentIndex = 0;
-  bool showDrawer = true;
-  String recordLabelText = 'Запись';
+  // int currentIndex = 0;
+  // bool showDrawer = true;
+  // String recordLabelText = 'Запись';
   var drawerColor = Color(0xff3A3A55);
 
   @override
   void dispose() {
-    _pageController.dispose();
+    // _pageController.dispose();
     super.dispose();
   }
 
@@ -39,38 +43,45 @@ class _WrapperState extends State<Wrapper> {
       resizeToAvoidBottomInset: false,
       restorationId: "root",
       extendBody: true,
-      drawerEnableOpenDragGesture: showDrawer,
+      // TODO implement logic
+      drawerEnableOpenDragGesture: _wrapperController.showDrawer,
+      // drawerEnableOpenDragGesture: showDrawer,
       bottomNavigationBar: _getBottomNavigationBar(),
       body: PageView(
         physics: NeverScrollableScrollPhysics(),
-        controller: _pageController,
-        onPageChanged: (page) {
-          setState(() {
-            if (page < 5)
-              currentIndex = page;
-            else
-              currentIndex = 0;
-            // if (page == 1) {
-            //   showDrawer = false;
-            // } else {
-            //   showDrawer = true;
-            // }
-            if (currentIndex == 2) {
-              recordLabelText = '';
-            } else {
-              recordLabelText = 'Запись';
-            }
-          });
+        controller: _wrapperController.pageController,
+        // controller: _pageController,
+        onPageChanged: (page){
+          _wrapperController.onPageChanged(page);
         },
-        children: [
-          Home(),
-          Compilations(),
-          Record(),
-          Search(),
-          Profile(),
-          // additional_screens
-          Search(),
-        ],
+        // onPageChanged: (page) {
+        //   setState(() {
+        //     if (page < 5)
+        //       currentIndex = page;
+        //     else
+        //       currentIndex = 0;
+        //     // if (page == 1) {
+        //     //   showDrawer = false;
+        //     // } else {
+        //     //   showDrawer = true;
+        //     // }
+        //     if (currentIndex == 2) {
+        //       recordLabelText = '';
+        //     } else {
+        //       recordLabelText = 'Запись';
+        //     }
+        //   });
+        // },
+        children: _wrapperController.pages,
+        // children: [
+        //   Home(),
+        //   Compilations(),
+        //   Record(),
+        //   Search(),
+        //   Profile(),
+        //   // additional_screens
+        //   Search(),
+        // ],
       ),
       drawer: _getDrawer(),
     );
@@ -139,11 +150,14 @@ class _WrapperState extends State<Wrapper> {
   Widget _getDrawerButton(String asset, String text, int page) {
     return InkWell(
       onTap: () {
-        setState(() {
-          currentIndex = 0;
-          _pageController.jumpToPage(page);
-        });
+        _wrapperController.goTo(page);
       },
+      // onTap: () {
+      //   setState(() {
+      //     currentIndex = 0;
+      //     _pageController.jumpToPage(page);
+      //   });
+      // },
       child: Align(
         alignment: Alignment.centerLeft,
         child: RichText(
@@ -203,79 +217,83 @@ class _WrapperState extends State<Wrapper> {
           topLeft: Radius.circular(25.0),
           topRight: Radius.circular(25.0),
         ),
-        child: BottomNavigationBar(
-          currentIndex: currentIndex,
-          type: BottomNavigationBarType.fixed,
-          selectedFontSize: 12,
-          unselectedFontSize: 12,
-          selectedItemColor: Color(0xff8c84e2),
-          iconSize: 30,
-          onTap: (value) {
-            _pageController.jumpToPage(
-              value,
-              // если использовать animateToPage
-              // duration: Duration(milliseconds: 500),
-              // curve: Curves.decelerate,
-            );
-
-            setState(() {});
-          },
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              activeIcon: SvgPicture.asset(
-                'assets/Home.svg',
-                color: Color(0xff8c84e2),
+        child: Obx(
+          () => BottomNavigationBar(
+            // currentIndex: currentIndex,
+            currentIndex: _wrapperController.currentIndex.value,
+            type: BottomNavigationBarType.fixed,
+            selectedFontSize: 12,
+            unselectedFontSize: 12,
+            selectedItemColor: Color(0xff8c84e2),
+            iconSize: 30,
+            onTap: (value) {
+              _wrapperController.goTo(value);
+              print('changed current index to => ${_wrapperController.currentIndex.value}');
+            },
+            // onTap: (value) {
+            //   _pageController.jumpToPage(
+            //     value,
+            //   );
+            //   setState(() {});
+            // },
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                activeIcon: SvgPicture.asset(
+                  'assets/Home.svg',
+                  color: Color(0xff8c84e2),
+                ),
+                icon: SvgPicture.asset(
+                  'assets/Home.svg',
+                  color: Color(0x803A3A55CC),
+                ),
+                label: 'Главная',
               ),
-              icon: SvgPicture.asset(
-                'assets/Home.svg',
-                color: Color(0x803A3A55CC),
+              BottomNavigationBarItem(
+                activeIcon: SvgPicture.asset(
+                  'assets/Category.svg',
+                  color: Color(0xff8c84e2),
+                ),
+                icon: SvgPicture.asset(
+                  'assets/Category.svg',
+                  color: Color(0x803A3A55CC),
+                ),
+                label: 'Подборки',
               ),
-              label: 'Главная',
-            ),
-            BottomNavigationBarItem(
-              activeIcon: SvgPicture.asset(
-                'assets/Category.svg',
-                color: Color(0xff8c84e2),
+              BottomNavigationBarItem(
+                activeIcon: SvgPicture.asset(
+                  'assets/record.svg',
+                  color: Color(0xffF1B488),
+                ),
+                icon: SvgPicture.asset(
+                  'assets/record.svg',
+                ),
+                // label: recordLabelText,
+                label: _wrapperController.recordLabelText.value,
               ),
-              icon: SvgPicture.asset(
-                'assets/Category.svg',
-                color: Color(0x803A3A55CC),
+              BottomNavigationBarItem(
+                activeIcon: SvgPicture.asset(
+                  'assets/Paper.svg',
+                  color: Color(0xff8c84e2),
+                ),
+                icon: SvgPicture.asset(
+                  'assets/Paper.svg',
+                  color: Color(0x803A3A55CC),
+                ),
+                label: 'Аудиозаписи',
               ),
-              label: 'Подборки',
-            ),
-            BottomNavigationBarItem(
-              activeIcon: SvgPicture.asset(
-                'assets/record.svg',
-                color: Color(0xffF1B488),
+              BottomNavigationBarItem(
+                activeIcon: SvgPicture.asset(
+                  'assets/Profile.svg',
+                  color: Color(0xff8c84e2),
+                ),
+                icon: SvgPicture.asset(
+                  'assets/Profile.svg',
+                  color: Color(0x803A3A55CC),
+                ),
+                label: 'Профиль',
               ),
-              icon: SvgPicture.asset(
-                'assets/record.svg',
-              ),
-              label: recordLabelText,
-            ),
-            BottomNavigationBarItem(
-              activeIcon: SvgPicture.asset(
-                'assets/Paper.svg',
-                color: Color(0xff8c84e2),
-              ),
-              icon: SvgPicture.asset(
-                'assets/Paper.svg',
-                color: Color(0x803A3A55CC),
-              ),
-              label: 'Аудиозаписи',
-            ),
-            BottomNavigationBarItem(
-              activeIcon: SvgPicture.asset(
-                'assets/Profile.svg',
-                color: Color(0xff8c84e2),
-              ),
-              icon: SvgPicture.asset(
-                'assets/Profile.svg',
-                color: Color(0x803A3A55CC),
-              ),
-              label: 'Профиль',
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

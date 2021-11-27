@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:first_project_test/model/painter_model.dart';
-import 'package:first_project_test/screens/home/slider.dart';
+import 'package:first_project_test/models/painter_model.dart';
+import 'package:first_project_test/models/slider_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +12,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'slider.dart';
+import '../../models/slider_model.dart';
 
 final backgroundColor = 0xffF6F6F6;
 

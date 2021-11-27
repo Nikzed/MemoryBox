@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_project_test/database/firebase.dart';
-import 'package:first_project_test/model/painter_model.dart';
+import 'package:first_project_test/models/painter_model.dart';
 import 'package:first_project_test/screens/authenticate/registration_splash.dart';
 import 'package:first_project_test/screens/home/wrapper.dart';
 import 'package:flutter/cupertino.dart';
