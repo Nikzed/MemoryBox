@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:first_project_test/constants/constants.dart';
 import 'package:first_project_test/database/firebase.dart';
 import 'package:first_project_test/models/painter_model.dart';
 import 'package:first_project_test/screens/authenticate/registration_splash.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:get/get.dart';
 
 enum MobileVerificationState {
   SHOW_MOBILE_FORM,
@@ -33,7 +35,6 @@ class _RegistrationState extends State<Registration> {
 
   bool showLoading = false;
 
-  final backgroundColor = 0xffF6F6F6;
   final _phoneMask = MaskTextInputFormatter(
     mask: '+## ### ### ## ##',
     filter: {"#": RegExp(r'[0-9]')},
@@ -64,12 +65,7 @@ class _RegistrationState extends State<Registration> {
               else
                 {print('ЮЗЕР УЖЕ ЕСТЬ!')}
             });
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => RegistrationSplash(),
-          ),
-        );
+        Get.offAll(() => RegistrationSplash(), transition: Transition.zoom);
       }
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -135,7 +131,7 @@ class _RegistrationState extends State<Registration> {
                 keyboardType: TextInputType.phone,
                 inputFormatters: [_phoneMask],
                 decoration: InputDecoration(
-                  fillColor: Color(backgroundColor),
+                  fillColor: backgroundColor,
                   filled: true,
                   border: OutlineInputBorder(
                     borderSide: BorderSide.none,
@@ -218,12 +214,7 @@ class _RegistrationState extends State<Registration> {
                 showLoading = true;
               });
               UserCredential userCredential = await _auth.signInAnonymously();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Wrapper(),
-                ),
-              );
+              Get.offAll(() => Wrapper());
               setState(() {
                 showLoading = false;
               });
@@ -239,7 +230,7 @@ class _RegistrationState extends State<Registration> {
               height: 115,
               padding: EdgeInsets.all(25),
               decoration: BoxDecoration(
-                color: Color(backgroundColor),
+                color: backgroundColor,
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.all(Radius.circular(15.0)),
                 boxShadow: [
@@ -270,26 +261,29 @@ class _RegistrationState extends State<Registration> {
       children: [
         Container(
           width: double.infinity,
-          height: 400,
+          height: 350,
           child: CustomPaint(
             painter: CirclePainter(),
           ),
         ),
-        Container(
-          margin: EdgeInsets.symmetric(vertical: 127, horizontal: 20),
-          child: Text(
-            'Регистрация',
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: 46,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 3),
+        Align(
+          alignment: Alignment.topCenter,
+          child: Padding(
+            padding: EdgeInsets.only(top: 100),
+            child: Text(
+              'Регистрация',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 46,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 3),
+            ),
           ),
         ),
         Align(
             alignment: Alignment.topCenter,
             child: Padding(
-              padding: EdgeInsets.only(top: 275, left: 80, right: 80),
+              padding: EdgeInsets.only(top: 325, left: 80, right: 80),
               child: Text(
                 'Введи код из смс, чтобы мы тебя запомнили',
                 style: TextStyle(fontSize: 12),
@@ -316,7 +310,7 @@ class _RegistrationState extends State<Registration> {
                 decoration: InputDecoration(
                   counterText: '',
                   filled: true,
-                  fillColor: Color(backgroundColor),
+                  fillColor: backgroundColor,
                   border: OutlineInputBorder(
                     borderSide: BorderSide.none,
                     borderRadius: BorderRadius.circular(100.0),
@@ -360,7 +354,7 @@ class _RegistrationState extends State<Registration> {
               height: 90,
               padding: EdgeInsets.all(25),
               decoration: BoxDecoration(
-                color: Color(backgroundColor),
+                color: backgroundColor,
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.all(Radius.circular(15.0)),
                 boxShadow: [
@@ -396,16 +390,16 @@ class _RegistrationState extends State<Registration> {
             child: CircularProgressIndicator(),
           )
         : MaterialApp(
-              debugShowCheckedModeBanner: false,
-              theme: ThemeData(fontFamily: 'Roboto'),
-              home: Scaffold(
-                key: _scaffoldKey,
-                resizeToAvoidBottomInset: false,
-                backgroundColor: Color(backgroundColor),
-                body: currentState == MobileVerificationState.SHOW_MOBILE_FORM
-                    ? getMobileFormWidget(context)
-                    : getOtpFormWidget(context),
-              ),
-            );
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(fontFamily: 'Roboto'),
+            home: Scaffold(
+              key: _scaffoldKey,
+              resizeToAvoidBottomInset: false,
+              backgroundColor: backgroundColor,
+              body: currentState == MobileVerificationState.SHOW_MOBILE_FORM
+                  ? getMobileFormWidget(context)
+                  : getOtpFormWidget(context),
+            ),
+          );
   }
 }

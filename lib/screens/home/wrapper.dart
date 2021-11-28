@@ -1,10 +1,5 @@
 import 'dart:ui';
 import 'package:first_project_test/controllers/wrapper_controller.dart';
-import 'package:first_project_test/screens/additional_screens/search.dart';
-import 'package:first_project_test/screens/home/collections.dart';
-import 'package:first_project_test/screens/home/home.dart';
-import 'package:first_project_test/screens/home/profile.dart';
-import 'package:first_project_test/screens/home/record.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -19,21 +14,8 @@ class Wrapper extends StatefulWidget {
 
 class _WrapperState extends State<Wrapper> {
   final _wrapperController = WrapperController();
-
-  // PageController _pageController = PageController(
-  //   initialPage: 0,
-  // );
   var accentColor = Color(0xff8c84e2);
-  // int currentIndex = 0;
-  // bool showDrawer = true;
-  // String recordLabelText = 'Запись';
   var drawerColor = Color(0xff3A3A55);
-
-  @override
-  void dispose() {
-    // _pageController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,38 +32,10 @@ class _WrapperState extends State<Wrapper> {
       body: PageView(
         physics: NeverScrollableScrollPhysics(),
         controller: _wrapperController.pageController,
-        // controller: _pageController,
         onPageChanged: (page){
           _wrapperController.onPageChanged(page);
         },
-        // onPageChanged: (page) {
-        //   setState(() {
-        //     if (page < 5)
-        //       currentIndex = page;
-        //     else
-        //       currentIndex = 0;
-        //     // if (page == 1) {
-        //     //   showDrawer = false;
-        //     // } else {
-        //     //   showDrawer = true;
-        //     // }
-        //     if (currentIndex == 2) {
-        //       recordLabelText = '';
-        //     } else {
-        //       recordLabelText = 'Запись';
-        //     }
-        //   });
-        // },
         children: _wrapperController.pages,
-        // children: [
-        //   Home(),
-        //   Compilations(),
-        //   Record(),
-        //   Search(),
-        //   Profile(),
-        //   // additional_screens
-        //   Search(),
-        // ],
       ),
       drawer: _getDrawer(),
     );
@@ -152,12 +106,6 @@ class _WrapperState extends State<Wrapper> {
       onTap: () {
         _wrapperController.goTo(page);
       },
-      // onTap: () {
-      //   setState(() {
-      //     currentIndex = 0;
-      //     _pageController.jumpToPage(page);
-      //   });
-      // },
       child: Align(
         alignment: Alignment.centerLeft,
         child: RichText(
@@ -228,14 +176,7 @@ class _WrapperState extends State<Wrapper> {
             iconSize: 30,
             onTap: (value) {
               _wrapperController.goTo(value);
-              print('changed current index to => ${_wrapperController.currentIndex.value}');
             },
-            // onTap: (value) {
-            //   _pageController.jumpToPage(
-            //     value,
-            //   );
-            //   setState(() {});
-            // },
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 activeIcon: SvgPicture.asset(

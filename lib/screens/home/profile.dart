@@ -1,13 +1,14 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:first_project_test/database/firebase.dart';
+import 'package:first_project_test/constants/constants.dart';
+import 'package:first_project_test/controllers/auth_controller.dart';
 import 'package:first_project_test/models/painter_model.dart';
 import 'package:first_project_test/screens/authenticate/sign_in.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../main.dart';
+import 'package:get/get.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -22,6 +23,12 @@ class _ProfileState extends State<Profile> {
   bool isEditing = false;
   TextEditingController _controller = TextEditingController();
   String? number = FirebaseAuth.instance.currentUser?.phoneNumber;
+
+  @override
+  void initState() {
+    super.initState();
+    // Get.put(AuthController());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -274,29 +281,48 @@ class _ProfileState extends State<Profile> {
                                               onPressed: () {},
                                               child: Text('Удалить'),
                                               style: ButtonStyle(
-                                                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                                                backgroundColor: MaterialStateProperty.all<Color>(Color(0xffE27777)),
-                                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                  RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(40),
-                                                    side: BorderSide(color: Colors.black)
-                                                  )
-                                                ),
+                                                foregroundColor:
+                                                    MaterialStateProperty.all<
+                                                        Color>(Colors.white),
+                                                backgroundColor:
+                                                    MaterialStateProperty.all<
+                                                            Color>(
+                                                        Color(0xffE27777)),
+                                                shape: MaterialStateProperty.all<
+                                                        RoundedRectangleBorder>(
+                                                    RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(40),
+                                                        side: BorderSide(
+                                                            color:
+                                                                Colors.black))),
                                               ),
                                             ),
                                             ElevatedButton(
-                                              onPressed: (){},
+                                              onPressed: () {
+                                                print(
+                                                    'is registered: ${authController.isRegistered}');
+                                              },
                                               child: Text('Нет'),
                                               style: ButtonStyle(
-                                                foregroundColor: MaterialStateProperty.all<Color>(Color(0xff8C84E2)),
-                                                backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                  RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(40),
-                                                    side: BorderSide(color: Color(0xff8C84E2)),
-                                                  )
-                                                )
-                                              ),
+                                                  foregroundColor:
+                                                      MaterialStateProperty.all<
+                                                              Color>(
+                                                          Color(0xff8C84E2)),
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all<
+                                                          Color>(Colors.white),
+                                                  shape: MaterialStateProperty
+                                                      .all<RoundedRectangleBorder>(
+                                                          RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            40),
+                                                    side: BorderSide(
+                                                        color:
+                                                            Color(0xff8C84E2)),
+                                                  ))),
                                             ),
                                           ],
                                         ),

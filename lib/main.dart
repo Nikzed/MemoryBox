@@ -1,33 +1,27 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:first_project_test/constants/constants.dart';
 import 'package:first_project_test/screens/authenticate/sign_in.dart';
 import 'package:first_project_test/screens/home/splash.dart';
-import 'package:first_project_test/screens/home/wrapper.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'controllers/auth_controller.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await firebaseInitialization.then((value) => {Get.put(AuthController)});
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      initialRoute: '/',
-      routes: {
-        '/': (context) => InitializerWidget(),
-        // 'wrapper': (context) => Wrapper(),
-      },
+    return GetMaterialApp(
       title: 'MemoryBox',
       debugShowCheckedModeBanner: false,
-      // home: InitializerWidget(),
+      home: InitializerWidget(),
     );
   }
 }
@@ -41,7 +35,9 @@ class InitializerWidget extends StatefulWidget {
 
 class _InitializerWidgetState extends State<InitializerWidget> {
   FirebaseAuth _auth = FirebaseAuth.instance;
+
   User? _user;
+
   bool isLoading = true;
 
   @override

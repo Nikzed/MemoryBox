@@ -1,7 +1,8 @@
+import 'package:first_project_test/constants/constants.dart';
 import 'package:first_project_test/models/painter_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -11,11 +12,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final backgroundColor = 0xffF6F6F6;
 
   final accentColor = 0xff8c84e2;
   final List<String> entries = <String>['A', 'B', 'C'];
   final List<int> colorCodes = <int>[600, 500, 100];
+  double sw = Get.width;
+  double sh = Get.height;
 
   @override
   Widget build(BuildContext context) {
@@ -37,15 +39,15 @@ class _HomeState extends State<Home> {
       systemOverlayStyle: SystemUiOverlayStyle(
           statusBarIconBrightness: Brightness.light
       ),
-      backgroundColor: Color(backgroundColor),
-      expandedHeight: 0.5.sh,
+      backgroundColor: backgroundColor,
+      expandedHeight: 0.5 * sh,
       automaticallyImplyLeading: false,
       flexibleSpace: FlexibleSpaceBar(
         background: Stack(
           children: <Widget>[
             Container(
-              width: 1.sw,
-              height: 0.7.sh,
+              width: sw,
+              height: 0.7*sh,
               child: CustomPaint(
                 painter: CirclePainter(),
               ),
@@ -65,7 +67,7 @@ class _HomeState extends State<Home> {
             Align(
               alignment: Alignment.topCenter,
               child: Padding(
-                padding: EdgeInsets.only(top: 85.h, right: 17.h, left: 17.h),
+                padding: EdgeInsets.only(top: 85, right: 17, left: 17),
                 child: Container(
                   height: 50,
                   child: Stack(
@@ -98,11 +100,11 @@ class _HomeState extends State<Home> {
               ),
             ),
             Positioned(
-              top: 0.22.sh,
-              left: 0.035.sw,
+              top: 0.22*sh,
+              left: 0.035*sw,
               child: Container(
-                width: 0.45.sw,
-                height: 0.32.sh,
+                width: 0.45*sw,
+                height: 0.32*sh,
                 child: Container(
                   child: Stack(
                     children: [
@@ -128,7 +130,7 @@ class _HomeState extends State<Home> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 decoration: TextDecoration.underline,
-                                color: Color(backgroundColor),
+                                color: backgroundColor,
                                 fontSize: 14,
                               ),
                             ),
@@ -148,15 +150,15 @@ class _HomeState extends State<Home> {
               ),
             ),
             Positioned(
-              top: 0.22.sh,
-              right: 0.035.sw,
+              top: 0.22*sh,
+              right: 0.035*sw,
               child: InkWell(
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 onTap: () {},
                 child: Container(
-                  width: 0.45.sw,
-                  height: 0.15.sh,
+                  width: 0.45*sw,
+                  height: 0.15*sh,
                   child: Container(
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
@@ -178,11 +180,11 @@ class _HomeState extends State<Home> {
               ),
             ),
             Positioned(
-              top: 0.39.sh,
-              right: 0.035.sw,
+              top: 0.39*sh,
+              right: 0.035*sw,
               child: Container(
-                width: 163.w,
-                height: 0.15.sh,
+                width: 0.45*sw,
+                height: 0.15*sh,
                 child: Container(
                   alignment: Alignment.center,
                   decoration: BoxDecoration(

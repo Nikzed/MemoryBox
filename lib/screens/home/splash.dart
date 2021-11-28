@@ -1,8 +1,8 @@
+import 'package:first_project_test/constants/constants.dart';
 import 'package:first_project_test/models/painter_model.dart';
-import 'package:first_project_test/screens/home/home.dart';
 import 'package:first_project_test/screens/home/wrapper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -10,30 +10,20 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final backgroundColor = 0xffF6F6F6;
 
   @override
   void initState() {
     super.initState();
 
     Future.delayed(const Duration(seconds: 3), () {
-
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => Wrapper(),
-        ),
-      );
+      Get.offAll(() => Wrapper());
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      builder: () => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(fontFamily: 'Roboto'),
-        home: Scaffold(
-          backgroundColor: Color(backgroundColor),
+    return Scaffold(
+          backgroundColor: backgroundColor,
           body: Stack(
             children: [
               SizedBox(
@@ -54,9 +44,9 @@ class _SplashScreenState extends State<SplashScreen> {
                       'MemoryBox',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 48.sp,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 3.w,
+                        fontSize: 48,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 3,
                       ),
                     ),
                     Align(
@@ -65,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         'Твой голос всегда рядом',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 14.sp,
+                          fontSize: 14,
                         ),
                       ),
                     ),
@@ -73,17 +63,17 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 40.w),
+                padding: EdgeInsets.symmetric(horizontal: 40),
                 child: Stack(
                   children: [
                     Align(
                       alignment: Alignment.center,
                       child: Container(
-                        width: 270.w,
-                        height: 70.h,
+                        width: 270,
+                        height: 75,
                         padding: EdgeInsets.all(25),
                         decoration: BoxDecoration(
-                          color: Color(backgroundColor),
+                          color: backgroundColor,
                           shape: BoxShape.rectangle,
                           borderRadius: BorderRadius.all(Radius.circular(15.0)),
                           boxShadow: [
@@ -99,7 +89,7 @@ class _SplashScreenState extends State<SplashScreen> {
                           child: Text(
                             'Мы рады тебя видеть',
                             style: TextStyle(
-                              fontSize: 22.sp,
+                              fontSize: 22,
                               fontWeight: FontWeight.w500,
                             ),
                             textAlign: TextAlign.center,
@@ -110,23 +100,23 @@ class _SplashScreenState extends State<SplashScreen> {
                     Align(
                       alignment: Alignment.center,
                       child: Padding(
-                          padding: EdgeInsets.only(top: 200.h),
+                          padding: EdgeInsets.only(top: 200),
                           child: Icon(
                             Icons.favorite,
-                            size: 45.sp,
+                            size: 45,
                             color: Color(0xffF1B488),
                           )),
                     ),
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Padding(
-                        padding: EdgeInsets.only(bottom: 50.h),
+                        padding: EdgeInsets.only(bottom: 50),
                         child: Container(
-                          width: 250.w,
-                          height: 75.h,
+                          width: 250,
+                          height: 80,
                           padding: EdgeInsets.all(25),
                           decoration: BoxDecoration(
-                            color: Color(backgroundColor),
+                            color: backgroundColor,
                             shape: BoxShape.rectangle,
                             borderRadius:
                                 BorderRadius.all(Radius.circular(15.0)),
@@ -154,8 +144,6 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ],
           ),
-        ),
-      ),
-    );
+        );
   }
 }

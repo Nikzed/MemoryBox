@@ -1,37 +1,24 @@
+import 'package:first_project_test/constants/constants.dart';
 import 'package:first_project_test/models/painter_model.dart';
-import 'package:first_project_test/screens/home/home.dart';
 import 'package:first_project_test/screens/home/wrapper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class RegistrationSplash extends StatelessWidget {
-  final backgroundColor = 0xffF6F6F6;
 
   @override
   Widget build(BuildContext context) {
     Future.delayed(const Duration(seconds: 3), () {
-      // Navigator.popUntil(
-      //   context,
-      //   ModalRoute.withName('/'),
-      // );
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => Wrapper(),
-        ),
-      );
+      Get.offAll(() => Wrapper(), transition: Transition.fade);
     });
 
-    return ScreenUtilInit(
-      builder: () => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(fontFamily: 'Roboto'),
-        home: Scaffold(
-          backgroundColor: Color(backgroundColor),
+    return Scaffold(
+          backgroundColor: backgroundColor,
           body: Stack(
             children: [
               SizedBox(
                 width: double.infinity,
-                height: 400,
+                height: 350,
                 child: CustomPaint(
                   painter: CirclePainter(),
                 ),
@@ -46,25 +33,25 @@ class RegistrationSplash extends StatelessWidget {
                     'Ты супер!',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 48.sp,
+                      fontSize: 48,
                       fontWeight: FontWeight.w700,
-                      letterSpacing: 3.w,
+                      letterSpacing: 3,
                     ),
                   ),
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 40.w),
+                padding: EdgeInsets.symmetric(horizontal: 40),
                 child: Stack(
                   children: [
                     Align(
                       alignment: Alignment.center,
                       child: Container(
-                        width: 270.w,
-                        height: 70.h,
+                        width: 270,
+                        height: 75,
                         padding: EdgeInsets.all(25),
                         decoration: BoxDecoration(
-                          color: Color(backgroundColor),
+                          color: backgroundColor,
                           shape: BoxShape.rectangle,
                           borderRadius: BorderRadius.all(Radius.circular(15.0)),
                           boxShadow: [
@@ -80,7 +67,7 @@ class RegistrationSplash extends StatelessWidget {
                           child: Text(
                             'Мы рады тебя видеть',
                             style: TextStyle(
-                              fontSize: 22.sp,
+                              fontSize: 22,
                               fontWeight: FontWeight.w500,
                             ),
                             textAlign: TextAlign.center,
@@ -91,10 +78,10 @@ class RegistrationSplash extends StatelessWidget {
                     Align(
                       alignment: Alignment.center,
                       child: Padding(
-                          padding: EdgeInsets.only(top: 200.h),
+                          padding: EdgeInsets.only(top: 200),
                           child: Icon(
                             Icons.favorite,
-                            size: 45.sp,
+                            size: 45,
                             color: Color(0xffF1B488),
                           )),
                     ),
@@ -103,8 +90,6 @@ class RegistrationSplash extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
+        );
   }
 }

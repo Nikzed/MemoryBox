@@ -1,3 +1,5 @@
+import 'package:first_project_test/constants/constants.dart';
+
 class UserModel {
   final String uid;
   final String phoneNumber;
@@ -17,3 +19,4 @@ class UserModel {
     );
   }
 }
+final uid = auth.currentUser!.uid;

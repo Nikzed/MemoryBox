@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:first_project_test/constants/constants.dart';
 import 'package:first_project_test/models/painter_model.dart';
 import 'package:first_project_test/models/slider_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,8 +14,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import '../../models/slider_model.dart';
-
-final backgroundColor = 0xffF6F6F6;
 
 typedef Fn = void Function();
 
@@ -37,6 +36,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
   // -- Recorder --
   FlutterSoundRecorder _recorder = FlutterSoundRecorder();
   bool _isRecorderInitialized = false;
+
   bool get _isRecording => _recorder.isRecording;
   String _recorderText = '0:00:00';
   double _noiseInDb = 0;
@@ -44,13 +44,13 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
 
   // -- Player --
   FlutterSoundPlayer _player = FlutterSoundPlayer();
+
   bool get _isPlaying => _player.isPlaying;
   bool playing = false;
   String _playerText = '00:00:00';
   double _maxDuration = 0.0;
   double _sliderPos = 0.0;
   Uint8List? _boumData;
-
 
   // -- recording animation --
   final DecorationTween decorationTween = DecorationTween(
@@ -346,7 +346,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
                 ),
               ),
               margin: EdgeInsets.all(10),
-              color: Color(backgroundColor),
+              color: backgroundColor,
               child: _isRecorderInitialized
                   ? _isRecording
                       ? _getRecorderWidget()
@@ -416,7 +416,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
           child: Icon(
             // _isRecording ? Icons.pause_rounded : Icons.play_arrow_rounded,
             Icons.pause_rounded,
-            color: Color(backgroundColor),
+            color: backgroundColor,
             size: 48,
           ),
         ),
@@ -525,7 +525,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
           child: Icon(
             playing ? Icons.ten_k : Icons.play_arrow_rounded,
             //? Icons.pause_rounded : Icons.play_arrow_rounded,
-            color: Color(backgroundColor),
+            color: backgroundColor,
             size: 48,
           ),
         ),
