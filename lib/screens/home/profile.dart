@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_project_test/constants/constants.dart';
-import 'package:first_project_test/controllers/auth_controller.dart';
 import 'package:first_project_test/models/painter_model.dart';
 import 'package:first_project_test/screens/authenticate/sign_in.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,7 +26,7 @@ class _ProfileState extends State<Profile> {
   @override
   void initState() {
     super.initState();
-    // Get.put(AuthController());
+
   }
 
   @override
@@ -233,15 +232,7 @@ class _ProfileState extends State<Profile> {
                           } else {
                             await FirebaseAuth.instance.signOut();
                           }
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) => SignIn(),
-                            ),
-                          );
-                          // Navigator.popUntil(
-                          //   context,
-                          //   ModalRoute.withName('/')
-                          // );
+                          Get.offAll(() => SignIn());
                         },
                         child: Text(
                           'Выйти из приложения',
@@ -278,7 +269,8 @@ class _ProfileState extends State<Profile> {
                                         Row(
                                           children: [
                                             ElevatedButton(
-                                              onPressed: () {},
+                                              onPressed: () {
+                                              },
                                               child: Text('Удалить'),
                                               style: ButtonStyle(
                                                 foregroundColor:

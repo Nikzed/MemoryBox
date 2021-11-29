@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 class AuthController extends GetxController {
   static AuthController instance = Get.find();
   late Rx<User?> firebaseUser;
+
   get isRegistered => auth.currentUser!.phoneNumber!.isNotEmpty;
 
   @override
@@ -20,10 +21,15 @@ class AuthController extends GetxController {
     ever(firebaseUser, _setInitialScreen);
   }
 
+  @override
+  void onInit() {
+    super.onInit();
+  }
+
   _setInitialScreen(User? user) {
     if (user == null) {
       // if the user is not found then the user is navigated to the SignIn
-      Get.offAll(() => const SignIn());
+      Get.offAll(() => SignIn());
     } else {
       // if the user exists and logged in, the the user is directed to SplashScreen
       Get.offAll(() => SplashScreen());
@@ -33,8 +39,7 @@ class AuthController extends GetxController {
   void signInWithPhoneAuthCredential(
     PhoneAuthCredential phoneAuthCredential,
     String phoneNumber,
-  )
-  async {
+  ) async {
     // setState(() {
     //   showLoading = true;
     // });
@@ -70,13 +75,7 @@ class AuthController extends GetxController {
       // setState(() {
       //   showLoading = false;
       // });
-
-      Get.showSnackbar(
-        GetBar(
-          title: 'Ошибка!',
-          message: e.toString(),
-        ),
-      );
+      Get.snackbar('Ошибка!', e.toString(), snackPosition: SnackPosition.BOTTOM);
     }
   }
 

@@ -29,7 +29,6 @@ class _RegistrationState extends State<Registration> {
   final phoneController = TextEditingController();
   final otpController = TextEditingController();
 
-  FirebaseAuth _auth = FirebaseAuth.instance;
 
   late String verificationId;
 
@@ -48,7 +47,7 @@ class _RegistrationState extends State<Registration> {
 
     try {
       final authCredential =
-          await _auth.signInWithCredential(phoneAuthCredential);
+          await auth.signInWithCredential(phoneAuthCredential);
 
       setState(() {
         showLoading = false;
@@ -158,7 +157,7 @@ class _RegistrationState extends State<Registration> {
                   showLoading = true;
                 });
 
-                await _auth.verifyPhoneNumber(
+                await auth.verifyPhoneNumber(
                   phoneNumber: phoneController.text,
                   //phoneController.text,
                   verificationCompleted: (phoneAuthCredential) async {
@@ -213,7 +212,7 @@ class _RegistrationState extends State<Registration> {
               setState(() {
                 showLoading = true;
               });
-              UserCredential userCredential = await _auth.signInAnonymously();
+              UserCredential userCredential = await auth.signInAnonymously();
               Get.offAll(() => Wrapper());
               setState(() {
                 showLoading = false;

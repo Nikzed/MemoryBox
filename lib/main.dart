@@ -9,7 +9,7 @@ import 'controllers/auth_controller.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await firebaseInitialization.then((value) => {Get.put(AuthController)});
+  await firebaseInitialization.then((value) => {Get.put(AuthController())});
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   runApp(MyApp());
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'MemoryBox',
       debugShowCheckedModeBanner: false,
-      home: InitializerWidget(),
+      home: LinearProgressIndicator(backgroundColor: backgroundColor, color: Colors.white,),
     );
   }
 }

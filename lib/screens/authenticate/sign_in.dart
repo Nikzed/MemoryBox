@@ -1,7 +1,7 @@
 import 'package:first_project_test/constants/constants.dart';
 import 'package:first_project_test/models/painter_model.dart';
 import 'package:flutter/material.dart';
-import 'mobile_register.dart';
+import 'registration.dart';
 import 'package:get/get.dart';
 
 class SignIn extends StatefulWidget {
