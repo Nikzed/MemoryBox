@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_project_test/constants/constants.dart';
+import 'package:first_project_test/models/user_model.dart';
 import 'package:first_project_test/screens/authenticate/sign_in.dart';
 import 'package:first_project_test/screens/home/splash.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,7 @@ import 'package:get/get.dart';
 class AuthController extends GetxController {
   static AuthController instance = Get.find();
   late Rx<User?> firebaseUser;
+  late UserModel user;
 
   get isRegistered => auth.currentUser!.phoneNumber!.isNotEmpty;
 
@@ -18,13 +20,9 @@ class AuthController extends GetxController {
     firebaseUser = Rx<User?>(auth.currentUser);
 
     firebaseUser.bindStream(auth.userChanges());
-    ever(firebaseUser, _setInitialScreen);
+    once(firebaseUser, _setInitialScreen); // changed from ever
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
   _setInitialScreen(User? user) {
     if (user == null) {
@@ -36,48 +34,7 @@ class AuthController extends GetxController {
     }
   }
 
-  void signInWithPhoneAuthCredential(
-    PhoneAuthCredential phoneAuthCredential,
-    String phoneNumber,
-  ) async {
-    // setState(() {
-    //   showLoading = true;
-    // });
 
-    try {
-      final authCredential =
-          await auth.signInWithCredential(phoneAuthCredential);
-
-      // setState(() {
-      //   showLoading = false;
-      // });
-
-      if (authCredential.user != null) {
-        // Проверяем есть ли данный пользователь уже в базе данных
-        getPhoneNumber(phoneNumber).then((value) => {
-              if (value == null)
-                {
-                  print('СОЗДАЁМ ЮЗЕРА!'),
-                  userSetup(phoneNumber),
-                }
-              else
-                {print('ЮЗЕР УЖЕ ЕСТЬ!')}
-            });
-
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => RegistrationSplash(),
-        //   ),
-        // );
-      }
-    } on FirebaseAuthException catch (e) {
-      // setState(() {
-      //   showLoading = false;
-      // });
-      Get.snackbar('Ошибка!', e.toString(), snackPosition: SnackPosition.BOTTOM);
-    }
-  }
 
   Future<String?> getPhoneNumber(String phoneNumber) async {
     CollectionReference ref = FirebaseFirestore.instance.collection('users');

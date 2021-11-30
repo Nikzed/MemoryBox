@@ -1,19 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_project_test/constants/constants.dart';
-import 'package:first_project_test/database/firebase.dart';
+import 'package:first_project_test/controllers/registration_controller.dart';
 import 'package:first_project_test/models/painter_model.dart';
 import 'package:first_project_test/screens/authenticate/registration_splash.dart';
 import 'package:first_project_test/screens/home/wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:get/get.dart';
 
-enum MobileVerificationState {
-  SHOW_MOBILE_FORM,
-  SHOW_OTP_FORM,
-}
+
 
 class Registration extends StatefulWidget {
   const Registration({Key? key}) : super(key: key);
@@ -23,61 +19,15 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationState extends State<Registration> {
-  MobileVerificationState currentState =
-      MobileVerificationState.SHOW_MOBILE_FORM;
-
-  final phoneController = TextEditingController();
-  final otpController = TextEditingController();
-
 
   late String verificationId;
 
   bool showLoading = false;
 
-  final _phoneMask = MaskTextInputFormatter(
-    mask: '+## ### ### ## ##',
-    filter: {"#": RegExp(r'[0-9]')},
-  );
 
-  void signInWithPhoneAuthCredential(
-      PhoneAuthCredential phoneAuthCredential) async {
-    setState(() {
-      showLoading = true;
-    });
 
-    try {
-      final authCredential =
-          await auth.signInWithCredential(phoneAuthCredential);
+  RegistrationController registrationController = RegistrationController();
 
-      setState(() {
-        showLoading = false;
-      });
-
-      if (authCredential.user != null) {
-        // Проверяем есть ли данный пользователь уже в базе данных
-        getPhoneNumber(phoneController.text).then((value) => {
-              if (value == null)
-                {
-                  print('СОЗДАЁМ ЮЗЕРА!'),
-                  userSetup(phoneController.text),
-                }
-              else
-                {print('ЮЗЕР УЖЕ ЕСТЬ!')}
-            });
-        Get.offAll(() => RegistrationSplash(), transition: Transition.zoom);
-      }
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        showLoading = false;
-      });
-
-      _scaffoldKey.currentState!.showSnackBar(
-        SnackBar(
-          content: Text(e.message!),
-        ),
-      );
-    }
-  }
 
   getMobileFormWidget(context) {
     return Stack(
@@ -125,10 +75,10 @@ class _RegistrationState extends State<Registration> {
               elevation: 4,
               shadowColor: Colors.black,
               child: TextField(
-                controller: phoneController,
+                controller: registrationController.phoneController,
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.phone,
-                inputFormatters: [_phoneMask],
+                inputFormatters: [registrationController.phoneMask],
                 decoration: InputDecoration(
                   fillColor: backgroundColor,
                   filled: true,
@@ -158,7 +108,7 @@ class _RegistrationState extends State<Registration> {
                 });
 
                 await auth.verifyPhoneNumber(
-                  phoneNumber: phoneController.text,
+                  phoneNumber: registrationController.phoneController.text,
                   //phoneController.text,
                   verificationCompleted: (phoneAuthCredential) async {
                     setState(() {
@@ -170,18 +120,12 @@ class _RegistrationState extends State<Registration> {
                     setState(() {
                       showLoading = false;
                     });
-                    _scaffoldKey.currentState!.showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          verificationFailed.message!,
-                        ),
-                      ),
-                    );
+                    Get.snackbar('Ошибка!', verificationFailed.message.toString());
                   },
                   codeSent: (verificationId, resendingToken) async {
                     setState(() {
                       showLoading = false;
-                      currentState = MobileVerificationState.SHOW_OTP_FORM;
+                      registrationController.currentState.value = MobileVerificationState.SHOW_OTP_FORM;
                       this.verificationId = verificationId;
                     });
                   },
@@ -212,7 +156,8 @@ class _RegistrationState extends State<Registration> {
               setState(() {
                 showLoading = true;
               });
-              UserCredential userCredential = await auth.signInAnonymously();
+              //UserCredential userCredential =
+              await auth.signInAnonymously();
               Get.offAll(() => Wrapper());
               setState(() {
                 showLoading = false;
@@ -302,7 +247,7 @@ class _RegistrationState extends State<Registration> {
               shadowColor: Colors.black,
               child: TextField(
                 maxLength: 6,
-                controller: otpController,
+                controller: registrationController.otpController,
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.phone,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -333,9 +278,9 @@ class _RegistrationState extends State<Registration> {
                 PhoneAuthCredential phoneAuthCredential =
                     PhoneAuthProvider.credential(
                   verificationId: verificationId,
-                  smsCode: otpController.text,
+                  smsCode: registrationController.otpController.text,
                 );
-                signInWithPhoneAuthCredential(phoneAuthCredential);
+                registrationController.signInWithPhoneAuthCredential(phoneAuthCredential);
               },
               child: Text(
                 'Продолжить',
@@ -379,8 +324,6 @@ class _RegistrationState extends State<Registration> {
     );
   }
 
-  final GlobalKey<ScaffoldMessengerState> _scaffoldKey =
-      GlobalKey<ScaffoldMessengerState>();
 
   @override
   Widget build(BuildContext context) {
@@ -388,17 +331,12 @@ class _RegistrationState extends State<Registration> {
         ? Center(
             child: CircularProgressIndicator(),
           )
-        : MaterialApp(
-            debugShowCheckedModeBanner: false,
-            theme: ThemeData(fontFamily: 'Roboto'),
-            home: Scaffold(
-              key: _scaffoldKey,
+        : Scaffold(
               resizeToAvoidBottomInset: false,
               backgroundColor: backgroundColor,
-              body: currentState == MobileVerificationState.SHOW_MOBILE_FORM
+              body: registrationController.currentState.value == MobileVerificationState.SHOW_MOBILE_FORM
                   ? getMobileFormWidget(context)
                   : getOtpFormWidget(context),
-            ),
-          );
+            );
   }
 }

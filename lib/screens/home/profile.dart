@@ -270,6 +270,7 @@ class _ProfileState extends State<Profile> {
                                           children: [
                                             ElevatedButton(
                                               onPressed: () {
+                                                // TODO
                                               },
                                               child: Text('Удалить'),
                                               style: ButtonStyle(
