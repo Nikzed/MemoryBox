@@ -18,7 +18,7 @@ class _SignInState extends State<SignIn> {
       backgroundColor: backgroundColor,
       body: Stack(
         children: [
-          SizedBox(
+          Container(
             width: double.infinity,
             height: 350,
             child: CustomPaint(

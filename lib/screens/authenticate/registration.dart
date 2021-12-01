@@ -56,7 +56,7 @@ class _RegistrationState extends State<Registration> {
         Align(
           alignment: Alignment.topCenter,
           child: Padding(
-            padding: EdgeInsets.only(top: 325),
+            padding: EdgeInsets.only(top: 300),
             child: Text(
               'Введи номер телефона',
               style: TextStyle(fontSize: 14),
@@ -226,12 +226,15 @@ class _RegistrationState extends State<Registration> {
         ),
         Align(
             alignment: Alignment.topCenter,
-            child: Padding(
-              padding: EdgeInsets.only(top: 325, left: 80, right: 80),
-              child: Text(
-                'Введи код из смс, чтобы мы тебя запомнили',
-                style: TextStyle(fontSize: 12),
-                textAlign: TextAlign.center,
+            child: Container(
+              width: 320,
+              child: Padding(
+                padding: EdgeInsets.only(top: 280, left: 80, right: 80),
+                child: Text(
+                  'Введи код из смс, чтобы мы тебя запомнили',
+                  style: TextStyle(fontSize: 12),
+                  textAlign: TextAlign.center,
+                ),
               ),
             )),
         Align(

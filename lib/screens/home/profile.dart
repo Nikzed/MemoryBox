@@ -26,7 +26,6 @@ class _ProfileState extends State<Profile> {
   @override
   void initState() {
     super.initState();
-
   }
 
   @override
@@ -35,8 +34,8 @@ class _ProfileState extends State<Profile> {
       child: Stack(
         children: [
           Container(
-            height: MediaQuery.of(context).size.height * 0.55,
             width: double.infinity,
+            height: 350,
             child: CustomPaint(
               painter: CirclePainter(),
             ),
@@ -57,7 +56,7 @@ class _ProfileState extends State<Profile> {
             alignment: Alignment.center,
             child: Column(
               children: [
-                SizedBox(height: 50),
+                SizedBox(height: 45),
                 Text(
                   'Профиль',
                   style: TextStyle(
@@ -81,8 +80,8 @@ class _ProfileState extends State<Profile> {
                   height: 20,
                 ),
                 Container(
-                  height: 228,
-                  width: 228,
+                  height: 200,
+                  width: 200,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(
@@ -117,8 +116,9 @@ class _ProfileState extends State<Profile> {
                             child: GestureDetector(
                               onTap: () async {
                                 XFile? image = await picker.pickImage(
-                                    source: ImageSource.gallery,
-                                    imageQuality: 50);
+                                  source: ImageSource.gallery,
+                                  imageQuality: 50,
+                                );
                                 setState(() {
                                   _image = File(image!.path);
                                 });
@@ -140,7 +140,7 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
                 SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
                 Text(
                   'Имя',
@@ -201,8 +201,22 @@ class _ProfileState extends State<Profile> {
                   onTap: () {
                     print(FirebaseAuth.instance.currentUser?.uid);
                   },
-                  child: Text('Подписка'),
+                  child: Text(
+                    "Подписка",
+                    style: TextStyle(
+                      shadows: [
+                        Shadow(
+                          color: Colors.black,
+                          offset: Offset(0, -5),
+                        )
+                      ],
+                      color: Colors.transparent,
+                      decoration: TextDecoration.underline,
+                      decorationColor: Colors.black,
+                    ),
+                  ),
                 ),
+                SizedBox(height: 10),
                 Container(
                   height: 15,
                   width: 230,
@@ -218,7 +232,7 @@ class _ProfileState extends State<Profile> {
                 ),
                 Text('150/500 мб'),
                 SizedBox(
-                  height: 50,
+                  height: 20,
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 40),

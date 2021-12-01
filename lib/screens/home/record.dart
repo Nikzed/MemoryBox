@@ -316,7 +316,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
     return Stack(
       children: [
         Container(
-          height: MediaQuery.of(context).size.height * 0.55,
+          height: 350,
           width: double.infinity,
           child: CustomPaint(
             painter: CirclePainter(),
