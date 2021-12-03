@@ -20,12 +20,6 @@ class Registration extends StatefulWidget {
 
 class _RegistrationState extends State<Registration> {
 
-  late String verificationId;
-
-  bool showLoading = false;
-
-
-
   RegistrationController registrationController = RegistrationController();
 
 
@@ -102,35 +96,36 @@ class _RegistrationState extends State<Registration> {
                   borderRadius: BorderRadius.circular(50),
                 ),
               ),
-              onPressed: () async {
-                setState(() {
-                  showLoading = true;
-                });
+              onPressed: () {
+                registrationController.verifyPhoneNumber();
 
-                await auth.verifyPhoneNumber(
-                  phoneNumber: registrationController.phoneController.text,
-                  //phoneController.text,
-                  verificationCompleted: (phoneAuthCredential) async {
-                    setState(() {
-                      showLoading = false;
-                    });
-                    // signInWithPhoneAuthCredential(phoneAuthCredential);
-                  },
-                  verificationFailed: (verificationFailed) async {
-                    setState(() {
-                      showLoading = false;
-                    });
-                    Get.snackbar('Ошибка!', verificationFailed.message.toString());
-                  },
-                  codeSent: (verificationId, resendingToken) async {
-                    setState(() {
-                      showLoading = false;
-                      registrationController.currentState.value = MobileVerificationState.SHOW_OTP_FORM;
-                      this.verificationId = verificationId;
-                    });
-                  },
-                  codeAutoRetrievalTimeout: (verificationId) async {},
-                );
+                // setState(() {
+                //   showLoading = true;
+                // });
+                // await auth.verifyPhoneNumber(
+                //   phoneNumber: registrationController.phoneController.text,
+                //   //phoneController.text,
+                //   verificationCompleted: (phoneAuthCredential) async {
+                //     setState(() {
+                //       showLoading = false;
+                //     });
+                //     // signInWithPhoneAuthCredential(phoneAuthCredential);
+                //   },
+                //   verificationFailed: (verificationFailed) async {
+                //     setState(() {
+                //       showLoading = false;
+                //     });
+                //     Get.snackbar('Ошибка!', verificationFailed.message.toString());
+                //   },
+                //   codeSent: (verificationId, resendingToken) async {
+                //     setState(() {
+                //       showLoading = false;
+                //       registrationController.currentState.value = MobileVerificationState.SHOW_OTP_FORM;
+                //       this.verificationId = verificationId;
+                //     });
+                //   },
+                //   codeAutoRetrievalTimeout: (verificationId) async {},
+                // );
               },
               child: Text(
                 'Продолжить',
@@ -141,7 +136,7 @@ class _RegistrationState extends State<Registration> {
         ),
         Container(
           alignment: Alignment.center,
-          padding: EdgeInsets.only(top: 400.0),
+          padding: EdgeInsets.only(top: 380.0),
           child: InkWell(
             child: Text(
               'Позже',
@@ -152,26 +147,27 @@ class _RegistrationState extends State<Registration> {
                 color: Color(0xff3A3A55),
               ),
             ),
-            onTap: () async {
-              setState(() {
-                showLoading = true;
-              });
-              //UserCredential userCredential =
-              await auth.signInAnonymously();
-              Get.offAll(() => Wrapper());
-              setState(() {
-                showLoading = false;
-              });
+            onTap: () {
+              registrationController.signInAnon();
+              // setState(() {
+              //   showLoading = true;
+              // });
+              // //UserCredential userCredential =
+              // await auth.signInAnonymously();
+              // Get.offAll(() => Wrapper());
+              // setState(() {
+              //   showLoading = false;
+              // });
             },
           ),
         ),
         Align(
           alignment: Alignment.bottomCenter,
           child: Padding(
-            padding: EdgeInsets.only(bottom: 50),
+            padding: EdgeInsets.only(bottom: 20),
             child: Container(
               width: 250,
-              height: 115,
+              height: 105,
               padding: EdgeInsets.all(25),
               decoration: BoxDecoration(
                 color: backgroundColor,
@@ -278,9 +274,10 @@ class _RegistrationState extends State<Registration> {
                     borderRadius: BorderRadius.circular(50)),
               ),
               onPressed: () async {
+                // TODO rebuild
                 PhoneAuthCredential phoneAuthCredential =
                     PhoneAuthProvider.credential(
-                  verificationId: verificationId,
+                  verificationId: registrationController.verificationId,
                   smsCode: registrationController.otpController.text,
                 );
                 registrationController.signInWithPhoneAuthCredential(phoneAuthCredential);
@@ -330,7 +327,7 @@ class _RegistrationState extends State<Registration> {
 
   @override
   Widget build(BuildContext context) {
-    return showLoading
+    return registrationController.showLoading.value
         ? Center(
             child: CircularProgressIndicator(),
           )

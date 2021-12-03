@@ -10,13 +10,14 @@ enum MobileVerificationState {
   SHOW_OTP_FORM,
 }
 
-class RegistrationController extends GetxController{
-
+class RegistrationController extends GetxController {
   Rx<MobileVerificationState> currentState =
       MobileVerificationState.SHOW_MOBILE_FORM.obs;
 
   final phoneController = TextEditingController();
   final otpController = TextEditingController();
+
+  late String verificationId;
 
   final phoneMask = MaskTextInputFormatter(
     mask: '+## ### ### ## ##',
@@ -25,41 +26,88 @@ class RegistrationController extends GetxController{
 
   Rx<bool> showLoading = false.obs;
 
+
+  @override
+  void onInit() {
+    super.onInit();
+    // ever(showLoading, event);
+  }
+
+  // void event(showLoading){
+  //   if (showLoading.value) RxStatus.loading();
+  // }
+
   void signInWithPhoneAuthCredential(
-      PhoneAuthCredential phoneAuthCredential,
-      ) async {
+    PhoneAuthCredential phoneAuthCredential,
+  ) async {
     String phoneNumber = phoneController.text;
-    // setState(() {
-    //   showLoading = true;
-    // });
+
+      showLoading.value = true;
 
     try {
       final authCredential =
-      await auth.signInWithCredential(phoneAuthCredential);
+          await auth.signInWithCredential(phoneAuthCredential);
 
-      // setState(() {
-      //   showLoading = false;
-      // });
+        showLoading.value = false;
 
       if (authCredential.user != null) {
         // Проверяем есть ли данный пользователь уже в базе данных
         authController.getPhoneNumber(phoneNumber).then((value) => {
-          if (value == null)
-            {
-              print('СОЗДАЁМ ЮЗЕРА!'),
-              authController.userSetup(phoneNumber),
-            }
-          else
-            {print('ЮЗЕР УЖЕ ЕСТЬ!')}
-        });
+              if (value == null)
+                {
+                  print('СОЗДАЁМ ЮЗЕРА!'),
+                  authController.userSetup(phoneNumber),
+                }
+              else
+                {print('ЮЗЕР УЖЕ ЕСТЬ!')}
+            });
 
         Get.offAll(() => Wrapper());
       }
     } on FirebaseAuthException catch (e) {
-      // setState(() {
-      //   showLoading = false;
-      // });
-      Get.snackbar('Ошибка!', 'Неправильно указан код', snackPosition: SnackPosition.BOTTOM);
+        showLoading.value = false;
+      Get.snackbar('Ошибка!', 'Неправильно указан код',
+          snackPosition: SnackPosition.BOTTOM);
+      print('Error trace: $e');
     }
+  }
+
+  Future<void> verifyPhoneNumber() async {
+    showLoading.value = true;
+    try{
+      print('ТУТ!!!');
+      await auth.verifyPhoneNumber(
+      phoneNumber: phoneController.text,
+      verificationCompleted: (phoneAuthCredential) async {
+        showLoading.value = false;
+        // signInWithPhoneAuthCredential(phoneAuthCredential);
+      },
+      verificationFailed: (verificationFailed) async {
+        showLoading.value = false;
+        Get.snackbar('Ошибка!', verificationFailed.message.toString());
+      },
+      codeSent: (verificationId, resendingToken) async {
+        showLoading.value = false;
+        currentState.value = MobileVerificationState.SHOW_OTP_FORM;
+        this.verificationId = verificationId;
+      },
+      codeAutoRetrievalTimeout: (verificationId) async {},
+    );
+    } catch (e){
+      Get.snackbar('Ошибка!', e.toString());
+      print('ОШИБКА');
+    }
+    print('ПРОШЛО');
+
+  }
+
+  Future<void> signInAnon() async {
+    showLoading.value = true;
+
+    UserCredential userCredential =
+    await auth.signInAnonymously();
+    print('UserCredential: $userCredential');
+    Get.offAll(() => Wrapper());
+    showLoading.value = false;
   }
 }
