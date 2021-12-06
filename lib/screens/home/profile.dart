@@ -261,7 +261,7 @@ class _ProfileState extends State<Profile> {
                       ),
                       Text('150/500 мб'),
                       SizedBox(
-                        height: 20,
+                        height: 50,
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 40),

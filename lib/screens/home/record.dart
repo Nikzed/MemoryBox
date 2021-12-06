@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:first_project_test/constants/constants.dart';
 import 'package:first_project_test/models/painter_model.dart';
 import 'package:first_project_test/models/slider_model.dart';
@@ -31,6 +33,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
   String _tempFileName = 'Recording_.aac';
   String? _fileName;
   String _directoryPath = '/storage/emulated/0/SoundRecorder';
+  late String filePath;
 
   // -- Recorder --
   FlutterSoundRecorder _recorder = FlutterSoundRecorder();
@@ -148,6 +151,12 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
     await _createFile();
   }
 
+  Future<void> _writeFileToFirebase() async {
+    FirebaseFirestore.instance
+        .collection('data')
+        .add({'text': 'data added through an app'});
+  }
+
   Future<void> _getStoragePermission() async {
     if (await Permission.storage.request().isGranted) {
       setState(() {
@@ -182,6 +191,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
       Uint8List bytes = await file.readAsBytes();
       file.writeAsBytes(bytes);
       print(file.path);
+      filePath = file.path;
     });
   }
 
@@ -253,15 +263,14 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
       codec: codec,
       whenFinished: () => null,
     );
-
   }
 
-  Future<void> seekToPlayer(int milliSec) async {
-    if (_player.isPlaying) {
-      await _player.seekToPlayer(Duration(milliseconds: milliSec));
-    }
-    _sliderPos = milliSec.toDouble();
-  }
+  // Future<void> seekToSec(int milliSec) async {
+  //   if (_player.isPlaying) {
+  //     await _player.seekToPlayer(Duration(milliseconds: milliSec));
+  //   }
+  //   _sliderPos = milliSec.toDouble();
+  // }
 
   // Future<void> playback15Seconds() async {
   //   await _player.seekToPlayer(Duration(seconds: _sliderPosition.toInt() - 15));
@@ -467,7 +476,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
           child: Row(
             children: [
               IconButton(
-                onPressed: null,
+                onPressed: () => _onFileUploadButtonPressed(),
                 icon: SvgPicture.asset('assets/share.svg'),
               ),
               SizedBox(width: 20),
@@ -483,6 +492,8 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
               SizedBox(width: 75),
               InkWell(
                 onTap: () => _writeFileToStorage(),
+                // onTap: () => _writeFileToFirebase(),
+                // onTap: () => _onFileUploadButtonPressed(),
                 child: Text('Сохранить'),
               ),
             ],
@@ -512,13 +523,14 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
             },
           ),
         ),
-        SizedBox(height: 100),
+        SizedBox(height: 155),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             InkWell(
-                // onTap: () => playback15Seconds(),
-                child: SvgPicture.asset('assets/play_backward.svg'),),
+              // onTap: () => playback15Seconds(),
+              child: SvgPicture.asset('assets/play_backward.svg'),
+            ),
             SizedBox(width: 50),
             _getPlayButton(),
             SizedBox(width: 50),
@@ -530,6 +542,36 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
         ),
       ],
     );
+  }
+
+  Future<void> _onFileUploadButtonPressed() async {
+    // setState(() {
+    //   _isUploading = true;
+    // });
+    try {
+      FirebaseStorage firebaseStorage = FirebaseStorage.instance;
+      await firebaseStorage
+          .ref('upload-voice-firebase')
+          .child(filePath.substring(filePath.lastIndexOf('/'), filePath.length))
+          .putFile(File(filePath));
+      _onUploadComplete();
+    } catch (error) {
+      print('Error occured while uplaoding to Firebase ${error.toString()}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error occured while uplaoding'),
+        ),
+      );
+    } finally {
+      // setState(() {
+      //   _isUploading = false;
+      // });
+    }
+  }
+
+  Future<void> _onUploadComplete() async {
+    FirebaseStorage firebaseStorage = FirebaseStorage.instance;
+    await firebaseStorage.ref().child('upload-voice-firebase').list();
   }
 
   Widget _getPlayButton() {
@@ -555,8 +597,6 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
       ),
     );
   }
-
-
 }
 
 class _ShapePainter extends CustomPainter {

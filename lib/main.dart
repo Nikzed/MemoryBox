@@ -36,37 +36,37 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class InitializerWidget extends StatefulWidget {
-  const InitializerWidget({Key? key}) : super(key: key);
-
-  @override
-  _InitializerWidgetState createState() => _InitializerWidgetState();
-}
-
-class _InitializerWidgetState extends State<InitializerWidget> {
-  FirebaseAuth _auth = FirebaseAuth.instance;
-
-  User? _user;
-
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _user = _auth.currentUser;
-    isLoading = false;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return isLoading
-        ? Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          )
-        : _user == null
-            ? SignIn()
-            : SplashScreen();
-  }
-}
+// class InitializerWidget extends StatefulWidget {
+//   const InitializerWidget({Key? key}) : super(key: key);
+//
+//   @override
+//   _InitializerWidgetState createState() => _InitializerWidgetState();
+// }
+//
+// class _InitializerWidgetState extends State<InitializerWidget> {
+//   FirebaseAuth _auth = FirebaseAuth.instance;
+//
+//   User? _user;
+//
+//   bool isLoading = true;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _user = _auth.currentUser;
+//     isLoading = false;
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return isLoading
+//         ? Scaffold(
+//             body: Center(
+//               child: CircularProgressIndicator(),
+//             ),
+//           )
+//         : _user == null
+//             ? SignIn()
+//             : SplashScreen();
+//   }
+// }

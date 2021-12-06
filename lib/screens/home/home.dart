@@ -35,7 +35,7 @@ class _HomeState extends State<Home> {
   Widget _getSliverAppBar() {
     return SliverAppBar(
       systemOverlayStyle:
-          SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light),
+      SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light),
       backgroundColor: backgroundColor,
       expandedHeight: 0.5 * sh,
       automaticallyImplyLeading: false,
@@ -233,34 +233,41 @@ class _HomeState extends State<Home> {
               ],
             ),
           ),
-          SizedBox(height: 50),
-          Align(
-            alignment: Alignment.center,
-            child: Container(
-              width: 200,
-              child: Text(
-                'Как только ты запишешь аудио, они появится здесь.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Color(0xff3A3A5580).withOpacity(0.5),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: 30),
-          SvgPicture.asset('assets/arrow_down.svg'),
-          // Icon(
-          //   Icons.arrow_downward,
-          //   size: 42,
-          //   color: Color(0xff3A3A5580).withOpacity(0.5),
+          // SizedBox(height: 50),
+          // Align(
+          //   alignment: Alignment.center,
+          //   child: Container(
+          //     width: 200,
+          //     child: Text(
+          //       'Как только ты запишешь аудио, они появится здесь.',
+          //       textAlign: TextAlign.center,
+          //       style: TextStyle(
+          //         color: Color(0xff3A3A5580).withOpacity(0.5),
+          //         fontWeight: FontWeight.bold,
+          //       ),
+          //     ),
+          //   ),
           // ),
-          // AudioForm(),
-          // AudioForm(),
-          // AudioForm(),
-          // AudioForm(),
-          // AudioForm(),
-          // AudioForm(),
+          // SizedBox(height: 30),
+          // SvgPicture.asset('assets/arrow_down.svg'),
+          // ListView.builder(
+          //   itemCount: 20,
+          //   itemBuilder: (context, index){
+          //     return AudioForm();
+          //   },
+          // ),
+          AudioForm(),
+          AudioForm(),
+          AudioForm(),
+          AudioForm(),
+          AudioForm(),
+          AudioForm(),
+          AudioForm(),
+          AudioForm(),
+          AudioForm(),
+          AudioForm(),
+          AudioForm(),
+          AudioForm(),
         ],
       ),
 
