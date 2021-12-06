@@ -31,79 +31,91 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Stack(
+    bool shouldPop = true;
+    return WillPopScope(
+      onWillPop: () async{
+        setState(() {
+          isEditing = false;
+          shouldPop = shouldPop;
+        });
+        return shouldPop;
+      },
+      child: ListView(
+        padding: EdgeInsets.zero,
         children: [
           Container(
-            width: double.infinity,
-            height: 350,
-            child: CustomPaint(
-              painter: CirclePainter(),
-            ),
-          ),
-          Align(
-            alignment: Alignment.topLeft,
-            child: Padding(
-              padding: EdgeInsets.only(top: 40, left: 5),
-              child: IconButton(
-                color: Colors.white,
-                iconSize: 28,
-                icon: Icon(Icons.menu),
-                onPressed: () => Scaffold.of(context).openDrawer(),
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: Column(
+            child: Stack(
               children: [
-                SizedBox(height: 45),
-                Text(
-                  'Профиль',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2,
-                  ),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  'Твоя частичка',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1,
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
                 Container(
-                  height: 200,
-                  width: 200,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(15.0),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        spreadRadius: 2,
-                        blurRadius: 20,
-                        offset: Offset(0, 5),
-                      ),
-                    ],
+                  width: double.infinity,
+                  height: 350,
+                  child: CustomPaint(
+                    painter: CirclePainter(),
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(15.0),
+                ),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 40, left: 5),
+                    child: IconButton(
+                      color: Colors.white,
+                      iconSize: 28,
+                      icon: Icon(Icons.menu),
+                      onPressed: () => Scaffold.of(context).openDrawer(),
                     ),
-                    // TODO make image in base64 and store in Firebase
-                    child: isEditing
-                        ? Container(
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: Column(
+                    children: [
+                      SizedBox(height: 45),
+                      Text(
+                        'Профиль',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 2,
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        'Твоя частичка',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        height: 200,
+                        width: 200,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(15.0),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              spreadRadius: 2,
+                              blurRadius: 20,
+                              offset: Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(15.0),
+                          ),
+                          // TODO make image in base64 and store in Firebase
+                          child: isEditing
+                              ? Container(
                             decoration: BoxDecoration(
                               color: Colors.black,
                               image: DecorationImage(
@@ -130,60 +142,60 @@ class _ProfileState extends State<Profile> {
                               child: Align(
                                 alignment: Alignment.center,
                                 child: SvgPicture.asset(
-                                      'assets/photo.svg',
+                                  'assets/photo.svg',
                                   width: 75,
                                   height: 75,
                                 ),
                               ),
                             ),
                           )
-                        : _image == null // ? CachedNetworkImage
-                            ? FadeInImage.assetNetwork(
-                                placeholder: 'assets/loader.png',
-                                image:
-                                    'https://firebasestorage.googleapis.com/v0/b/my-app-59705.appspot.com/o/CROPPED-nebo-oblaka-ozero-pirs.jpg?alt=media&token=4e4ecb89-98a6-4fd2-84af-cade727ee090',
-                                // 'http://ic.pics.livejournal.com/matchgirl_ru/19647654/307286/307286_original.jpg',
-                                fit: BoxFit.cover,
-                              )
-                            : Image.file(
-                                _image,
-                                fit: BoxFit.cover,
-                              ),
-                  ),
-                ),
-                SizedBox(
-                  height: 14,
-                ),
-                // Stack(
-                //   children: [
-                //
-                //   ],
-                // ),
-                Text(
-                  'Имя',
-                  style: TextStyle(fontSize: 24),
-                ),
-                SizedBox(
-                  height: 50,
-                ),
-                Container(
-                  height: 50,
-                  width: 300,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 5,
-                        spreadRadius: 2,
-                        offset: Offset(0, 5),
-                      )
-                    ],
-                  ),
-                  child: isEditing
-                      ? TextField(
+                              : _image == null // ? CachedNetworkImage
+                              ? FadeInImage.assetNetwork(
+                            placeholder: 'assets/loader.png',
+                            image:
+                            'https://firebasestorage.googleapis.com/v0/b/my-app-59705.appspot.com/o/CROPPED-nebo-oblaka-ozero-pirs.jpg?alt=media&token=4e4ecb89-98a6-4fd2-84af-cade727ee090',
+                            // 'http://ic.pics.livejournal.com/matchgirl_ru/19647654/307286/307286_original.jpg',
+                            fit: BoxFit.cover,
+                          )
+                              : Image.file(
+                            _image,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 14,
+                      ),
+                      // Stack(
+                      //   children: [
+                      //
+                      //   ],
+                      // ),
+                      Text(
+                        'Имя',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                      SizedBox(
+                        height: 50,
+                      ),
+                      Container(
+                        height: 50,
+                        width: 300,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 5,
+                              spreadRadius: 2,
+                              offset: Offset(0, 5),
+                            )
+                          ],
+                        ),
+                        child: isEditing
+                            ? TextField(
                           controller: _controller,
                           textAlign: TextAlign.center,
                           keyboardType: TextInputType.phone,
@@ -196,184 +208,192 @@ class _ProfileState extends State<Profile> {
                             ),
                           ),
                         )
-                      : Text(number == null
-                          ? '+00 000 000 00 00'
-                          : '${FirebaseAuth.instance.currentUser!.phoneNumber}'),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                InkWell(
-                  child: Text('Редактировать'),
-                  onTap: () {
-                    setState(() {
-                      isEditing = !isEditing;
-                    });
-                  },
-                ),
-                SizedBox(
-                  height: 40,
-                ),
-                InkWell(
-                  onTap: () {
-                    print(FirebaseAuth.instance.currentUser?.uid);
-                  },
-                  child: Text(
-                    "Подписка",
-                    style: TextStyle(
-                      shadows: [
-                        Shadow(
-                          color: Colors.black,
-                          offset: Offset(0, -5),
-                        )
-                      ],
-                      color: Colors.transparent,
-                      decoration: TextDecoration.underline,
-                      decorationColor: Colors.black,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Container(
-                  height: 15,
-                  width: 230,
-                  decoration: BoxDecoration(
-                    color: Colors.orange,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(15.0),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text('150/500 мб'),
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 40),
-                  child: Row(
-                    children: [
+                            : Text(number == null
+                            ? '+00 000 000 00 00'
+                            : '${FirebaseAuth.instance.currentUser!.phoneNumber}'),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
                       InkWell(
-                        onTap: () async {
-                          if (FirebaseAuth.instance.currentUser?.isAnonymous ==
-                              true) {
-                            FirebaseAuth.instance.currentUser!.delete();
-                          } else {
-                            await FirebaseAuth.instance.signOut();
-                          }
-                          Get.offAll(() => SignIn());
+                        child: Text('Редактировать'),
+                        onTap: () {
+                          setState(() {
+                            isEditing = !isEditing;
+                          });
+                        },
+                      ),
+                      SizedBox(
+                        height: 40,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          print(FirebaseAuth.instance.currentUser?.uid);
                         },
                         child: Text(
-                          'Выйти из приложения',
+                          "Подписка",
+                          style: TextStyle(
+                            shadows: [
+                              Shadow(
+                                color: Colors.black,
+                                offset: Offset(0, -5),
+                              )
+                            ],
+                            color: Colors.transparent,
+                            decoration: TextDecoration.underline,
+                            decorationColor: Colors.black,
+                          ),
                         ),
                       ),
-                      Spacer(),
-                      InkWell(
-                        onTap: () async {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30),
-                                  ),
-                                  title: Align(
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      'Вы уверенны?',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  content: Container(
-                                    height: 170,
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          'Все аудиофайлы исчезнут и восстановить аккаунт будет невозможно',
-                                          textAlign: TextAlign.center,
+                      SizedBox(height: 10),
+                      Container(
+                        height: 15,
+                        width: 230,
+                        decoration: BoxDecoration(
+                          color: Colors.orange,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(15.0),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text('150/500 мб'),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 40),
+                        child: Row(
+                          children: [
+                            InkWell(
+                              onTap: () async {
+                                if (FirebaseAuth.instance.currentUser?.isAnonymous ==
+                                    true) {
+                                  FirebaseAuth.instance.currentUser!.delete();
+                                } else {
+                                  await FirebaseAuth.instance.signOut();
+                                }
+                                Get.offAll(() => SignIn());
+                              },
+                              child: Text(
+                                'Выйти из приложения',
+                              ),
+                            ),
+                            Spacer(),
+                            InkWell(
+                              onTap: () async {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(30),
                                         ),
-                                        SizedBox(height: 50),
-                                        Row(
-                                          children: [
-                                            ElevatedButton(
-                                              onPressed: () {
-                                                // TODO
-                                              },
-                                              child: Text('Удалить'),
-                                              style: ButtonStyle(
-                                                foregroundColor:
-                                                    MaterialStateProperty.all<
-                                                        Color>(Colors.white),
-                                                backgroundColor:
-                                                    MaterialStateProperty.all<
-                                                            Color>(
-                                                        Color(0xffE27777)),
-                                                shape: MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(40),
-                                                        side: BorderSide(
-                                                            color:
-                                                                Colors.black))),
-                                              ),
+                                        title: Align(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            'Вы уверенны?',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
                                             ),
-                                            ElevatedButton(
-                                              onPressed: () {
-                                                print(
-                                                    'is registered: ${authController.isRegistered}');
-                                              },
-                                              child: Text('Нет'),
-                                              style: ButtonStyle(
-                                                  foregroundColor:
-                                                      MaterialStateProperty.all<
-                                                              Color>(
-                                                          Color(0xff8C84E2)),
-                                                  backgroundColor:
+                                          ),
+                                        ),
+                                        content: Container(
+                                          height: 170,
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                'Все аудиофайлы исчезнут и восстановить аккаунт будет невозможно',
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              SizedBox(height: 50),
+                                              Row(
+                                                children: [
+                                                  ElevatedButton(
+                                                    onPressed: () {
+                                                      // TODO
+                                                    },
+                                                    child: Text('Удалить'),
+                                                    style: ButtonStyle(
+                                                      foregroundColor:
                                                       MaterialStateProperty.all<
                                                           Color>(Colors.white),
-                                                  shape: MaterialStateProperty
-                                                      .all<RoundedRectangleBorder>(
+                                                      backgroundColor:
+                                                      MaterialStateProperty.all<
+                                                          Color>(
+                                                          Color(0xffE27777)),
+                                                      shape: MaterialStateProperty.all<
+                                                          RoundedRectangleBorder>(
                                                           RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            40),
-                                                    side: BorderSide(
-                                                        color:
+                                                              borderRadius:
+                                                              BorderRadius
+                                                                  .circular(40),
+                                                              side: BorderSide(
+                                                                  color:
+                                                                  Colors.black))),
+                                                    ),
+                                                  ),
+                                                  ElevatedButton(
+                                                    onPressed: () {
+                                                      print(
+                                                          'is registered: ${authController.isRegistered}');
+                                                    },
+                                                    child: Text('Нет'),
+                                                    style: ButtonStyle(
+                                                        foregroundColor:
+                                                        MaterialStateProperty.all<
+                                                            Color>(
                                                             Color(0xff8C84E2)),
-                                                  ))),
-                                            ),
-                                          ],
+                                                        backgroundColor:
+                                                        MaterialStateProperty.all<
+                                                            Color>(Colors.white),
+                                                        shape: MaterialStateProperty
+                                                            .all<RoundedRectangleBorder>(
+                                                            RoundedRectangleBorder(
+                                                              borderRadius:
+                                                              BorderRadius.circular(
+                                                                  40),
+                                                              side: BorderSide(
+                                                                  color:
+                                                                  Color(0xff8C84E2)),
+                                                            ))),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              });
-                          // _deleteAccount();
-                          // Navigator.of(context).pushReplacement(
-                          //   MaterialPageRoute(
-                          //     builder: (context) => MyApp(),
-                          //   ),
-                          // );
-                        },
-                        child: Text(
-                          'Удалить аккаунт',
-                          style: TextStyle(color: Colors.red),
+                                      );
+                                    });
+                                // _deleteAccount();
+                                // Navigator.of(context).pushReplacement(
+                                //   MaterialPageRoute(
+                                //     builder: (context) => MyApp(),
+                                //   ),
+                                // );
+                              },
+                              child: Text(
+                                'Удалить аккаунт',
+                                style: TextStyle(color: Colors.red),
+                              ),
+
+                            ),
+                            // SizedBox(height: 70),
+                          ],
                         ),
                       ),
+                      SizedBox(height: 100),
+                      // SizedBox(height: 50),
+
                     ],
                   ),
                 ),
               ],
             ),
           ),
-        ],
+        ]
       ),
     );
   }

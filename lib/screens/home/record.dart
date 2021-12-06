@@ -7,7 +7,6 @@ import 'package:first_project_test/models/slider_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -220,6 +219,8 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
             isUtc: true),
       );
       _playerText = txt.substring(0, 5);
+
+      _sliderPos = event.position.inMicroseconds.toDouble();
     });
 
     _fileName = await _generateFileName();
@@ -243,6 +244,23 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
       print('ERROR HAPPENED');
       _player.logger.e('error: $err');
     }
+
+    String? audioFilePath = _tempFileName;
+    Codec codec = Codec.aacADTS;
+
+    await _player.startPlayer(
+      fromURI: audioFilePath,
+      codec: codec,
+      whenFinished: () => null,
+    );
+
+  }
+
+  Future<void> seekToPlayer(int milliSec) async {
+    if (_player.isPlaying) {
+      await _player.seekToPlayer(Duration(milliseconds: milliSec));
+    }
+    _sliderPos = milliSec.toDouble();
   }
 
   // Future<void> playback15Seconds() async {
@@ -335,23 +353,27 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(top: 150),
+          padding: EdgeInsets.only(top: 100),
           child: Container(
             height: double.infinity,
             width: double.infinity,
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(25),
+            child: ListView(
+              children: [
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(25),
+                    ),
+                  ),
+                  margin: EdgeInsets.all(10),
+                  color: backgroundColor,
+                  child: _isRecorderInitialized
+                      ? _isRecording
+                          ? _getRecorderWidget()
+                          : _getPlayerWidget()
+                      : _getRecorderWidget(),
                 ),
-              ),
-              margin: EdgeInsets.all(10),
-              color: backgroundColor,
-              child: _isRecorderInitialized
-                  ? _isRecording
-                      ? _getRecorderWidget()
-                      : _getPlayerWidget()
-                  : _getRecorderWidget(),
+              ],
             ),
           ),
         ),
@@ -446,17 +468,17 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
             children: [
               IconButton(
                 onPressed: null,
-                icon: SvgPicture.asset('assets/Share.svg'),
+                icon: SvgPicture.asset('assets/share.svg'),
               ),
               SizedBox(width: 20),
               IconButton(
                 onPressed: null,
-                icon: SvgPicture.asset('assets/Paper Download.svg'),
+                icon: SvgPicture.asset('assets/paper_download.svg'),
               ),
               SizedBox(width: 20),
               IconButton(
                 onPressed: null,
-                icon: SvgPicture.asset('assets/Delete.svg'),
+                icon: SvgPicture.asset('assets/delete.svg'),
               ),
               SizedBox(width: 75),
               InkWell(
@@ -478,7 +500,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
         SliderTheme(
           data: SliderThemeData(
             trackHeight: 2,
-            thumbShape: CustomSliderPlayer(_sliderPos),
+            thumbShape: CustomSliderPlayer(thumbRadius: 5),
           ),
           child: Slider(
             activeColor: Color(0xff3A3A55),
@@ -490,19 +512,20 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
             },
           ),
         ),
-        SizedBox(height: 150),
+        SizedBox(height: 100),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             InkWell(
                 // onTap: () => playback15Seconds(),
-                child: SvgPicture.asset('assets/Play15Back.svg')),
+                child: SvgPicture.asset('assets/play_backward.svg'),),
             SizedBox(width: 50),
             _getPlayButton(),
             SizedBox(width: 50),
             InkWell(
-                // onTap: () => playForward15Seconds(),
-                child: SvgPicture.asset('assets/Play15Forward.svg')),
+              // onTap: () => playForward15Seconds(),
+              child: SvgPicture.asset('assets/play_forward.svg'),
+            ),
           ],
         ),
       ],
@@ -532,6 +555,8 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
       ),
     );
   }
+
+
 }
 
 class _ShapePainter extends CustomPainter {

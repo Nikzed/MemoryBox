@@ -75,7 +75,6 @@ class RegistrationController extends GetxController {
   Future<void> verifyPhoneNumber() async {
     showLoading.value = true;
     try{
-      print('ТУТ!!!');
       await auth.verifyPhoneNumber(
       phoneNumber: phoneController.text,
       verificationCompleted: (phoneAuthCredential) async {
@@ -94,10 +93,9 @@ class RegistrationController extends GetxController {
       codeAutoRetrievalTimeout: (verificationId) async {},
     );
     } catch (e){
+      print(e);
       Get.snackbar('Ошибка!', e.toString());
-      print('ОШИБКА');
     }
-    print('ПРОШЛО');
 
   }
 
