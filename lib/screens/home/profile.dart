@@ -6,6 +6,7 @@ import 'package:first_project_test/models/painter_model.dart';
 import 'package:first_project_test/screens/authenticate/sign_in.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
 
@@ -106,12 +107,15 @@ class _ProfileState extends State<Profile> {
                             decoration: BoxDecoration(
                               color: Colors.black,
                               image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  colorFilter: ColorFilter.mode(
-                                      Colors.black.withOpacity(0.6),
-                                      BlendMode.dstATop),
-                                  image: NetworkImage(
-                                      'https://firebasestorage.googleapis.com/v0/b/my-app-59705.appspot.com/o/CROPPED-nebo-oblaka-ozero-pirs.jpg?alt=media&token=4e4ecb89-98a6-4fd2-84af-cade727ee090')),
+                                fit: BoxFit.cover,
+                                colorFilter: ColorFilter.mode(
+                                  Colors.black.withOpacity(0.6),
+                                  BlendMode.dstATop,
+                                ),
+                                image: NetworkImage(
+                                  'https://firebasestorage.googleapis.com/v0/b/my-app-59705.appspot.com/o/CROPPED-nebo-oblaka-ozero-pirs.jpg?alt=media&token=4e4ecb89-98a6-4fd2-84af-cade727ee090',
+                                ),
+                              ),
                             ),
                             child: GestureDetector(
                               onTap: () async {
@@ -123,6 +127,14 @@ class _ProfileState extends State<Profile> {
                                   _image = File(image!.path);
                                 });
                               },
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: SvgPicture.asset(
+                                      'assets/photo.svg',
+                                  width: 75,
+                                  height: 75,
+                                ),
+                              ),
                             ),
                           )
                         : _image == null // ? CachedNetworkImage
@@ -140,14 +152,19 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 14,
                 ),
+                // Stack(
+                //   children: [
+                //
+                //   ],
+                // ),
                 Text(
                   'Имя',
                   style: TextStyle(fontSize: 24),
                 ),
                 SizedBox(
-                  height: 20,
+                  height: 50,
                 ),
                 Container(
                   height: 50,

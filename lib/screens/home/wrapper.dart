@@ -76,22 +76,22 @@ class _WrapperState extends State<Wrapper> {
               padding: const EdgeInsets.only(top: 70, left: 30, right: 50),
               child: Column(
                 children: [
-                  _getDrawerButton('assets/Home.svg', 'Главная', 0),
+                  _getDrawerButton('assets/home.svg', 'Главная', 0),
                   SizedBox(height: 15),
-                  _getDrawerButton('assets/Profile.svg', 'Профиль', 4),
+                  _getDrawerButton('assets/profile.svg', 'Профиль', 4),
                   SizedBox(height: 15),
-                  _getDrawerButton('assets/Category.svg', 'Подборки', 1),
+                  _getDrawerButton('assets/category.svg', 'Подборки', 1),
                   SizedBox(height: 15),
-                  _getDrawerButton('assets/Paper.svg', 'Все аудиофалы', 1),
+                  _getDrawerButton('assets/paper.svg', 'Все аудиофалы', 1),
                   SizedBox(height: 15),
-                  _getDrawerButton('assets/Search.svg', 'Поиск', 5),
+                  _getDrawerButton('assets/search.svg', 'Поиск', 5),
                   SizedBox(height: 15),
-                  _getDrawerButton('assets/Delete.svg', 'Недавно удаленные', 0),
+                  _getDrawerButton('assets/delete.svg', 'Недавно удаленные', 0),
                   SizedBox(height: 40),
-                  _getDrawerButton('assets/Wallet.svg', 'Подписка', 0),
+                  _getDrawerButton('assets/wallet.svg', 'Подписка', 0),
                   SizedBox(height: 40),
                   _getDrawerButton(
-                      'assets/Edit.svg', 'Написать в поддержку', 0),
+                      'assets/edit.svg', 'Написать в поддержку', 0),
                 ],
               ),
             ),
@@ -180,22 +180,22 @@ class _WrapperState extends State<Wrapper> {
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 activeIcon: SvgPicture.asset(
-                  'assets/Home.svg',
+                  'assets/home.svg',
                   color: Color(0xff8c84e2),
                 ),
                 icon: SvgPicture.asset(
-                  'assets/Home.svg',
+                  'assets/home.svg',
                   color: Color(0x803A3A55CC),
                 ),
                 label: 'Главная',
               ),
               BottomNavigationBarItem(
                 activeIcon: SvgPicture.asset(
-                  'assets/Category.svg',
+                  'assets/category.svg',
                   color: Color(0xff8c84e2),
                 ),
                 icon: SvgPicture.asset(
-                  'assets/Category.svg',
+                  'assets/category.svg',
                   color: Color(0x803A3A55CC),
                 ),
                 label: 'Подборки',
@@ -213,22 +213,22 @@ class _WrapperState extends State<Wrapper> {
               ),
               BottomNavigationBarItem(
                 activeIcon: SvgPicture.asset(
-                  'assets/Paper.svg',
+                  'assets/paper.svg',
                   color: Color(0xff8c84e2),
                 ),
                 icon: SvgPicture.asset(
-                  'assets/Paper.svg',
+                  'assets/paper.svg',
                   color: Color(0x803A3A55CC),
                 ),
                 label: 'Аудиозаписи',
               ),
               BottomNavigationBarItem(
                 activeIcon: SvgPicture.asset(
-                  'assets/Profile.svg',
+                  'assets/profile.svg',
                   color: Color(0xff8c84e2),
                 ),
                 icon: SvgPicture.asset(
-                  'assets/Profile.svg',
+                  'assets/profile.svg',
                   color: Color(0x803A3A55CC),
                 ),
                 label: 'Профиль',

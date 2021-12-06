@@ -1,7 +1,9 @@
 import 'package:first_project_test/constants/constants.dart';
+import 'package:first_project_test/models/audio_model.dart';
 import 'package:first_project_test/models/painter_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class Home extends StatefulWidget {
@@ -12,10 +14,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
-  final accentColor = 0xff8c84e2;
-  final List<String> entries = <String>['A', 'B', 'C'];
-  final List<int> colorCodes = <int>[600, 500, 100];
   double sw = Get.width;
   double sh = Get.height;
 
@@ -36,9 +34,8 @@ class _HomeState extends State<Home> {
 
   Widget _getSliverAppBar() {
     return SliverAppBar(
-      systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarIconBrightness: Brightness.light
-      ),
+      systemOverlayStyle:
+          SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light),
       backgroundColor: backgroundColor,
       expandedHeight: 0.5 * sh,
       automaticallyImplyLeading: false,
@@ -47,7 +44,7 @@ class _HomeState extends State<Home> {
           children: <Widget>[
             Container(
               width: sw,
-              height: 0.7*sh,
+              height: 0.7 * sh,
               child: CustomPaint(
                 painter: CirclePainter(),
               ),
@@ -100,11 +97,11 @@ class _HomeState extends State<Home> {
               ),
             ),
             Positioned(
-              top: 0.22*sh,
-              left: 0.035*sw,
+              top: 0.22 * sh,
+              left: 0.035 * sw,
               child: Container(
-                width: 0.45*sw,
-                height: 0.32*sh,
+                width: 0.45 * sw,
+                height: 0.32 * sh,
                 child: Container(
                   child: Stack(
                     children: [
@@ -150,15 +147,15 @@ class _HomeState extends State<Home> {
               ),
             ),
             Positioned(
-              top: 0.22*sh,
-              right: 0.035*sw,
+              top: 0.22 * sh,
+              right: 0.035 * sw,
               child: InkWell(
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 onTap: () {},
                 child: Container(
-                  width: 0.45*sw,
-                  height: 0.15*sh,
+                  width: 0.45 * sw,
+                  height: 0.15 * sh,
                   child: Container(
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
@@ -180,11 +177,11 @@ class _HomeState extends State<Home> {
               ),
             ),
             Positioned(
-              top: 0.39*sh,
-              right: 0.035*sw,
+              top: 0.39 * sh,
+              right: 0.035 * sw,
               child: Container(
-                width: 0.45*sw,
-                height: 0.15*sh,
+                width: 0.45 * sw,
+                height: 0.15 * sh,
                 child: Container(
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
@@ -212,23 +209,67 @@ class _HomeState extends State<Home> {
 
   Widget _getSliverList() {
     return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          return Card(
-            margin: const EdgeInsets.all(15),
+      delegate: SliverChildListDelegate(
+        [
+          Padding(
+            padding: EdgeInsets.all(20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  'Аудиозаписи',
+                  style: TextStyle(
+                    fontSize: 22,
+                    letterSpacing: 0.3,
+                    color: Color(0xff3A3A55),
+                  ),
+                ),
+                Text('Открыть всё',
+                  style: TextStyle(
+                    color: Color(0xff3A3A55),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 50),
+          Align(
+            alignment: Alignment.center,
             child: Container(
-              color: Color(accentColor),
-              height: 80,
-              alignment: Alignment.center,
+              width: 200,
               child: Text(
-                "Item $index",
-                style: const TextStyle(fontSize: 30),
+                'Как только ты запишешь аудио, они появится здесь.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Color(0xff3A3A5580).withOpacity(0.5),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          );
-        },
-        childCount: 10, // 1000 list items
+          ),
+          SizedBox(height: 30),
+          SvgPicture.asset('assets/arrow_down.svg'),
+          // Icon(
+          //   Icons.arrow_downward,
+          //   size: 42,
+          //   color: Color(0xff3A3A5580).withOpacity(0.5),
+          // ),
+          // AudioForm(),
+          // AudioForm(),
+          // AudioForm(),
+          // AudioForm(),
+          // AudioForm(),
+          // AudioForm(),
+        ],
       ),
+
+      // delegate: SliverChildBuilderDelegate(
+      //   (context, index) {
+      //     return getForm();
+      //   },
+      //   childCount: 10, // 1000 list items
+      // ),
     );
   }
 }
