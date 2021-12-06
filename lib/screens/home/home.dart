@@ -205,6 +205,8 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
+    // TODO сделать current index == selected index для отображения состаяния isPlaying
+    // TODO check dispose() потому что перерисовывает activity
   }
 
   Widget _getSliverList() {
