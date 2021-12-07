@@ -70,7 +70,7 @@ class _AudioFormState extends State<AudioForm> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Hello',
+                  'Малышь Кокки 1',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Color(0xff3A3A5580).withOpacity(1),
@@ -79,7 +79,7 @@ class _AudioFormState extends State<AudioForm> {
                 ),
                 SizedBox(height: 2),
                 Text(
-                  'World!',
+                  '30 минут',
                   style: TextStyle(
                     color: Color(0xff3A3A5580).withOpacity(0.5),
                   ),

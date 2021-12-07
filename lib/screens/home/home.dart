@@ -19,16 +19,19 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        _getSliverAppBar(),
-        _getSliverList(),
-        SliverToBoxAdapter(
-          child: Container(
-            height: 80,
+    return Container(
+      color: backgroundColor,
+      child: CustomScrollView(
+        slivers: [
+          _getSliverAppBar(),
+          _getSliverList(),
+          SliverToBoxAdapter(
+            child: Container(
+              height: 80,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -282,4 +285,5 @@ class _HomeState extends State<Home> {
       // ),
     );
   }
+
 }
