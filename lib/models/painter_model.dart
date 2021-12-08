@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
 
 class CirclePainter extends CustomPainter {
+
+  final color;
+
+  const CirclePainter({this.color = const Color(0xff8c84e2)});
   @override
   void paint(Canvas canvas, Size size) {
-    var paint = Paint()..color = Color(0xff8c84e2);
+    var paint = Paint()..color = color;
 
     Path path = Path();
     path.moveTo(0, size.height * 0.6);

@@ -371,27 +371,30 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(top: 100),
+          padding: EdgeInsets.only(top: 150),
           child: Container(
             height: double.infinity,
             width: double.infinity,
-            child: ListView(
-              children: [
-                Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(25),
-                    ),
-                  ),
-                  margin: EdgeInsets.all(10),
-                  color: backgroundColor,
-                  child: _isRecorderInitialized
-                      ? _isRecording
-                          ? _getRecorderWidget()
-                          : _getPlayerWidget()
-                      : _getRecorderWidget(),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(25),
                 ),
-              ],
+              ),
+              margin: EdgeInsets.all(10),
+              color: backgroundColor,
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  if (_isRecorderInitialized)
+                    if (_isRecording)
+                      _getRecorderWidget()
+                    else
+                      _getPlayerWidget()
+                  else
+                    _getRecorderWidget(),
+                ],
+              ),
             ),
           ),
         ),
@@ -399,7 +402,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
     );
   }
 
-  Widget? _getRecorderWidget() {
+  Widget _getRecorderWidget() {
     return Column(
       children: [
         Align(
@@ -436,6 +439,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
         ),
         SizedBox(height: 50),
         _getStopButton(),
+        SizedBox(height: 80),
       ],
     );
   }
