@@ -1,12 +1,12 @@
 import 'package:first_project_test/models/painter_model.dart';
 import 'package:flutter/material.dart';
 
-class Compilations extends StatefulWidget {
+class Audios extends StatefulWidget {
   @override
-  _CompilationsState createState() => _CompilationsState();
+  _AudiosState createState() => _AudiosState();
 }
 
-class _CompilationsState extends State<Compilations> {
+class _AudiosState extends State<Audios> {
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -15,7 +15,7 @@ class _CompilationsState extends State<Compilations> {
           width: double.infinity,
           height: 350,
           child: CustomPaint(
-            painter: CirclePainter(color: Color(0xff71A59F)),
+            painter: CirclePainter(color: Color(0xff5E77CE)),
           ),
         ),
         Align(
