@@ -11,6 +11,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -73,7 +74,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
   @override
   void initState() {
     print('1 - initR');
-    initRecorder();
+    _initRecorder();
     print('2 - initP');
     _initPlayer();
     print('3 - toggle');
@@ -82,7 +83,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
 
   // ----- RECORDER START -----
 
-  Future<void> initRecorder() async {
+  Future<void> _initRecorder() async {
     final status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
       throw RecordingPermissionException('Recording permission required.');
@@ -94,10 +95,16 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
     await _toggleRecording();
   }
 
-  Future startRecord() async {
+  Future _startRecorder() async {
     if (!_isRecorderInitialized) {
       return;
     }
+    Directory directory = await getApplicationDocumentsDirectory();
+    // Возможность инициализировать все записанные аудио
+    // String filePath = directory.path + '/' + DateTime.now().millisecondsSinceEpoch.toString() + '.aac';
+    // Временный файл
+    String filePath = directory.path + '/' + 'temp' + '.aac';
+
     await _recorder.setSubscriptionDuration(Duration(milliseconds: 150));
     _recorderSubscription = await _recorder.onProgress!.listen((event) {
       setState(() {
@@ -121,12 +128,14 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
       _recorderText = txt.substring(0, 8);
     });
     await _recorder.startRecorder(
-      toFile: _tempFileName,
+      // toFile: _tempFileName,
+      toFile: filePath,
       codec: Codec.aacADTS,
     );
+    print('recording to $filePath');
   }
 
-  Future<void> stopRecord() async {
+  Future<void> _stopRecorder() async {
     if (!_isRecorderInitialized) {
       return;
     }
@@ -203,10 +212,10 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
   }
 
   Future _toggleRecording() async {
-    if (_recorder.isStopped) {
-      await startRecord();
+    if (_isRecording) {
+      await _stopRecorder();
     } else {
-      await stopRecord();
+      await _startRecorder();
     }
   }
 
