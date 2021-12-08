@@ -1,4 +1,6 @@
+import 'package:first_project_test/models/audio_model.dart';
 import 'package:first_project_test/screens/additional_screens/search.dart';
+import 'package:first_project_test/screens/home/audios.dart';
 import 'package:first_project_test/screens/home/collections.dart';
 import 'package:first_project_test/screens/home/home.dart';
 import 'package:first_project_test/screens/home/profile.dart';
@@ -25,7 +27,7 @@ class WrapperController extends GetxController {
     Home(),
     Compilations(),
     Record(),
-    Search(),
+    Audios(),
     Profile(),
     // additional_screens
     Search(),

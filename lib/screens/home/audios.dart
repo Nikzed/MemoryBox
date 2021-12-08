@@ -1,5 +1,6 @@
 import 'package:first_project_test/models/painter_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class Audios extends StatefulWidget {
   @override
@@ -72,17 +73,19 @@ class _AudiosState extends State<Audios> {
         Align(
           alignment: Alignment.topLeft,
           child: Padding(
-            padding: EdgeInsets.only(top: 170,left: 20),
+            padding: EdgeInsets.only(top: 170, left: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('20 аудио',
+                Text(
+                  '20 аудио',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 14,
                   ),
                 ),
-                Text('10:30 часов',
+                Text(
+                  '10:30 часов',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 14,
@@ -95,8 +98,84 @@ class _AudiosState extends State<Audios> {
         Align(
           alignment: Alignment.topRight,
           child: Padding(
-            padding: EdgeInsets.only(top: 170, right: 20),
-            child: Text(''),
+            padding: EdgeInsets.only(top: 165, right: 15),
+            child: InkWell(
+              onTap: (){},
+              child: Container(
+                height: 46,
+                width: 90,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: Colors.white.withOpacity(0.4),
+                ),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 20),
+                    child: SizedBox(
+                      height: 22,
+                      width: 22,
+                      child: SvgPicture.asset('assets/repeat.svg',color: Colors.white.withOpacity(0.6),),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.topRight,
+          child: Padding(
+            padding: EdgeInsets.only(top: 165, right: 65),
+            child: InkWell(
+              onTap: () {},
+              child: Container(
+                height: 46,
+                width: 160,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      spreadRadius: 2,
+                      blurRadius: 10,
+                      offset: Offset(0,0),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5),
+                  child: Row(
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        height: 35,
+                        width: 35,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: Color(0xFF8C84E2),
+                        ),
+                        child: Icon(
+                          Icons.play_arrow_rounded,
+                          size: 25,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        'Запустить все',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                          color: Color(0xFF8C84E2),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ],
