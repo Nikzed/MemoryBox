@@ -9,7 +9,7 @@ class RegistrationSplash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Future.delayed(const Duration(seconds: 3), () {
-      Get.offAll(() => Wrapper(), transition: Transition.fade);
+      Get.offAll(() => Wrapper(), transition: Transition.downToUp, duration: Duration(seconds: 1));
     });
 
     return Scaffold(

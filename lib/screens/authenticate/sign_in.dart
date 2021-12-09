@@ -94,7 +94,11 @@ class _SignInState extends State<SignIn> {
                           ),
                         ),
                         onPressed: () {
-                          Get.to(() => Registration(),transition: Transition.cupertino);
+                          Get.to(
+                            () => Registration(),
+                            transition: Transition.cupertino,
+                            duration: Duration(seconds: 1),
+                          );
                         },
                         child: Text(
                           'Продолжить',
