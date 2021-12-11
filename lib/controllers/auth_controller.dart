@@ -23,7 +23,6 @@ class AuthController extends GetxController {
     once(firebaseUser, _setInitialScreen); // changed from ever
   }
 
-
   _setInitialScreen(User? user) {
     if (user == null) {
       // if the user is not found then the user is navigated to the SignIn
@@ -33,8 +32,6 @@ class AuthController extends GetxController {
       Get.offAll(() => SplashScreen());
     }
   }
-
-
 
   Future<String?> getPhoneNumber(String phoneNumber) async {
     CollectionReference ref = FirebaseFirestore.instance.collection('users');

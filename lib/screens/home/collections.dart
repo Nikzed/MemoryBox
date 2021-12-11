@@ -25,6 +25,7 @@ class _CompilationsState extends State<Compilations> {
             child: IconButton(
               color: Colors.white,
               iconSize: 28,
+              // TODO implement add collection button
               icon: Icon(Icons.menu),
               onPressed: () => Scaffold.of(context).openDrawer(),
             ),
@@ -38,7 +39,7 @@ class _CompilationsState extends State<Compilations> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  'Аудиозаписи',
+                  'Подборки',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 36,
@@ -67,36 +68,6 @@ class _CompilationsState extends State<Compilations> {
               icon: Icon(Icons.more_horiz),
               onPressed: () => null,
             ),
-          ),
-        ),
-        Align(
-          alignment: Alignment.topLeft,
-          child: Padding(
-            padding: EdgeInsets.only(top: 170,left: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('20 аудио',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                  ),
-                ),
-                Text('10:30 часов',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        Align(
-          alignment: Alignment.topRight,
-          child: Padding(
-            padding: EdgeInsets.only(top: 170, right: 20),
-            child: Text(''),
           ),
         ),
       ],

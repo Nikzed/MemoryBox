@@ -2,14 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_project_test/constants/constants.dart';
 import 'package:first_project_test/controllers/registration_controller.dart';
 import 'package:first_project_test/models/painter_model.dart';
-import 'package:first_project_test/screens/authenticate/registration_splash.dart';
-import 'package:first_project_test/screens/home/wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
-
 
 class Registration extends StatefulWidget {
   const Registration({Key? key}) : super(key: key);
@@ -19,9 +15,7 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationState extends State<Registration> {
-
   RegistrationController registrationController = RegistrationController();
-
 
   getMobileFormWidget(context) {
     return Stack(
@@ -98,34 +92,6 @@ class _RegistrationState extends State<Registration> {
               ),
               onPressed: () {
                 registrationController.verifyPhoneNumber();
-
-                // setState(() {
-                //   showLoading = true;
-                // });
-                // await auth.verifyPhoneNumber(
-                //   phoneNumber: registrationController.phoneController.text,
-                //   //phoneController.text,
-                //   verificationCompleted: (phoneAuthCredential) async {
-                //     setState(() {
-                //       showLoading = false;
-                //     });
-                //     // signInWithPhoneAuthCredential(phoneAuthCredential);
-                //   },
-                //   verificationFailed: (verificationFailed) async {
-                //     setState(() {
-                //       showLoading = false;
-                //     });
-                //     Get.snackbar('Ошибка!', verificationFailed.message.toString());
-                //   },
-                //   codeSent: (verificationId, resendingToken) async {
-                //     setState(() {
-                //       showLoading = false;
-                //       registrationController.currentState.value = MobileVerificationState.SHOW_OTP_FORM;
-                //       this.verificationId = verificationId;
-                //     });
-                //   },
-                //   codeAutoRetrievalTimeout: (verificationId) async {},
-                // );
               },
               child: Text(
                 'Продолжить',
@@ -149,15 +115,6 @@ class _RegistrationState extends State<Registration> {
             ),
             onTap: () {
               registrationController.signInAnon();
-              // setState(() {
-              //   showLoading = true;
-              // });
-              // //UserCredential userCredential =
-              // await auth.signInAnonymously();
-              // Get.offAll(() => Wrapper());
-              // setState(() {
-              //   showLoading = false;
-              // });
             },
           ),
         ),
@@ -177,7 +134,7 @@ class _RegistrationState extends State<Registration> {
                   BoxShadow(
                     color: Colors.black12,
                     blurRadius: 2,
-                    offset: Offset(0, 5), // Shadow position
+                    offset: Offset(0, 5),
                   ),
                 ],
               ),
@@ -275,12 +232,12 @@ class _RegistrationState extends State<Registration> {
               ),
               onPressed: () async {
                 // TODO rebuild
-                PhoneAuthCredential phoneAuthCredential =
-                    PhoneAuthProvider.credential(
-                  verificationId: registrationController.verificationId,
-                  smsCode: registrationController.otpController.text,
-                );
-                registrationController.signInWithPhoneAuthCredential(phoneAuthCredential);
+                // PhoneAuthCredential phoneAuthCredential =
+                //     PhoneAuthProvider.credential(
+                //   verificationId: registrationController.verificationId,
+                //   smsCode: registrationController.otpController.text,
+                // );
+                registrationController.signInWithPhoneAuthCredential();
               },
               child: Text(
                 'Продолжить',
@@ -305,7 +262,7 @@ class _RegistrationState extends State<Registration> {
                   BoxShadow(
                     color: Colors.black12,
                     blurRadius: 2,
-                    offset: Offset(0, 5), // Shadow position
+                    offset: Offset(0, 5),
                   ),
                 ],
               ),
@@ -324,19 +281,21 @@ class _RegistrationState extends State<Registration> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return registrationController.showLoading.value
-        ? Center(
-            child: CircularProgressIndicator(),
-          )
-        : Scaffold(
+    return Obx(
+      () => registrationController.showLoading.value
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Scaffold(
               resizeToAvoidBottomInset: false,
               backgroundColor: backgroundColor,
-              body: registrationController.currentState.value == MobileVerificationState.SHOW_MOBILE_FORM
+              body: registrationController.currentState.value ==
+                      MobileVerificationState.SHOW_MOBILE_FORM
                   ? getMobileFormWidget(context)
                   : getOtpFormWidget(context),
-            );
+            ),
+    );
   }
 }

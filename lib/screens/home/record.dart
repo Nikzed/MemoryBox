@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:first_project_test/constants/constants.dart';
+import 'package:first_project_test/controllers/recorder_controller.dart';
 import 'package:first_project_test/models/painter_model.dart';
 import 'package:first_project_test/models/slider_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:intl/intl.dart';
@@ -30,30 +32,31 @@ class Record extends StatefulWidget {
 }
 
 class _RecordState extends State<Record> with TickerProviderStateMixin {
-  bool storagePermissionIsGranted = false;
-  String _tempFileName = 'Recording_.aac';
-  String? _fileName;
-  String _directoryPath = '/storage/emulated/0/SoundRecorder';
-  late String filePath;
-
-  // -- Recorder --
-  FlutterSoundRecorder _recorder = FlutterSoundRecorder();
-  bool _isRecorderInitialized = false;
-
-  bool get _isRecording => _recorder.isRecording;
-  String _recorderText = '0:00:00';
-  double _noiseInDb = 0;
-  List _noisesList = List.generate(20, (index) => 0);
-
-  // -- Player --
-  FlutterSoundPlayer _player = FlutterSoundPlayer();
-
-  bool get _isPlaying => _player.isPlaying;
-  bool playing = false;
-  String _playerText = '00:00:00';
-  double _maxDuration = 0.0;
-  double _sliderPos = 0.0;
-  Uint8List? _boumData;
+  // bool storagePermissionIsGranted = false;
+  // String _tempFileName = 'Recording_.aac';
+  // String? _fileName;
+  // String _directoryPath = '/storage/emulated/0/SoundRecorder';
+  // late String filePath;
+  //
+  // // -- Recorder --
+  // FlutterSoundRecorder _recorder = FlutterSoundRecorder();
+  // bool _isRecorderInitialized = false;
+  //
+  // bool get _isRecording => _recorder.isRecording;
+  // String _recorderText = '0:00:00';
+  // double _noiseInDb = 0;
+  // List _noisesList = List.generate(20, (index) => 0);
+  //
+  // // -- Player --
+  // FlutterSoundPlayer _player = FlutterSoundPlayer();
+  //
+  // bool get _isPlaying => _player.isPlaying;
+  // bool playing = false;
+  // String _playerText = '00:00:00';
+  // double _maxDuration = 0.0;
+  // double _sliderPos = 0.0;
+  // Uint8List? _boumData;
+  RecorderController _controller = RecorderController();
 
   // -- recording animation --
   final DecorationTween decorationTween = DecorationTween(
@@ -71,208 +74,205 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
     duration: const Duration(seconds: 1),
   )..repeat(reverse: true);
 
-  @override
-  void initState() {
-    print('1 - initR');
-    _initRecorder();
-    print('2 - initP');
-    _initPlayer();
-    print('3 - toggle');
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   _initRecorder();
+  //   _initPlayer();
+  //   super.initState();
+  // }
 
   // ----- RECORDER START -----
 
-  Future<void> _initRecorder() async {
-    final status = await Permission.microphone.request();
-    if (status != PermissionStatus.granted) {
-      throw RecordingPermissionException('Recording permission required.');
-    }
-    await _recorder.openAudioSession();
+  // Future<void> _initRecorder() async {
+  //   final status = await Permission.microphone.request();
+  //   if (status != PermissionStatus.granted) {
+  //     throw RecordingPermissionException('Recording permission required.');
+  //   }
+  //   await _recorder.openAudioSession();
+  //
+  //   _isRecorderInitialized = true;
+  //   print('_isRecorderInitialized $_isRecorderInitialized');
+  //   await _toggleRecording();
+  // }
 
-    _isRecorderInitialized = true;
-    print('_isRecorderInitialized $_isRecorderInitialized');
-    await _toggleRecording();
-  }
+  // Future _startRecorder() async {
+  //   if (!_isRecorderInitialized) {
+  //     return;
+  //   }
+  //   Directory directory = await getApplicationDocumentsDirectory();
+  //   // Возможность инициализировать все записанные аудио
+  //   // String filePath = directory.path + '/' + DateTime.now().millisecondsSinceEpoch.toString() + '.aac';
+  //   // Временный файл
+  //   String filePath = directory.path + '/' + 'temp' + '.aac';
+  //
+  //   await _recorder.setSubscriptionDuration(Duration(milliseconds: 150));
+  //   _recorderSubscription = await _recorder.onProgress!.listen((event) {
+  //     setState(() {
+  //       if (event.decibels != null) {
+  //         _noiseInDb = event.decibels!.ceilToDouble();
+  //       }
+  //     });
+  //     for (int i = 0; i < 19; i++) {
+  //       _noisesList[i] = _noisesList[i + 1];
+  //     }
+  //
+  //     _noisesList.removeLast();
+  //     _noisesList.add(_noiseInDb);
+  //     print('noiseList => $_noisesList');
+  //
+  //     DateTime date = DateTime.fromMillisecondsSinceEpoch(
+  //         event.duration.inMilliseconds,
+  //         isUtc: true);
+  //     String txt = DateFormat('mm:ss:SS', 'en_GB').format(date);
+  //
+  //     _recorderText = txt.substring(0, 8);
+  //   });
+  //   await _recorder.startRecorder(
+  //     // toFile: _tempFileName,
+  //     toFile: filePath,
+  //     codec: Codec.aacADTS,
+  //   );
+  //   print('recording to $filePath');
+  // }
 
-  Future _startRecorder() async {
-    if (!_isRecorderInitialized) {
-      return;
-    }
-    Directory directory = await getApplicationDocumentsDirectory();
-    // Возможность инициализировать все записанные аудио
-    // String filePath = directory.path + '/' + DateTime.now().millisecondsSinceEpoch.toString() + '.aac';
-    // Временный файл
-    String filePath = directory.path + '/' + 'temp' + '.aac';
+  // Future<void> _stopRecorder() async {
+  //   if (!_isRecorderInitialized) {
+  //     return;
+  //   }
+  //   await _recorder.stopRecorder();
+  //   await cancelRecorderSubscriptions();
+  //   setState(() {
+  //     _noisesList = List.generate(20, (index) => 0);
+  //   });
+  //   //_writeFileToStorage();
+  // }
 
-    await _recorder.setSubscriptionDuration(Duration(milliseconds: 150));
-    _recorderSubscription = await _recorder.onProgress!.listen((event) {
-      setState(() {
-        if (event.decibels != null) {
-          _noiseInDb = event.decibels!.ceilToDouble();
-        }
-      });
-      for (int i = 0; i < 19; i++) {
-        _noisesList[i] = _noisesList[i + 1];
-      }
+  // Future<void> cancelRecorderSubscriptions() async {
+  //   if (_recorderSubscription != null) {
+  //     await _recorderSubscription!.cancel();
+  //     _recorderSubscription = null;
+  //   }
+  // }
 
-      _noisesList.removeLast();
-      _noisesList.add(_noiseInDb);
-      print('noiseList => $_noisesList');
+  // Future<void> _writeFileToStorage() async {
+  //   await _getStoragePermission();
+  //   await _createDirectory();
+  //   await _createFile();
+  // }
+  //
+  // Future<void> _writeFileToFirebase() async {
+  //   FirebaseFirestore.instance
+  //       .collection('data')
+  //       .add({'text': 'data added through an app'});
+  // }
+  //
+  // Future<void> _getStoragePermission() async {
+  //   if (await Permission.storage.request().isGranted) {
+  //     setState(() {
+  //       storagePermissionIsGranted = true;
+  //     });
+  //   } else if (await Permission.storage.request().isPermanentlyDenied) {
+  //     await openAppSettings();
+  //   } else if (await Permission.storage.request().isDenied) {
+  //     setState(() {
+  //       storagePermissionIsGranted = false;
+  //     });
+  //   }
+  // }
 
-      DateTime date = DateTime.fromMillisecondsSinceEpoch(
-          event.duration.inMilliseconds,
-          isUtc: true);
-      String txt = DateFormat('mm:ss:SS', 'en_GB').format(date);
+  // Future<void> _createDirectory() async {
+  //   bool isDirectoryCreated = await Directory(_directoryPath).exists();
+  //   if (!isDirectoryCreated) {
+  //     Directory(_directoryPath).create()
+  //         // The created directory is returned as a Future.
+  //         .then((Directory directory) {
+  //       print(directory.path);
+  //     });
+  //   }
+  // }
 
-      _recorderText = txt.substring(0, 8);
-    });
-    await _recorder.startRecorder(
-      // toFile: _tempFileName,
-      toFile: filePath,
-      codec: Codec.aacADTS,
-    );
-    print('recording to $filePath');
-  }
+  // Future<void> _createFile() async {
+  //   String _completeFileName = await _generateFileName();
+  //   File(_directoryPath + '/' + _completeFileName)
+  //       .create(recursive: true)
+  //       .then((File file) async {
+  //     //write to file
+  //     Uint8List bytes = await file.readAsBytes();
+  //     file.writeAsBytes(bytes);
+  //     print(file.path);
+  //     filePath = file.path;
+  //   });
+  // }
 
-  Future<void> _stopRecorder() async {
-    if (!_isRecorderInitialized) {
-      return;
-    }
-    await _recorder.stopRecorder();
-    await cancelRecorderSubscriptions();
-    setState(() {
-      _noisesList = List.generate(20, (index) => 0);
-    });
-    //_writeFileToStorage();
-  }
-
-  Future<void> cancelRecorderSubscriptions() async {
-    if (_recorderSubscription != null) {
-      await _recorderSubscription!.cancel();
-      _recorderSubscription = null;
-    }
-  }
-
-  Future<void> _writeFileToStorage() async {
-    await _getStoragePermission();
-    await _createDirectory();
-    await _createFile();
-  }
-
-  Future<void> _writeFileToFirebase() async {
-    FirebaseFirestore.instance
-        .collection('data')
-        .add({'text': 'data added through an app'});
-  }
-
-  Future<void> _getStoragePermission() async {
-    if (await Permission.storage.request().isGranted) {
-      setState(() {
-        storagePermissionIsGranted = true;
-      });
-    } else if (await Permission.storage.request().isPermanentlyDenied) {
-      await openAppSettings();
-    } else if (await Permission.storage.request().isDenied) {
-      setState(() {
-        storagePermissionIsGranted = false;
-      });
-    }
-  }
-
-  Future<void> _createDirectory() async {
-    bool isDirectoryCreated = await Directory(_directoryPath).exists();
-    if (!isDirectoryCreated) {
-      Directory(_directoryPath).create()
-          // The created directory is returned as a Future.
-          .then((Directory directory) {
-        print(directory.path);
-      });
-    }
-  }
-
-  Future<void> _createFile() async {
-    String _completeFileName = await _generateFileName();
-    File(_directoryPath + '/' + _completeFileName)
-        .create(recursive: true)
-        .then((File file) async {
-      //write to file
-      Uint8List bytes = await file.readAsBytes();
-      file.writeAsBytes(bytes);
-      print(file.path);
-      filePath = file.path;
-    });
-  }
-
-  Future<String> _generateFileName([int i = 1]) async {
-    if (await File(_directoryPath + '/' + 'Запись №$i.aac').exists()) {
-      return _generateFileName(i + 1);
-    }
-    return 'Запись №$i.aac';
-  }
-
-  Future _toggleRecording() async {
-    if (_isRecording) {
-      await _stopRecorder();
-    } else {
-      await _startRecorder();
-    }
-  }
+  // Future<String> _generateFileName([int i = 1]) async {
+  //   if (await File(_directoryPath + '/' + 'Запись №$i.aac').exists()) {
+  //     return _generateFileName(i + 1);
+  //   }
+  //   return 'Запись №$i.aac';
+  // }
+  //
+  // Future _toggleRecording() async {
+  //   if (_isRecording) {
+  //     await _stopRecorder();
+  //   } else {
+  //     await _startRecorder();
+  //   }
+  // }
 
   // ----- RECORDER END -----
 
   // ----- PLAYER START -----
 
-  Future<void> _initPlayer() async {
-    await _player.openAudioSession();
+  // Future<void> _initPlayer() async {
+  //   await _player.openAudioSession();
+  //
+  //   await _player.setSubscriptionDuration(Duration(milliseconds: 150));
+  //   await initializeDateFormatting();
+  //
+  //   _playerSubscription = _player.onProgress!.listen((event) {
+  //     _maxDuration = event.duration.inMilliseconds.toDouble();
+  //     if (_maxDuration < 0) _maxDuration = 0.0;
+  //
+  //     String txt = DateFormat('mm:ss:SS', 'en_GB').format(
+  //       DateTime.fromMicrosecondsSinceEpoch(event.position.inMilliseconds,
+  //           isUtc: true),
+  //     );
+  //     _playerText = txt.substring(0, 5);
+  //
+  //     _sliderPos = event.position.inMicroseconds.toDouble();
+  //   });
+  //
+  //   _fileName = await _generateFileName();
+  // }
 
-    await _player.setSubscriptionDuration(Duration(milliseconds: 150));
-    await initializeDateFormatting();
-
-    _playerSubscription = _player.onProgress!.listen((event) {
-      _maxDuration = event.duration.inMilliseconds.toDouble();
-      if (_maxDuration < 0) _maxDuration = 0.0;
-
-      String txt = DateFormat('mm:ss:SS', 'en_GB').format(
-        DateTime.fromMicrosecondsSinceEpoch(event.position.inMilliseconds,
-            isUtc: true),
-      );
-      _playerText = txt.substring(0, 5);
-
-      _sliderPos = event.position.inMicroseconds.toDouble();
-    });
-
-    _fileName = await _generateFileName();
-  }
-
-  Future startPlayer() async {
-    try {
-      String? audioFilePath = _tempFileName;
-      Codec codec = Codec.aacADTS;
-      if (_player.isPaused) {
-        await _player.resumePlayer();
-      } else {
-        await _player.startPlayer(
-            fromURI: audioFilePath,
-            codec: codec,
-            whenFinished: () {
-              _player.logger.d('Player finished');
-            });
-      }
-    } on Exception catch (err) {
-      print('ERROR HAPPENED');
-      _player.logger.e('error: $err');
-    }
-
-    String? audioFilePath = _tempFileName;
-    Codec codec = Codec.aacADTS;
-
-    await _player.startPlayer(
-      fromURI: audioFilePath,
-      codec: codec,
-      whenFinished: () => null,
-    );
-  }
+  // Future startPlayer() async {
+  //   try {
+  //     String? audioFilePath = _tempFileName;
+  //     Codec codec = Codec.aacADTS;
+  //     if (_player.isPaused) {
+  //       await _player.resumePlayer();
+  //     } else {
+  //       await _player.startPlayer(
+  //           fromURI: audioFilePath,
+  //           codec: codec,
+  //           whenFinished: () {
+  //             _player.logger.d('Player finished');
+  //           });
+  //     }
+  //   } on Exception catch (err) {
+  //     print('ERROR HAPPENED');
+  //     _player.logger.e('error: $err');
+  //   }
+  //
+  //   String? audioFilePath = _tempFileName;
+  //   Codec codec = Codec.aacADTS;
+  //
+  //   await _player.startPlayer(
+  //     fromURI: audioFilePath,
+  //     codec: codec,
+  //     whenFinished: () => null,
+  //   );
+  // }
 
   // Future<void> seekToSec(int milliSec) async {
   //   if (_player.isPlaying) {
@@ -300,43 +300,43 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
   //   _sliderPosition = milliSec.toDouble();
   // }
 
-  Future stopPlayer() async {
-    await _player.pausePlayer();
-  }
-
-  void cancelPlayerSubscriptions() {
-    if (_playerSubscription != null) {
-      _playerSubscription!.cancel();
-      _playerSubscription = null;
-    }
-  }
-
-  Future<void> togglePlayer() async {
-    print('_isPlaying: $_isPlaying');
-    if (!playing) {
-      setState(() {
-        playing = true;
-      });
-      await startPlayer();
-    } else {
-      setState(() {
-        playing = false;
-      });
-      await stopPlayer();
-    }
-  }
+  // Future stopPlayer() async {
+  //   await _player.pausePlayer();
+  // }
+  //
+  // void cancelPlayerSubscriptions() {
+  //   if (_playerSubscription != null) {
+  //     _playerSubscription!.cancel();
+  //     _playerSubscription = null;
+  //   }
+  // }
+  //
+  // Future<void> togglePlayer() async {
+  //   print('_isPlaying: $_isPlaying');
+  //   if (!playing) {
+  //     setState(() {
+  //       playing = true;
+  //     });
+  //     await startPlayer();
+  //   } else {
+  //     setState(() {
+  //       playing = false;
+  //     });
+  //     await stopPlayer();
+  //   }
+  // }
 
   // ----- PLAYER END -----
 
   @override
   void dispose() {
-    // recorder
-    _recorder.closeAudioSession();
-    _isRecorderInitialized = false;
-    cancelRecorderSubscriptions();
-    // player
-    _player.closeAudioSession();
-    cancelPlayerSubscriptions();
+    // // recorder
+    // _recorder.closeAudioSession();
+    // _isRecorderInitialized = false;
+    // cancelRecorderSubscriptions();
+    // // player
+    // _player.closeAudioSession();
+    // cancelPlayerSubscriptions();
 
     _animationController.dispose();
 
@@ -383,17 +383,19 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
               ),
               margin: EdgeInsets.all(10),
               color: backgroundColor,
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: [
-                  if (_isRecorderInitialized)
-                    if (_isRecording)
-                      _getRecorderWidget()
+              child: Obx(
+                () => ListView(
+                  padding: EdgeInsets.zero,
+                  children: [
+                    if (_controller.isRecorderInitialized.value)
+                      if (_controller.isRecording.value)
+                        _getRecorderWidget()
+                      else
+                        _getPlayerWidget()
                     else
-                      _getPlayerWidget()
-                  else
-                    _getRecorderWidget(),
-                ],
+                      _getRecorderWidget(),
+                  ],
+                ),
               ),
             ),
           ),
@@ -413,7 +415,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
               right: 40,
             ),
             child: InkWell(
-              onTap: () => _toggleRecording(),
+              onTap: () => _controller.toggleRecording(),
               child: Text('Отменить'),
             ),
           ),
@@ -427,14 +429,14 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
         ),
         SizedBox(height: 150),
         CustomPaint(
-          painter: _ShapePainter(_noisesList),
+          painter: _ShapePainter(_controller.noisesList),
         ),
         SizedBox(height: 125),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _getRecordAnimatedDot(),
-            Text('$_recorderText'),
+            Obx(() => Text('${_controller.recorderText}')),
           ],
         ),
         SizedBox(height: 50),
@@ -447,7 +449,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
   Widget _getStopButton() {
     return Container(
       child: InkResponse(
-        onTap: () => _toggleRecording(),
+        onTap: () => _controller.toggleRecording(),
         // _isRecording ? getRecorderFn(_mRecorder) : getPlaybackFn(_mPlayer),
         //getRecorderFn(_mRecorder),
         child: Container(
@@ -504,7 +506,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
               ),
               SizedBox(width: 75),
               InkWell(
-                onTap: () => _writeFileToStorage(),
+                onTap: () => _controller.writeFileToStorage(),
                 // onTap: () => _writeFileToFirebase(),
                 // onTap: () => _onFileUploadButtonPressed(),
                 child: Text('Сохранить'),
@@ -515,9 +517,11 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
         SizedBox(height: 110),
         Align(
           alignment: Alignment.center,
-          child: Text(
-            _fileName!,
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+          child: Obx(
+            () => Text(
+              _controller.fileName!.value,
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+            ),
           ),
         ),
         SizedBox(height: 50),
@@ -526,14 +530,16 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
             trackHeight: 2,
             thumbShape: CustomSliderPlayer(thumbRadius: 5),
           ),
-          child: Slider(
-            activeColor: Color(0xff3A3A55),
-            inactiveColor: Color(0xff3A3A55),
-            value: _sliderPos,
-            onChanged: (val) {
-              _sliderPos = val;
-              setState(() {});
-            },
+          child: Obx(
+            () => Slider(
+              activeColor: Color(0xff3A3A55),
+              inactiveColor: Color(0xff3A3A55),
+              value: _controller.sliderPos.value,
+              onChanged: (val) {
+                _controller.sliderPos.value = val;
+                setState(() {});
+              },
+            ),
           ),
         ),
         SizedBox(height: 155),
@@ -565,8 +571,14 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
       FirebaseStorage firebaseStorage = FirebaseStorage.instance;
       await firebaseStorage
           .ref('upload-voice-firebase')
-          .child(filePath.substring(filePath.lastIndexOf('/'), filePath.length))
-          .putFile(File(filePath));
+          .child(
+            _controller.filePath.value.substring(
+                _controller.filePath.value.lastIndexOf('/'),
+                _controller.filePath.value.length),
+          )
+          .putFile(
+            File(_controller.filePath.value),
+          );
       _onUploadComplete();
     } catch (error) {
       print('Error occured while uplaoding to Firebase ${error.toString()}');
@@ -590,7 +602,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
   Widget _getPlayButton() {
     return Container(
       child: InkResponse(
-        onTap: () => togglePlayer(),
+        onTap: () => _controller.togglePlayer(),
         // _isRecording ? getRecorderFn(_mRecorder) : getPlaybackFn(_mPlayer),
         //getRecorderFn(_mRecorder),
         child: Container(
@@ -600,11 +612,15 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
             color: Color(0xffF1B488),
             shape: BoxShape.circle,
           ),
-          child: Icon(
-            playing ? Icons.ten_k : Icons.play_arrow_rounded,
-            //? Icons.pause_rounded : Icons.play_arrow_rounded,
-            color: backgroundColor,
-            size: 48,
+          child: Obx(
+            () => Icon(
+              _controller.playing.value
+                  ? Icons.ten_k
+                  : Icons.play_arrow_rounded,
+              //? Icons.pause_rounded : Icons.play_arrow_rounded,
+              color: backgroundColor,
+              size: 48,
+            ),
           ),
         ),
       ),

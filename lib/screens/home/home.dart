@@ -14,9 +14,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  double sw = Get.width;
-  double sh = Get.height;
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -38,16 +35,16 @@ class _HomeState extends State<Home> {
   Widget _getSliverAppBar() {
     return SliverAppBar(
       systemOverlayStyle:
-      SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light),
+          SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light),
       backgroundColor: backgroundColor,
-      expandedHeight: 0.5 * sh,
+      expandedHeight: 400,
       automaticallyImplyLeading: false,
       flexibleSpace: FlexibleSpaceBar(
         background: Stack(
           children: <Widget>[
             Container(
-              width: sw,
-              height: 0.7 * sh,
+              width: double.infinity,
+              height: 450,
               child: CustomPaint(
                 painter: CirclePainter(),
               ),
@@ -100,11 +97,11 @@ class _HomeState extends State<Home> {
               ),
             ),
             Positioned(
-              top: 0.22 * sh,
-              left: 0.035 * sw,
+              top: 170,
+              left: 10,
               child: Container(
-                width: 0.45 * sw,
-                height: 0.32 * sh,
+                width: 180,
+                height: 250,
                 child: Container(
                   child: Stack(
                     children: [
@@ -150,15 +147,15 @@ class _HomeState extends State<Home> {
               ),
             ),
             Positioned(
-              top: 0.22 * sh,
-              right: 0.035 * sw,
+              top: 170,
+              right: 10,
               child: InkWell(
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 onTap: () {},
                 child: Container(
-                  width: 0.45 * sw,
-                  height: 0.15 * sh,
+                  width: 180,
+                  height: 120,
                   child: Container(
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
@@ -180,11 +177,11 @@ class _HomeState extends State<Home> {
               ),
             ),
             Positioned(
-              top: 0.39 * sh,
-              right: 0.035 * sw,
+              top: 300,
+              right: 10,
               child: Container(
-                width: 0.45 * sw,
-                height: 0.15 * sh,
+                width: 180,
+                height: 120,
                 child: Container(
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
@@ -217,7 +214,6 @@ class _HomeState extends State<Home> {
                       offset: Offset(0, 10), // changes position of shadow
                     ),
                   ],
-
                 ),
               ),
             )
@@ -248,7 +244,8 @@ class _HomeState extends State<Home> {
                     color: Color(0xff3A3A55),
                   ),
                 ),
-                Text('Открыть всё',
+                Text(
+                  'Открыть всё',
                   style: TextStyle(
                     color: Color(0xff3A3A55),
                   ),
@@ -302,5 +299,4 @@ class _HomeState extends State<Home> {
       // ),
     );
   }
-
 }

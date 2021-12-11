@@ -5,91 +5,97 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class RegistrationSplash extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     Future.delayed(const Duration(seconds: 3), () {
-      Get.offAll(() => Wrapper(), transition: Transition.downToUp, duration: Duration(seconds: 1));
+      Get.offAll(
+        () => Wrapper(),
+        transition: Transition.cupertinoDialog,
+        duration: Duration(seconds: 1),
+      );
     });
 
     return Scaffold(
-          backgroundColor: backgroundColor,
-          body: Stack(
-            children: [
-              SizedBox(
-                width: double.infinity,
-                height: 350,
-                child: CustomPaint(
-                  painter: CirclePainter(),
+      backgroundColor: backgroundColor,
+      body: Stack(
+        children: [
+          SizedBox(
+            width: double.infinity,
+            height: 350,
+            child: CustomPaint(
+              painter: CirclePainter(),
+            ),
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: 127,
+              ),
+              child: Text(
+                'Ты супер!',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 48,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 3,
                 ),
               ),
-              Align(
-                alignment: Alignment.topCenter,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: 127,
-                  ),
-                  child: Text(
-                    'Ты супер!',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 48,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 3,
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 40),
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    width: 270,
+                    height: 75,
+                    padding: EdgeInsets.all(25),
+                    decoration: BoxDecoration(
+                      color: backgroundColor,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(15.0),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 2,
+                          offset: Offset(0, 5), // Shadow position
+                        ),
+                      ],
                     ),
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 40),
-                child: Stack(
-                  children: [
-                    Align(
+                    child: Align(
                       alignment: Alignment.center,
-                      child: Container(
-                        width: 270,
-                        height: 75,
-                        padding: EdgeInsets.all(25),
-                        decoration: BoxDecoration(
-                          color: backgroundColor,
-                          shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 2,
-                              offset: Offset(0, 5), // Shadow position
-                            ),
-                          ],
+                      child: Text(
+                        'Мы рады тебя видеть',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w500,
                         ),
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Мы рады тебя видеть',
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Padding(
-                          padding: EdgeInsets.only(top: 200),
-                          child: Icon(
-                            Icons.favorite,
-                            size: 45,
-                            color: Color(0xffF1B488),
-                          )),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+                Align(
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 200),
+                    child: Icon(
+                      Icons.favorite,
+                      size: 45,
+                      color: Color(0xffF1B488),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        );
+        ],
+      ),
+    );
   }
 }
