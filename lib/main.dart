@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_project_test/constants/constants.dart';
+import 'package:first_project_test/controllers/recorder_controller.dart';
 import 'package:first_project_test/screens/authenticate/sign_in.dart';
 import 'package:first_project_test/screens/home/splash.dart';
 import 'package:flutter/material.dart';
@@ -35,38 +36,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-// class InitializerWidget extends StatefulWidget {
-//   const InitializerWidget({Key? key}) : super(key: key);
-//
-//   @override
-//   _InitializerWidgetState createState() => _InitializerWidgetState();
-// }
-//
-// class _InitializerWidgetState extends State<InitializerWidget> {
-//   FirebaseAuth _auth = FirebaseAuth.instance;
-//
-//   User? _user;
-//
-//   bool isLoading = true;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     _user = _auth.currentUser;
-//     isLoading = false;
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return isLoading
-//         ? Scaffold(
-//             body: Center(
-//               child: CircularProgressIndicator(),
-//             ),
-//           )
-//         : _user == null
-//             ? SignIn()
-//             : SplashScreen();
-//   }
-// }

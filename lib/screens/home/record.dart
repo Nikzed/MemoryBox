@@ -5,10 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:first_project_test/constants/constants.dart';
 import 'package:first_project_test/controllers/recorder_controller.dart';
+import 'package:first_project_test/controllers/registration_controller.dart';
 import 'package:first_project_test/models/painter_model.dart';
 import 'package:first_project_test/models/slider_model.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -21,8 +20,8 @@ import '../../models/slider_model.dart';
 
 typedef Fn = void Function();
 
-StreamSubscription? _recorderSubscription;
-StreamSubscription? _playerSubscription;
+// StreamSubscription? _recorderSubscription;
+// StreamSubscription? _playerSubscription;
 
 class Record extends StatefulWidget {
   const Record({Key? key}) : super(key: key);
@@ -31,6 +30,7 @@ class Record extends StatefulWidget {
   _RecordState createState() => _RecordState();
 }
 
+// TickerProviderStateMixin для работы с анимацией
 class _RecordState extends State<Record> with TickerProviderStateMixin {
   // bool storagePermissionIsGranted = false;
   // String _tempFileName = 'Recording_.aac';
@@ -56,7 +56,6 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
   // double _maxDuration = 0.0;
   // double _sliderPos = 0.0;
   // Uint8List? _boumData;
-  RecorderController _controller = RecorderController();
 
   // -- recording animation --
   final DecorationTween decorationTween = DecorationTween(
@@ -339,13 +338,26 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
     // cancelPlayerSubscriptions();
 
     _animationController.dispose();
-
+    // _controller.onClose();
+    // print(_controller.isClosed);
+    Get.delete(tag: 'recorderController');
     super.dispose();
   }
+
+  RecordController _controller = Get.put(RecordController(), tag: 'recorderController');
 
   @override
   Widget build(BuildContext context) {
     return _getPageWidget();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print(
+      '_controller.isRecorderInitialized: '
+      '${_controller.isRecorderInitialized}',
+    );
   }
 
   Widget _getPageWidget() {
@@ -383,19 +395,18 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
               ),
               margin: EdgeInsets.all(10),
               color: backgroundColor,
-              child: Obx(
-                () => ListView(
+              child:  ListView(
                   padding: EdgeInsets.zero,
                   children: [
-                    if (_controller.isRecorderInitialized.value)
-                      if (_controller.isRecording.value)
-                        _getRecorderWidget()
-                      else
-                        _getPlayerWidget()
-                    else
-                      _getRecorderWidget(),
+                    _getRecorderWidget(),
+                    // if (_controller.isRecorderInitialized.value)
+                    //   if (_controller.isRecording.value)
+                    //     _getRecorderWidget()
+                    //   else
+                    //     _getPlayerWidget()
+                    // else
+                    //   _getRecorderWidget(),
                   ],
-                ),
               ),
             ),
           ),
@@ -415,7 +426,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
               right: 40,
             ),
             child: InkWell(
-              onTap: () => _controller.toggleRecording(),
+              onTap: () => _controller.stopRecorder(),
               child: Text('Отменить'),
             ),
           ),
@@ -428,15 +439,15 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
           ),
         ),
         SizedBox(height: 150),
-        CustomPaint(
-          painter: _ShapePainter(_controller.noisesList),
-        ),
+          CustomPaint(
+            painter: _ShapePainter(_controller.noisesList),
+          ),
         SizedBox(height: 125),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _getRecordAnimatedDot(),
-            Obx(() => Text('${_controller.recorderText}')),
+            Text('${_controller.recorderText}'),
           ],
         ),
         SizedBox(height: 50),
@@ -483,85 +494,87 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
     );
   }
 
-  Widget _getPlayerWidget() {
-    return Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.only(top: 20, left: 20),
-          child: Row(
-            children: [
-              IconButton(
-                onPressed: () => _onFileUploadButtonPressed(),
-                icon: SvgPicture.asset('assets/share.svg'),
-              ),
-              SizedBox(width: 20),
-              IconButton(
-                onPressed: null,
-                icon: SvgPicture.asset('assets/paper_download.svg'),
-              ),
-              SizedBox(width: 20),
-              IconButton(
-                onPressed: null,
-                icon: SvgPicture.asset('assets/delete.svg'),
-              ),
-              SizedBox(width: 75),
-              InkWell(
-                onTap: () => _controller.writeFileToStorage(),
-                // onTap: () => _writeFileToFirebase(),
-                // onTap: () => _onFileUploadButtonPressed(),
-                child: Text('Сохранить'),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: 110),
-        Align(
-          alignment: Alignment.center,
-          child: Obx(
-            () => Text(
-              _controller.fileName!.value,
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
-            ),
-          ),
-        ),
-        SizedBox(height: 50),
-        SliderTheme(
-          data: SliderThemeData(
-            trackHeight: 2,
-            thumbShape: CustomSliderPlayer(thumbRadius: 5),
-          ),
-          child: Obx(
-            () => Slider(
-              activeColor: Color(0xff3A3A55),
-              inactiveColor: Color(0xff3A3A55),
-              value: _controller.sliderPos.value,
-              onChanged: (val) {
-                _controller.sliderPos.value = val;
-                setState(() {});
-              },
-            ),
-          ),
-        ),
-        SizedBox(height: 155),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            InkWell(
-              // onTap: () => playback15Seconds(),
-              child: SvgPicture.asset('assets/play_backward.svg'),
-            ),
-            SizedBox(width: 50),
-            _getPlayButton(),
-            SizedBox(width: 50),
-            InkWell(
-              // onTap: () => playForward15Seconds(),
-              child: SvgPicture.asset('assets/play_forward.svg'),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
+  // Widget _getPlayerWidget() {
+  //   return Column(
+  //     children: [
+  //       Padding(
+  //         padding: EdgeInsets.only(top: 20, left: 20),
+  //         child: Row(
+  //           children: [
+  //             IconButton(
+  //               onPressed: () => _onFileUploadButtonPressed(),
+  //               icon: SvgPicture.asset('assets/share.svg'),
+  //             ),
+  //             SizedBox(width: 20),
+  //             IconButton(
+  //               onPressed: null,
+  //               icon: SvgPicture.asset('assets/paper_download.svg'),
+  //             ),
+  //             SizedBox(width: 20),
+  //             IconButton(
+  //               onPressed: null,
+  //               icon: SvgPicture.asset('assets/delete.svg'),
+  //             ),
+  //             SizedBox(width: 75),
+  //             InkWell(
+  //               onTap: () => _controller.writeFileToStorage(),
+  //               // onTap: () => _writeFileToFirebase(),
+  //               // onTap: () => _onFileUploadButtonPressed(),
+  //               child: Text('Сохранить'),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //       SizedBox(height: 110),
+  //       Align(
+  //         alignment: Alignment.center,
+  //         // child: Obx(
+  //         //   () => Text(
+  //         //     'hello',
+  //         //     // _controller.fileName.!value,
+  //         //     style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+  //         //   ),
+  //         // ),
+  //         child: Text('hello'),
+  //       ),
+  //       SizedBox(height: 50),
+  //       SliderTheme(
+  //         data: SliderThemeData(
+  //           trackHeight: 2,
+  //           thumbShape: CustomSliderPlayer(thumbRadius: 5),
+  //         ),
+  //         child: Obx(
+  //           () => Slider(
+  //             activeColor: Color(0xff3A3A55),
+  //             inactiveColor: Color(0xff3A3A55),
+  //             value: _controller.sliderPos.value,
+  //             onChanged: (val) {
+  //               _controller.sliderPos.value = val;
+  //               setState(() {});
+  //             },
+  //           ),
+  //         ),
+  //       ),
+  //       SizedBox(height: 155),
+  //       Row(
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         children: [
+  //           InkWell(
+  //             // onTap: () => playback15Seconds(),
+  //             child: SvgPicture.asset('assets/play_backward.svg'),
+  //           ),
+  //           SizedBox(width: 50),
+  //           _getPlayButton(),
+  //           SizedBox(width: 50),
+  //           InkWell(
+  //             // onTap: () => playForward15Seconds(),
+  //             child: SvgPicture.asset('assets/play_forward.svg'),
+  //           ),
+  //         ],
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Future<void> _onFileUploadButtonPressed() async {
     // setState(() {
@@ -599,33 +612,33 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
     await firebaseStorage.ref().child('upload-voice-firebase').list();
   }
 
-  Widget _getPlayButton() {
-    return Container(
-      child: InkResponse(
-        onTap: () => _controller.togglePlayer(),
-        // _isRecording ? getRecorderFn(_mRecorder) : getPlaybackFn(_mPlayer),
-        //getRecorderFn(_mRecorder),
-        child: Container(
-          width: 70,
-          height: 70,
-          decoration: BoxDecoration(
-            color: Color(0xffF1B488),
-            shape: BoxShape.circle,
-          ),
-          child: Obx(
-            () => Icon(
-              _controller.playing.value
-                  ? Icons.ten_k
-                  : Icons.play_arrow_rounded,
-              //? Icons.pause_rounded : Icons.play_arrow_rounded,
-              color: backgroundColor,
-              size: 48,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+// Widget _getPlayButton() {
+//   return Container(
+//     child: InkResponse(
+//       onTap: () => _controller.togglePlayer(),
+//       // _isRecording ? getRecorderFn(_mRecorder) : getPlaybackFn(_mPlayer),
+//       //getRecorderFn(_mRecorder),
+//       child: Container(
+//         width: 70,
+//         height: 70,
+//         decoration: BoxDecoration(
+//           color: Color(0xffF1B488),
+//           shape: BoxShape.circle,
+//         ),
+//         child: Obx(
+//           () => Icon(
+//             _controller.playing.value
+//                 ? Icons.ten_k
+//                 : Icons.play_arrow_rounded,
+//             //? Icons.pause_rounded : Icons.play_arrow_rounded,
+//             color: backgroundColor,
+//             size: 48,
+//           ),
+//         ),
+//       ),
+//     ),
+//   );
+// }
 }
 
 class _ShapePainter extends CustomPainter {
@@ -642,7 +655,8 @@ class _ShapePainter extends CustomPainter {
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
 
-    for (int i = 0; i < 20; i++) {
+    // ИЗНАЧАЛЬНО БЫЛО 20
+    for (int i = 0; i < 19; i++) {
       Offset startPoint = Offset(size.width / 2 + i * 10 - 90, size.height / 2);
       Offset endPoint =
           Offset(size.width / 2 + i * 10 - 90, size.height / 2 + maxPoints[i]);

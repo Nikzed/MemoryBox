@@ -30,6 +30,7 @@ class RegistrationController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    print('HELLO!');
     // ever(showLoading, event);
   }
 
