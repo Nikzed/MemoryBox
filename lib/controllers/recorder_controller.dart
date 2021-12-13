@@ -11,7 +11,14 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 
+enum RecordState {
+  RECORDING,
+  PLAYING,
+}
+
 class RecordController extends GetxController {
+  RecordState state = RecordState.RECORDING;
+
   StreamSubscription? _recorderSubscription;
 
   // StreamSubscription? _playerSubscription;
@@ -29,7 +36,7 @@ class RecordController extends GetxController {
   RxBool get isRecording => recorder.value.isRecording.obs;
   RxString recorderText = '0:00:00'.obs;
   RxDouble noiseInDb = 0.0.obs;
-  RxList<double> noisesList = List.generate(20, (index) => 0.0  ).obs;
+  RxList<double> noisesList = List.generate(20, (index) => 0.0).obs;
 
   // -- Player --
   // Rx<FlutterSoundPlayer> player = FlutterSoundPlayer().obs;
@@ -52,8 +59,6 @@ class RecordController extends GetxController {
 
   @override
   void onReady() {
-    print('RECORDING START!');
-    // toggleRecording();
     super.onReady();
   }
 
@@ -68,10 +73,11 @@ class RecordController extends GetxController {
 
     isRecorderInitialized.value = true;
     print('_isRecorderInitialized $isRecorderInitialized');
-    // await toggleRecording();
+    // запускаем запись после инициализации
+    await toggleRecording();
   }
 
-  Future _startRecorder() async {
+  Future startRecorder() async {
     if (!isRecorderInitialized.value) {
       return;
     }
@@ -131,6 +137,7 @@ class RecordController extends GetxController {
     await recorder.value.stopRecorder();
     await cancelRecorderSubscriptions();
     noisesList.value = List.generate(20, (index) => 0.0);
+    recorderText.value = '0:00:00';
     //_writeFileToStorage();
   }
 
@@ -201,7 +208,7 @@ class RecordController extends GetxController {
       await stopRecorder();
     } else {
       print('starting');
-      await _startRecorder();
+      await startRecorder();
     }
   }
 
@@ -334,6 +341,7 @@ class RecordController extends GetxController {
   @override
   void onClose() {
     // recorder
+    stopRecorder();
     recorder.value.closeAudioSession();
     isRecorderInitialized.value = false;
     cancelRecorderSubscriptions();

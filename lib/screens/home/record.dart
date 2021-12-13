@@ -32,6 +32,8 @@ class Record extends StatefulWidget {
 
 // TickerProviderStateMixin для работы с анимацией
 class _RecordState extends State<Record> with TickerProviderStateMixin {
+  RecordController _controller = Get.put(RecordController());
+
   // bool storagePermissionIsGranted = false;
   // String _tempFileName = 'Recording_.aac';
   // String? _fileName;
@@ -340,27 +342,13 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
     _animationController.dispose();
     // _controller.onClose();
     // print(_controller.isClosed);
-    Get.delete(tag: 'recorderController');
+    // _controller.onClose();
+    Get.delete<RecordController>();
     super.dispose();
   }
 
-  RecordController _controller = Get.put(RecordController(), tag: 'recorderController');
-
   @override
   Widget build(BuildContext context) {
-    return _getPageWidget();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    print(
-      '_controller.isRecorderInitialized: '
-      '${_controller.isRecorderInitialized}',
-    );
-  }
-
-  Widget _getPageWidget() {
     return Stack(
       children: [
         Container(
@@ -395,24 +383,29 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
               ),
               margin: EdgeInsets.all(10),
               color: backgroundColor,
-              child:  ListView(
-                  padding: EdgeInsets.zero,
-                  children: [
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  _getRecorderWidget(),
+                  if (_controller.isRecorderInitialized.value)
+                    if (_controller.state == RecordState.RECORDING)
+                      _getRecorderWidget()
+                    else
+                      _getPlayerWidget()
+                  else
                     _getRecorderWidget(),
-                    // if (_controller.isRecorderInitialized.value)
-                    //   if (_controller.isRecording.value)
-                    //     _getRecorderWidget()
-                    //   else
-                    //     _getPlayerWidget()
-                    // else
-                    //   _getRecorderWidget(),
-                  ],
+                ],
               ),
             ),
           ),
         ),
       ],
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   Widget _getRecorderWidget() {
@@ -426,7 +419,10 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
               right: 40,
             ),
             child: InkWell(
-              onTap: () => _controller.stopRecorder(),
+              onTap: () {
+                _controller.stopRecorder();
+                _controller.startRecorder();
+              },
               child: Text('Отменить'),
             ),
           ),
@@ -439,15 +435,17 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
           ),
         ),
         SizedBox(height: 150),
-          CustomPaint(
-            painter: _ShapePainter(_controller.noisesList),
-          ),
+        CustomPaint(
+          painter: _ShapePainter(_controller.noisesList),
+        ),
         SizedBox(height: 125),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _getRecordAnimatedDot(),
-            Text('${_controller.recorderText}'),
+            Obx(
+              () => Text('${_controller.recorderText}'),
+            ),
           ],
         ),
         SizedBox(height: 50),
@@ -460,7 +458,10 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
   Widget _getStopButton() {
     return Container(
       child: InkResponse(
-        onTap: () => _controller.toggleRecording(),
+        onTap: () {
+          _controller.toggleRecording();
+          _controller.state = RecordState.PLAYING;
+        },
         // _isRecording ? getRecorderFn(_mRecorder) : getPlaybackFn(_mPlayer),
         //getRecorderFn(_mRecorder),
         child: Container(
@@ -494,87 +495,87 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
     );
   }
 
-  // Widget _getPlayerWidget() {
-  //   return Column(
-  //     children: [
-  //       Padding(
-  //         padding: EdgeInsets.only(top: 20, left: 20),
-  //         child: Row(
-  //           children: [
-  //             IconButton(
-  //               onPressed: () => _onFileUploadButtonPressed(),
-  //               icon: SvgPicture.asset('assets/share.svg'),
-  //             ),
-  //             SizedBox(width: 20),
-  //             IconButton(
-  //               onPressed: null,
-  //               icon: SvgPicture.asset('assets/paper_download.svg'),
-  //             ),
-  //             SizedBox(width: 20),
-  //             IconButton(
-  //               onPressed: null,
-  //               icon: SvgPicture.asset('assets/delete.svg'),
-  //             ),
-  //             SizedBox(width: 75),
-  //             InkWell(
-  //               onTap: () => _controller.writeFileToStorage(),
-  //               // onTap: () => _writeFileToFirebase(),
-  //               // onTap: () => _onFileUploadButtonPressed(),
-  //               child: Text('Сохранить'),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //       SizedBox(height: 110),
-  //       Align(
-  //         alignment: Alignment.center,
-  //         // child: Obx(
-  //         //   () => Text(
-  //         //     'hello',
-  //         //     // _controller.fileName.!value,
-  //         //     style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
-  //         //   ),
-  //         // ),
-  //         child: Text('hello'),
-  //       ),
-  //       SizedBox(height: 50),
-  //       SliderTheme(
-  //         data: SliderThemeData(
-  //           trackHeight: 2,
-  //           thumbShape: CustomSliderPlayer(thumbRadius: 5),
-  //         ),
-  //         child: Obx(
-  //           () => Slider(
-  //             activeColor: Color(0xff3A3A55),
-  //             inactiveColor: Color(0xff3A3A55),
-  //             value: _controller.sliderPos.value,
-  //             onChanged: (val) {
-  //               _controller.sliderPos.value = val;
-  //               setState(() {});
-  //             },
-  //           ),
-  //         ),
-  //       ),
-  //       SizedBox(height: 155),
-  //       Row(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: [
-  //           InkWell(
-  //             // onTap: () => playback15Seconds(),
-  //             child: SvgPicture.asset('assets/play_backward.svg'),
-  //           ),
-  //           SizedBox(width: 50),
-  //           _getPlayButton(),
-  //           SizedBox(width: 50),
-  //           InkWell(
-  //             // onTap: () => playForward15Seconds(),
-  //             child: SvgPicture.asset('assets/play_forward.svg'),
-  //           ),
-  //         ],
-  //       ),
-  //     ],
-  //   );
-  // }
+  Widget _getPlayerWidget() {
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 20, left: 20),
+          child: Row(
+            children: [
+              IconButton(
+                onPressed: () => _onFileUploadButtonPressed(),
+                icon: SvgPicture.asset('assets/share.svg'),
+              ),
+              SizedBox(width: 20),
+              IconButton(
+                onPressed: null,
+                icon: SvgPicture.asset('assets/paper_download.svg'),
+              ),
+              SizedBox(width: 20),
+              IconButton(
+                onPressed: null,
+                icon: SvgPicture.asset('assets/delete.svg'),
+              ),
+              SizedBox(width: 75),
+              InkWell(
+                onTap: () => _controller.writeFileToStorage(),
+                // onTap: () => _writeFileToFirebase(),
+                // onTap: () => _onFileUploadButtonPressed(),
+                child: Text('Сохранить'),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 110),
+        Align(
+          alignment: Alignment.center,
+          // child: Obx(
+          //   () => Text(
+          //     'hello',
+          //     // _controller.fileName.!value,
+          //     style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+          //   ),
+          // ),
+          child: Text('hello'),
+        ),
+        SizedBox(height: 50),
+        // SliderTheme(
+        //   data: SliderThemeData(
+        //     trackHeight: 2,
+        //     thumbShape: CustomSliderPlayer(thumbRadius: 5),
+        //   ),
+        //   child: Obx(
+        //     () => Slider(
+        //       activeColor: Color(0xff3A3A55),
+        //       inactiveColor: Color(0xff3A3A55),
+        //       // value: _controller.sliderPos.value,
+        //       onChanged: (val) {
+        //         _controller.sliderPos.value = val;
+        //         setState(() {});
+        //       },
+        //     ),
+        //   ),
+        // ),
+        SizedBox(height: 155),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            InkWell(
+              // onTap: () => playback15Seconds(),
+              child: SvgPicture.asset('assets/play_backward.svg'),
+            ),
+            SizedBox(width: 50),
+            // _getPlayButton(),
+            SizedBox(width: 50),
+            InkWell(
+              // onTap: () => playForward15Seconds(),
+              child: SvgPicture.asset('assets/play_forward.svg'),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 
   Future<void> _onFileUploadButtonPressed() async {
     // setState(() {
