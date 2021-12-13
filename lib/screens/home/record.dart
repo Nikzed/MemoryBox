@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:first_project_test/constants/constants.dart';
-import 'package:first_project_test/controllers/recorder_controller.dart';
+import 'package:first_project_test/controllers/record_controller.dart';
 import 'package:first_project_test/controllers/registration_controller.dart';
 import 'package:first_project_test/models/painter_model.dart';
 import 'package:first_project_test/models/slider_model.dart';
@@ -383,18 +383,19 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
               ),
               margin: EdgeInsets.all(10),
               color: backgroundColor,
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: [
-                  _getRecorderWidget(),
-                  if (_controller.isRecorderInitialized.value)
-                    if (_controller.state == RecordState.RECORDING)
-                      _getRecorderWidget()
+              child: Obx(
+                () => ListView(
+                  padding: EdgeInsets.zero,
+                  children: [
+                    if (_controller.isRecorderInitialized.value)
+                      if (_controller.state == RecordState.RECORDING)
+                        _getRecorderWidget()
+                      else
+                        _getPlayerWidget()
                     else
-                      _getPlayerWidget()
-                  else
-                    _getRecorderWidget(),
-                ],
+                      _getRecorderWidget(),
+                  ],
+                ),
               ),
             ),
           ),
@@ -460,7 +461,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
       child: InkResponse(
         onTap: () {
           _controller.toggleRecording();
-          _controller.state = RecordState.PLAYING;
+          _controller.state.value = RecordState.PLAYING;
         },
         // _isRecording ? getRecorderFn(_mRecorder) : getPlaybackFn(_mPlayer),
         //getRecorderFn(_mRecorder),
@@ -656,8 +657,7 @@ class _ShapePainter extends CustomPainter {
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
 
-    // ИЗНАЧАЛЬНО БЫЛО 20
-    for (int i = 0; i < 19; i++) {
+    for (int i = 0; i < 20; i++) {
       Offset startPoint = Offset(size.width / 2 + i * 10 - 90, size.height / 2);
       Offset endPoint =
           Offset(size.width / 2 + i * 10 - 90, size.height / 2 + maxPoints[i]);

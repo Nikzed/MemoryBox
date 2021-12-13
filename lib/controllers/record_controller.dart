@@ -17,14 +17,13 @@ enum RecordState {
 }
 
 class RecordController extends GetxController {
-  RecordState state = RecordState.RECORDING;
+  Rx<RecordState> state = RecordState.RECORDING.obs;
 
   StreamSubscription? _recorderSubscription;
 
   // StreamSubscription? _playerSubscription;
 
   RxBool storagePermissionIsGranted = false.obs;
-  RxString tempFileName = 'Recording_.aac'.obs;
   RxString? fileName;
   RxString directoryPath = '/storage/emulated/0/SoundRecorder'.obs;
   late RxString filePath;
@@ -88,7 +87,6 @@ class RecordController extends GetxController {
     String filePath = directory.path + '/' + 'temp' + '.aac';
     await _addRecorderListener();
     await recorder.value.startRecorder(
-      // toFile: _tempFileName,
       toFile: filePath,
       codec: Codec.aacADTS,
     );

@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:first_project_test/controllers/auth_controller.dart';
-import 'package:first_project_test/controllers/recorder_controller.dart';
+import 'package:first_project_test/controllers/record_controller.dart';
 import 'package:get/get.dart';
 
 AuthController authController = AuthController.instance;

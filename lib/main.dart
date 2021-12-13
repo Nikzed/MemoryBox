@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_project_test/constants/constants.dart';
-import 'package:first_project_test/controllers/recorder_controller.dart';
+import 'package:first_project_test/controllers/record_controller.dart';
 import 'package:first_project_test/screens/authenticate/sign_in.dart';
 import 'package:first_project_test/screens/home/splash.dart';
 import 'package:flutter/material.dart';

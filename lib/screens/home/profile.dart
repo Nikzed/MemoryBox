@@ -202,14 +202,22 @@ class _ProfileState extends State<Profile> {
                               decoration: InputDecoration(
                                 fillColor: Colors.white,
                                 filled: true,
-                                labelStyle: Theme.of(context).textTheme.caption!.copyWith(color: Theme.of(context).primaryColor),
+                                labelStyle: Theme.of(context)
+                                    .textTheme
+                                    .caption!
+                                    .copyWith(
+                                      color: Theme.of(context).primaryColor,
+                                    ),
                                 border: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black),
+                                  borderSide: BorderSide(
+                                    color: Colors.black,
+                                    style: BorderStyle.none,
+                                  ),
                                   borderRadius: BorderRadius.circular(100.0),
                                 ),
                               ),
                             )
-                          : Text(number == null
+                          : Text(number == null || number == ''
                               ? '+00 000 000 00 00'
                               : '${FirebaseAuth.instance.currentUser!.phoneNumber}'),
                     ),
