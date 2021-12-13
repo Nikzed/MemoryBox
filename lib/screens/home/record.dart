@@ -34,8 +34,6 @@ class Record extends StatefulWidget {
 class _RecordState extends State<Record> with TickerProviderStateMixin {
   RecordController _controller = Get.put(RecordController());
 
-  // git check
-
   // bool storagePermissionIsGranted = false;
   // String _tempFileName = 'Recording_.aac';
   // String? _fileName;
