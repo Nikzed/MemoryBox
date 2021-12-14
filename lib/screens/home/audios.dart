@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:first_project_test/constants/constants.dart';
 import 'package:first_project_test/models/painter_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,7 +19,9 @@ class _AudiosState extends State<Audios> {
           width: double.infinity,
           height: 350,
           child: CustomPaint(
-            painter: CirclePainter(color: Color(0xff5E77CE)),
+            painter: CirclePainter(
+              color: Color(0xff5E77CE),
+            ),
           ),
         ),
         Align(
@@ -100,7 +105,7 @@ class _AudiosState extends State<Audios> {
           child: Padding(
             padding: EdgeInsets.only(top: 165, right: 15),
             child: InkWell(
-              onTap: (){},
+              onTap: () {},
               child: Container(
                 height: 46,
                 width: 90,
@@ -115,7 +120,10 @@ class _AudiosState extends State<Audios> {
                     child: SizedBox(
                       height: 22,
                       width: 22,
-                      child: SvgPicture.asset('assets/repeat.svg',color: Colors.white.withOpacity(0.6),),
+                      child: SvgPicture.asset(
+                        'assets/repeat.svg',
+                        color: Colors.white.withOpacity(0.6),
+                      ),
                     ),
                   ),
                 ),
@@ -140,7 +148,7 @@ class _AudiosState extends State<Audios> {
                       color: Colors.black.withOpacity(0.1),
                       spreadRadius: 2,
                       blurRadius: 10,
-                      offset: Offset(0,0),
+                      offset: Offset(0, 0),
                     ),
                   ],
                 ),
@@ -178,7 +186,48 @@ class _AudiosState extends State<Audios> {
             ),
           ),
         ),
+        Align(
+          alignment: Alignment.center,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 50),
+            // child: Text('$_getAudioList'),
+            // child: _getAudioList(),
+          ),
+        )
       ],
     );
+  }
+
+  Future<Widget?> _getAudioList() async {
+    // FirebaseStorage storage = FirebaseStorage.instance;
+    // Reference ref = storage.ref().child("image1" + DateTime.now().toString());
+    // String results = ref.listAll().toString();
+    // print('results $results');
+    // //ref.getDownloadURL();
+    //
+    // return results;
+    FirebaseStorage storage = FirebaseStorage.instance;
+    ListResult ref = await FirebaseStorage.instance.ref().listAll();
+
+    return FutureBuilder(
+      future: getImages(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        return ListView.builder(
+            shrinkWrap: true,
+            itemCount: snapshot.data?.docs.length,
+            itemBuilder: (BuildContext context, int index) {
+              return ListTile(
+                contentPadding: EdgeInsets.all(8.0),
+                title: Text(
+                    '${snapshot.data?.docs[index].data().toString()}'
+                ),
+              );
+            });
+      },
+    );
+  }
+
+  Future<QuerySnapshot> getImages() {
+    return firebaseFirestore.collection("upload-voice-firebase").get();
   }
 }

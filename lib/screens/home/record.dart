@@ -504,7 +504,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
           child: Row(
             children: [
               IconButton(
-                onPressed: () => _onFileUploadButtonPressed(),
+                onPressed: () => _controller.onFileUploadButtonPressed(),
                 icon: SvgPicture.asset('assets/share.svg'),
               ),
               SizedBox(width: 20),
@@ -530,14 +530,14 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
         SizedBox(height: 110),
         Align(
           alignment: Alignment.center,
-          // child: Obx(
-          //   () => Text(
-          //     'hello',
-          //     // _controller.fileName.!value,
-          //     style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
-          //   ),
-          // ),
-          child: Text('hello'),
+          child: Obx(
+            () => Text(
+              // 'hello',
+              // _controller.fileName.!value,
+              _controller.fileName.value,
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+          ),
         ),
         SizedBox(height: 50),
         // SliderTheme(
@@ -576,42 +576,6 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
         ),
       ],
     );
-  }
-
-  Future<void> _onFileUploadButtonPressed() async {
-    // setState(() {
-    //   _isUploading = true;
-    // });
-    try {
-      FirebaseStorage firebaseStorage = FirebaseStorage.instance;
-      await firebaseStorage
-          .ref('upload-voice-firebase')
-          .child(
-            _controller.filePath.value.substring(
-                _controller.filePath.value.lastIndexOf('/'),
-                _controller.filePath.value.length),
-          )
-          .putFile(
-            File(_controller.filePath.value),
-          );
-      _onUploadComplete();
-    } catch (error) {
-      print('Error occured while uplaoding to Firebase ${error.toString()}');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error occured while uplaoding'),
-        ),
-      );
-    } finally {
-      // setState(() {
-      //   _isUploading = false;
-      // });
-    }
-  }
-
-  Future<void> _onUploadComplete() async {
-    FirebaseStorage firebaseStorage = FirebaseStorage.instance;
-    await firebaseStorage.ref().child('upload-voice-firebase').list();
   }
 
 // Widget _getPlayButton() {

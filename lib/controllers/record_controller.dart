@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_sound/public/flutter_sound_player.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:get/get.dart';
@@ -24,9 +25,9 @@ class RecordController extends GetxController {
   // StreamSubscription? _playerSubscription;
 
   RxBool storagePermissionIsGranted = false.obs;
-  RxString? fileName;
+  RxString fileName = ''.obs;
   RxString directoryPath = '/storage/emulated/0/SoundRecorder'.obs;
-  late RxString filePath;
+  String filePath = '';
 
   // -- Recorder --
   Rx<FlutterSoundRecorder> recorder = FlutterSoundRecorder().obs;
@@ -84,7 +85,9 @@ class RecordController extends GetxController {
     // Возможность инициализировать все записанные аудио
     // String filePath = directory.path + '/' + DateTime.now().millisecondsSinceEpoch.toString() + '.aac';
     // Временный файл
-    String filePath = directory.path + '/' + 'temp' + '.aac';
+    // filePath = directory.path + '/' + 'temp' + '.aac';
+    // Постоянный файл TODO: решить куда записывать
+    filePath = directory.path + '/' + '${await _generateFileName()}' + '.aac';
     await _addRecorderListener();
     await recorder.value.startRecorder(
       toFile: filePath,
@@ -132,6 +135,7 @@ class RecordController extends GetxController {
     if (!isRecorderInitialized.value) {
       return;
     }
+    fileName.value = await _generateFileName();
     await recorder.value.stopRecorder();
     await cancelRecorderSubscriptions();
     noisesList.value = List.generate(20, (index) => 0.0);
@@ -180,15 +184,15 @@ class RecordController extends GetxController {
   }
 
   Future<void> _createFile() async {
-    String _completeFileName = await _generateFileName();
-    File(directoryPath + '/' + _completeFileName)
+    // fileName.value = await _generateFileName();
+    File(directoryPath + '/' + fileName.value)
         .create(recursive: true)
         .then((File file) async {
       //write to file
       Uint8List bytes = await file.readAsBytes();
       file.writeAsBytes(bytes);
       print(file.path);
-      filePath.value = file.path;
+      filePath = file.path;
     });
   }
 
@@ -196,7 +200,9 @@ class RecordController extends GetxController {
     if (await File(directoryPath + '/' + 'Запись №$i.aac').exists()) {
       return _generateFileName(i + 1);
     }
-    return 'Запись №$i.aac';
+    // было
+    // return 'Запись №$i.aac';
+    return 'Запись №$i';
   }
 
   Future<void> toggleRecording() async {
@@ -335,6 +341,38 @@ class RecordController extends GetxController {
   // }
 
   // ----- PLAYER END -----
+
+  Future<void> onFileUploadButtonPressed() async {
+    // setState(() {
+    //   _isUploading = true;
+    // });
+    try {
+      print('filePath: $filePath');
+      FirebaseStorage firebaseStorage = FirebaseStorage.instance;
+      await firebaseStorage
+          .ref('upload-voice-firebase')
+          .child(
+            filePath.substring(filePath.lastIndexOf('/'), filePath.length),
+          )
+          .putFile(
+            File(filePath),
+          );
+      _onUploadComplete();
+    } catch (error) {
+      print(
+          'Error occurred while uploading to Firebase:\n ${error.toString()}');
+      Get.snackbar('Error', 'Error occurred while uploading to Firebase');
+    } finally {
+      // setState(() {
+      //   _isUploading = false;
+      // });
+    }
+  }
+
+  Future<void> _onUploadComplete() async {
+    FirebaseStorage firebaseStorage = FirebaseStorage.instance;
+    await firebaseStorage.ref().child('upload-voice-firebase').list();
+  }
 
   @override
   void onClose() {
