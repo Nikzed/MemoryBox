@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_sound/public/flutter_sound_player.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:get/get.dart';
@@ -20,16 +22,14 @@ enum RecordState {
 class RecordController extends GetxController {
   Rx<RecordState> state = RecordState.RECORDING.obs;
 
-  StreamSubscription? _recorderSubscription;
-
-  // StreamSubscription? _playerSubscription;
-
   RxBool storagePermissionIsGranted = false.obs;
   RxString fileName = ''.obs;
   RxString directoryPath = '/storage/emulated/0/SoundRecorder'.obs;
   String filePath = '';
 
   // -- Recorder --
+  StreamSubscription? _recorderSubscription;
+
   Rx<FlutterSoundRecorder> recorder = FlutterSoundRecorder().obs;
   RxBool isRecorderInitialized = false.obs;
 
@@ -39,27 +39,24 @@ class RecordController extends GetxController {
   RxList<double> noisesList = List.generate(20, (index) => 0.0).obs;
 
   // -- Player --
-  // Rx<FlutterSoundPlayer> player = FlutterSoundPlayer().obs;
-  //
-  // bool get isPlaying => player.value.isPlaying;
-  // RxBool playing = false.obs;
-  // RxString playerText = '00:00:00'.obs;
-  // RxDouble maxDuration = 0.0.obs;
-  // RxDouble sliderPos = 0.0.obs;
+  StreamSubscription? _playerSubscription;
+
+  Rx<FlutterSoundPlayer> player = FlutterSoundPlayer().obs;
+
+  RxString playerCurrentText = '00:00'.obs;
+  RxString playerMaxText = '00:00'.obs;
+  RxDouble maxDuration = 1.0.obs;
+  RxDouble sliderPos = 0.0.obs;
+  RxBool isPlaying = false.obs;
 
   @override
   void onInit() {
     print('onInit start');
     print('initing recorder');
     _initRecorder();
-    // print('initing player');
-    // _initPlayer();
+    print('initing player');
+    _initPlayer();
     super.onInit();
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
   }
 
   // ----- RECORDER START -----
@@ -87,7 +84,8 @@ class RecordController extends GetxController {
     // Временный файл
     // filePath = directory.path + '/' + 'temp' + '.aac';
     // Постоянный файл TODO: решить куда записывать
-    filePath = directory.path + '/' + '${await _generateFileName()}' + '.aac';
+    fileName.value = await _generateFileName();
+    filePath = directoryPath + '/' + fileName.value + '.aac';
     await _addRecorderListener();
     await recorder.value.startRecorder(
       toFile: filePath,
@@ -114,7 +112,6 @@ class RecordController extends GetxController {
 
         noisesList.removeLast();
         noisesList.add(noiseInDb.value);
-        print('noiseList => ${noisesList.value}');
 
         DateTime date = DateTime.fromMillisecondsSinceEpoch(
           event.duration.inMilliseconds,
@@ -135,7 +132,7 @@ class RecordController extends GetxController {
     if (!isRecorderInitialized.value) {
       return;
     }
-    fileName.value = await _generateFileName();
+    // fileName.value = await _generateFileName();
     await recorder.value.stopRecorder();
     await cancelRecorderSubscriptions();
     noisesList.value = List.generate(20, (index) => 0.0);
@@ -220,65 +217,71 @@ class RecordController extends GetxController {
 
   // ----- PLAYER START -----
 
-  // Future<void> _initPlayer() async {
-  //   await player.value.openAudioSession();
-  //
-  //   await initializeDateFormatting();
-  //
-  //   await _addPlayerListener();
-  //
-  //   // TODO чёт не то
-  //   // fileName!.value = await _generateFileName();
-  // }
-  //
-  // Future<void> _addPlayerListener() async {
-  //   await player.value.setSubscriptionDuration(
-  //     Duration(milliseconds: 150),
-  //   );
-  //   _playerSubscription = player.value.onProgress!.listen((event) {
-  //     maxDuration.value = event.duration.inMilliseconds.toDouble();
-  //     if (maxDuration.value < 0) maxDuration.value = 0.0;
-  //
-  //     String txt = DateFormat('mm:ss:SS', 'en_GB').format(
-  //       DateTime.fromMicrosecondsSinceEpoch(
-  //         event.position.inMilliseconds,
-  //         isUtc: true,
-  //       ),
-  //     );
-  //     playerText.value = txt.substring(0, 5);
-  //
-  //     sliderPos.value = event.position.inMicroseconds.toDouble();
-  //   });
-  // }
-  //
-  // Future startPlayer() async {
-  //   try {
-  //     String? audioFilePath = tempFileName.value;
-  //     Codec codec = Codec.aacADTS;
-  //     if (player.value.isPaused) {
-  //       await player.value.resumePlayer();
-  //     } else {
-  //       await player.value.startPlayer(
-  //           fromURI: audioFilePath,
-  //           codec: codec,
-  //           whenFinished: () {
-  //             player.value.logger.d('Player finished');
-  //           });
-  //     }
-  //   } on Exception catch (err) {
-  //     print('ERROR HAPPENED');
-  //     player.value.logger.e('error: $err');
-  //   }
-  //
-  //   String? audioFilePath = tempFileName.value;
-  //   Codec codec = Codec.aacADTS;
-  //
-  //   await player.value.startPlayer(
-  //     fromURI: audioFilePath,
-  //     codec: codec,
-  //     whenFinished: () => null,
-  //   );
-  // }
+  Future<void> _initPlayer() async {
+    await player.value.openAudioSession();
+    await _addPlayerListener();
+  }
+
+  Future<void> _addPlayerListener() async {
+    await player.value.setSubscriptionDuration(
+      Duration(milliseconds: 10),
+    );
+
+    await initializeDateFormatting();
+
+    _playerSubscription = player.value.onProgress!.listen((event) {
+      maxDuration.value = event.duration.inMilliseconds.toDouble();
+
+      if (maxDuration.value < 0) {
+        maxDuration.value = 0.0;
+      }
+
+      sliderPos.value = min(
+        event.position.inMilliseconds.toDouble(),
+        maxDuration.value,
+      );
+
+      if (sliderPos.value < 0.0) {
+        sliderPos.value = 0.0;
+      }
+
+      String txt = DateFormat('mm:ss:SS', 'en_GB').format(
+        DateTime.fromMillisecondsSinceEpoch(
+          event.position.inMilliseconds,
+          isUtc: true,
+        ),
+      );
+      playerCurrentText.value = txt.substring(0, 5);
+
+      String txt1 = DateFormat('mm:ss:SS', 'en_GB').format(
+        DateTime.fromMillisecondsSinceEpoch(
+          event.duration.inMilliseconds,
+          isUtc: true,
+        ),
+      );
+      playerMaxText.value = txt1.substring(0, 5);
+    });
+  }
+
+  Future<void> startPlayer() async {
+    try {
+      Codec codec = Codec.aacADTS;
+      if (player.value.isPaused) {
+        await player.value.resumePlayer();
+      } else {
+        await player.value.startPlayer(
+            fromURI: filePath,
+            codec: codec,
+            whenFinished: () {
+              isPlaying.value = false;
+            });
+      }
+    } on Exception catch (err) {
+      print('ERROR HAPPENED');
+      player.value.logger.e('error: $err');
+    }
+  }
+
   //
   // Future<void> seekToSec(int milliSec) async {
   //   if (player.value.isPlaying) {
@@ -289,34 +292,34 @@ class RecordController extends GetxController {
   //   sliderPos.value = milliSec.toDouble();
   // }
   //
-  // Future<void> playback15Seconds() async {
-  //   await player.value.seekToPlayer(
-  //     Duration(
-  //       seconds: sliderPos.value.toInt() - 15,
-  //     ),
-  //   );
-  // }
+  Future<void> playback15Seconds() async {
+    await player.value.seekToPlayer(
+      Duration(
+        milliseconds: sliderPos.value.toInt() - 15000,
+      ),
+    );
+  }
+
+  Future<void> playForward15Seconds() async {
+    await player.value.seekToPlayer(
+      Duration(
+        milliseconds: sliderPos.value.toInt() + 15000,
+      ),
+    );
+  }
   //
-  // Future<void> playForward15Seconds() async {
-  //   await player.value.seekToPlayer(
-  //     Duration(
-  //       seconds: sliderPos.value.toInt() + 15,
-  //     ),
-  //   );
-  // }
-  //
-  // Future<void> seekToPlayer(int milliSec) async {
-  //   try {
-  //     if (player.value.isPlaying) {
-  //       await player.value.seekToPlayer(
-  //         Duration(milliseconds: milliSec),
-  //       );
-  //     }
-  //   } on Exception catch (err) {
-  //     player.value.logger.e('error: $err');
-  //   }
-  //   sliderPos.value = milliSec.toDouble();
-  // }
+  Future<void> seekToPlayer(int milliseconds) async {
+    try {
+      if (player.value.isPlaying) {
+        await player.value.seekToPlayer(
+          Duration(milliseconds: milliseconds),
+        );
+      }
+    } on Exception catch (err) {
+      player.value.logger.e('error: $err');
+    }
+  }
+
   //
   // Future stopPlayer() async {
   //   await player.value.pausePlayer();
@@ -339,6 +342,15 @@ class RecordController extends GetxController {
   //     await stopPlayer();
   //   }
   // }
+
+  Future<void> togglePlayer() async {
+    if (isPlaying.value) {
+      isPlaying.value = !isPlaying.value;
+      return await player.value.pausePlayer();
+    }
+    isPlaying.value = !isPlaying.value;
+    return await startPlayer();
+  }
 
   // ----- PLAYER END -----
 
@@ -374,6 +386,17 @@ class RecordController extends GetxController {
     await firebaseStorage.ref().child('upload-voice-firebase').list();
   }
 
+  // TODO: можно удалять аудио
+  // void _clean() async {
+  //   if (recordingFile != null) {
+  //     try {
+  //       await File(recordingFile!).delete();
+  //     } on Exception {
+  //       // ignore
+  //     }
+  //   }
+  // }
+
   @override
   void onClose() {
     // recorder
@@ -382,7 +405,7 @@ class RecordController extends GetxController {
     isRecorderInitialized.value = false;
     cancelRecorderSubscriptions();
     // player
-    // player.value.closeAudioSession();
+    player.value.closeAudioSession();
     // cancelPlayerSubscriptions();
     // player.close();
     super.onClose();

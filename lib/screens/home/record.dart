@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -18,11 +19,6 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import '../../models/slider_model.dart';
 
-typedef Fn = void Function();
-
-// StreamSubscription? _recorderSubscription;
-// StreamSubscription? _playerSubscription;
-
 class Record extends StatefulWidget {
   const Record({Key? key}) : super(key: key);
 
@@ -32,32 +28,9 @@ class Record extends StatefulWidget {
 
 // TickerProviderStateMixin для работы с анимацией
 class _RecordState extends State<Record> with TickerProviderStateMixin {
-  RecordController _controller = Get.put(RecordController());
-
-  // bool storagePermissionIsGranted = false;
-  // String _tempFileName = 'Recording_.aac';
-  // String? _fileName;
-  // String _directoryPath = '/storage/emulated/0/SoundRecorder';
-  // late String filePath;
-  //
-  // // -- Recorder --
-  // FlutterSoundRecorder _recorder = FlutterSoundRecorder();
-  // bool _isRecorderInitialized = false;
-  //
-  // bool get _isRecording => _recorder.isRecording;
-  // String _recorderText = '0:00:00';
-  // double _noiseInDb = 0;
-  // List _noisesList = List.generate(20, (index) => 0);
-  //
-  // // -- Player --
-  // FlutterSoundPlayer _player = FlutterSoundPlayer();
-  //
-  // bool get _isPlaying => _player.isPlaying;
-  // bool playing = false;
-  // String _playerText = '00:00:00';
-  // double _maxDuration = 0.0;
-  // double _sliderPos = 0.0;
-  // Uint8List? _boumData;
+  RecordController _controller = Get.put(
+    RecordController(),
+  );
 
   // -- recording animation --
   final DecorationTween decorationTween = DecorationTween(
@@ -74,153 +47,6 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
     vsync: this,
     duration: const Duration(seconds: 1),
   )..repeat(reverse: true);
-
-  // @override
-  // void initState() {
-  //   _initRecorder();
-  //   _initPlayer();
-  //   super.initState();
-  // }
-
-  // ----- RECORDER START -----
-
-  // Future<void> _initRecorder() async {
-  //   final status = await Permission.microphone.request();
-  //   if (status != PermissionStatus.granted) {
-  //     throw RecordingPermissionException('Recording permission required.');
-  //   }
-  //   await _recorder.openAudioSession();
-  //
-  //   _isRecorderInitialized = true;
-  //   print('_isRecorderInitialized $_isRecorderInitialized');
-  //   await _toggleRecording();
-  // }
-
-  // Future _startRecorder() async {
-  //   if (!_isRecorderInitialized) {
-  //     return;
-  //   }
-  //   Directory directory = await getApplicationDocumentsDirectory();
-  //   // Возможность инициализировать все записанные аудио
-  //   // String filePath = directory.path + '/' + DateTime.now().millisecondsSinceEpoch.toString() + '.aac';
-  //   // Временный файл
-  //   String filePath = directory.path + '/' + 'temp' + '.aac';
-  //
-  //   await _recorder.setSubscriptionDuration(Duration(milliseconds: 150));
-  //   _recorderSubscription = await _recorder.onProgress!.listen((event) {
-  //     setState(() {
-  //       if (event.decibels != null) {
-  //         _noiseInDb = event.decibels!.ceilToDouble();
-  //       }
-  //     });
-  //     for (int i = 0; i < 19; i++) {
-  //       _noisesList[i] = _noisesList[i + 1];
-  //     }
-  //
-  //     _noisesList.removeLast();
-  //     _noisesList.add(_noiseInDb);
-  //     print('noiseList => $_noisesList');
-  //
-  //     DateTime date = DateTime.fromMillisecondsSinceEpoch(
-  //         event.duration.inMilliseconds,
-  //         isUtc: true);
-  //     String txt = DateFormat('mm:ss:SS', 'en_GB').format(date);
-  //
-  //     _recorderText = txt.substring(0, 8);
-  //   });
-  //   await _recorder.startRecorder(
-  //     // toFile: _tempFileName,
-  //     toFile: filePath,
-  //     codec: Codec.aacADTS,
-  //   );
-  //   print('recording to $filePath');
-  // }
-
-  // Future<void> _stopRecorder() async {
-  //   if (!_isRecorderInitialized) {
-  //     return;
-  //   }
-  //   await _recorder.stopRecorder();
-  //   await cancelRecorderSubscriptions();
-  //   setState(() {
-  //     _noisesList = List.generate(20, (index) => 0);
-  //   });
-  //   //_writeFileToStorage();
-  // }
-
-  // Future<void> cancelRecorderSubscriptions() async {
-  //   if (_recorderSubscription != null) {
-  //     await _recorderSubscription!.cancel();
-  //     _recorderSubscription = null;
-  //   }
-  // }
-
-  // Future<void> _writeFileToStorage() async {
-  //   await _getStoragePermission();
-  //   await _createDirectory();
-  //   await _createFile();
-  // }
-  //
-  // Future<void> _writeFileToFirebase() async {
-  //   FirebaseFirestore.instance
-  //       .collection('data')
-  //       .add({'text': 'data added through an app'});
-  // }
-  //
-  // Future<void> _getStoragePermission() async {
-  //   if (await Permission.storage.request().isGranted) {
-  //     setState(() {
-  //       storagePermissionIsGranted = true;
-  //     });
-  //   } else if (await Permission.storage.request().isPermanentlyDenied) {
-  //     await openAppSettings();
-  //   } else if (await Permission.storage.request().isDenied) {
-  //     setState(() {
-  //       storagePermissionIsGranted = false;
-  //     });
-  //   }
-  // }
-
-  // Future<void> _createDirectory() async {
-  //   bool isDirectoryCreated = await Directory(_directoryPath).exists();
-  //   if (!isDirectoryCreated) {
-  //     Directory(_directoryPath).create()
-  //         // The created directory is returned as a Future.
-  //         .then((Directory directory) {
-  //       print(directory.path);
-  //     });
-  //   }
-  // }
-
-  // Future<void> _createFile() async {
-  //   String _completeFileName = await _generateFileName();
-  //   File(_directoryPath + '/' + _completeFileName)
-  //       .create(recursive: true)
-  //       .then((File file) async {
-  //     //write to file
-  //     Uint8List bytes = await file.readAsBytes();
-  //     file.writeAsBytes(bytes);
-  //     print(file.path);
-  //     filePath = file.path;
-  //   });
-  // }
-
-  // Future<String> _generateFileName([int i = 1]) async {
-  //   if (await File(_directoryPath + '/' + 'Запись №$i.aac').exists()) {
-  //     return _generateFileName(i + 1);
-  //   }
-  //   return 'Запись №$i.aac';
-  // }
-  //
-  // Future _toggleRecording() async {
-  //   if (_isRecording) {
-  //     await _stopRecorder();
-  //   } else {
-  //     await _startRecorder();
-  //   }
-  // }
-
-  // ----- RECORDER END -----
 
   // ----- PLAYER START -----
 
@@ -404,11 +230,6 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   Widget _getRecorderWidget() {
     return Column(
       children: [
@@ -445,7 +266,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
           children: [
             _getRecordAnimatedDot(),
             Obx(
-              () => Text('${_controller.recorderText}'),
+              () => Text('${_controller.recorderText.value}'),
             ),
           ],
         ),
@@ -540,71 +361,97 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
           ),
         ),
         SizedBox(height: 50),
-        // SliderTheme(
-        //   data: SliderThemeData(
-        //     trackHeight: 2,
-        //     thumbShape: CustomSliderPlayer(thumbRadius: 5),
-        //   ),
-        //   child: Obx(
-        //     () => Slider(
-        //       activeColor: Color(0xff3A3A55),
-        //       inactiveColor: Color(0xff3A3A55),
-        //       // value: _controller.sliderPos.value,
-        //       onChanged: (val) {
-        //         _controller.sliderPos.value = val;
-        //         setState(() {});
-        //       },
-        //     ),
-        //   ),
-        // ),
-        SizedBox(height: 155),
+        SizedBox(
+          height: 30,
+          child: SliderTheme(
+            data: SliderThemeData(
+              trackHeight: 2,
+              thumbShape: CustomSliderPlayer(thumbRadius: 5),
+            ),
+            child: Slider(
+              value: min(
+                _controller.sliderPos.value,
+                _controller.maxDuration.value,
+              ),
+              min: 0.0,
+              max: _controller.maxDuration.value,
+              activeColor: Color(0xff3A3A55),
+              inactiveColor: Color(0xff3A3A55),
+              onChanged: (value) async {
+                  await _controller.seekToPlayer(value.toInt());
+              },
+              divisions: _controller.maxDuration.value == 0.0
+                  ? 1
+                  : _controller.maxDuration.value.toInt(),
+            ),
+          ),
+        ),
+        Container(
+          height: 30.0,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 25),
+              child: Obx(
+                () => Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(_controller.playerCurrentText.value),
+                    Text(_controller.playerMaxText.value),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 140),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             InkWell(
-              // onTap: () => playback15Seconds(),
+              onTap: () => _controller.playback15Seconds(),
               child: SvgPicture.asset('assets/play_backward.svg'),
             ),
             SizedBox(width: 50),
-            // _getPlayButton(),
+            _getPlayButton(),
             SizedBox(width: 50),
             InkWell(
-              // onTap: () => playForward15Seconds(),
+              onTap: () => _controller.playForward15Seconds(),
               child: SvgPicture.asset('assets/play_forward.svg'),
             ),
           ],
         ),
+        SizedBox(height: 87),
+
       ],
     );
   }
 
-// Widget _getPlayButton() {
-//   return Container(
-//     child: InkResponse(
-//       onTap: () => _controller.togglePlayer(),
-//       // _isRecording ? getRecorderFn(_mRecorder) : getPlaybackFn(_mPlayer),
-//       //getRecorderFn(_mRecorder),
-//       child: Container(
-//         width: 70,
-//         height: 70,
-//         decoration: BoxDecoration(
-//           color: Color(0xffF1B488),
-//           shape: BoxShape.circle,
-//         ),
-//         child: Obx(
-//           () => Icon(
-//             _controller.playing.value
-//                 ? Icons.ten_k
-//                 : Icons.play_arrow_rounded,
-//             //? Icons.pause_rounded : Icons.play_arrow_rounded,
-//             color: backgroundColor,
-//             size: 48,
-//           ),
-//         ),
-//       ),
-//     ),
-//   );
-// }
+  Widget _getPlayButton() {
+    return Container(
+      child: InkResponse(
+        onTap: () => _controller.togglePlayer(),
+        child: Container(
+          width: 70,
+          height: 70,
+          decoration: BoxDecoration(
+            color: Color(0xffF1B488),
+            shape: BoxShape.circle,
+          ),
+          child: Obx(
+            () => Icon(
+              _controller.isPlaying.value
+                  ? Icons.pause_rounded
+                  : Icons.play_arrow_rounded,
+              //? Icons.pause_rounded : Icons.play_arrow_rounded,
+              color: backgroundColor,
+              size: 48,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _ShapePainter extends CustomPainter {
