@@ -197,8 +197,8 @@ class RecordController extends GetxController {
       return _generateFileName(i + 1);
     }
     // было
-    // return 'Запись №$i.aac';
-    return 'Запись №$i';
+    // return 'Запись №$i';
+    return 'Запись №$i.aac';
   }
 
   Future<void> toggleRecording() async {

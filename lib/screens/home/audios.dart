@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:first_project_test/constants/constants.dart';
+import 'package:first_project_test/models/audio_model.dart';
 import 'package:first_project_test/models/painter_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -191,9 +192,20 @@ class _AudiosState extends State<Audios> {
         Align(
           alignment: Alignment.center,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 50),
+            padding: EdgeInsets.only(left: 20, right: 20, top: 250),
             // child: Text('$_getAudioList'),
             // child: _getAudioList(),
+            child: ListView.builder(
+              itemCount: names.length,
+              itemBuilder: (context, i) {
+                return names.isEmpty
+                    ? Text('nothing :(')
+                    : AudioForm(
+                        name: names[i],
+                        duration: 0,
+                      );
+              },
+            ),
           ),
         )
       ],
@@ -201,17 +213,23 @@ class _AudiosState extends State<Audios> {
   }
 
   late List<FileSystemEntity> _folders;
+  late List names = [];
 
-  Future<void> _getFilesFromStorage() async{
+  Future<void> _getFilesFromStorage() async {
     final directoryPath = '/storage/emulated/0/SoundRecorder';
     Directory directory = Directory(directoryPath);
     setState(() {
       _folders = directory.listSync(recursive: true, followLinks: false);
     });
-    print(_folders);
+    for (var i in _folders) {
+      print(i.path.split('/').last);
+      names.add(i.path.split('/').last);
+    }
+    print(names);
+    // print(_folders.first.path.split('/').last);
   }
 
-  Future<Widget?> _getAudioList() async {
+  FutureBuilder<QuerySnapshot<Object?>> _getAudioList() {
     // FirebaseStorage storage = FirebaseStorage.instance;
     // Reference ref = storage.ref().child("image1" + DateTime.now().toString());
     // String results = ref.listAll().toString();
@@ -220,7 +238,7 @@ class _AudiosState extends State<Audios> {
     //
     // return results;
     FirebaseStorage storage = FirebaseStorage.instance;
-    ListResult ref = await FirebaseStorage.instance.ref().listAll();
+    // ListResult ref = await FirebaseStorage.instance.ref().listAll();
 
     return FutureBuilder(
       future: getImages(),
@@ -231,9 +249,7 @@ class _AudiosState extends State<Audios> {
             itemBuilder: (BuildContext context, int index) {
               return ListTile(
                 contentPadding: EdgeInsets.all(8.0),
-                title: Text(
-                    '${snapshot.data?.docs[index].data().toString()}'
-                ),
+                title: Text('${snapshot.data?.docs[index].data().toString()}'),
               );
             });
       },
