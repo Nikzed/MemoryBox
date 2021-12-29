@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:first_project_test/constants/constants.dart';
@@ -198,6 +200,17 @@ class _AudiosState extends State<Audios> {
     );
   }
 
+  late List<FileSystemEntity> _folders;
+
+  Future<void> _getFilesFromStorage() async{
+    final directoryPath = '/storage/emulated/0/SoundRecorder';
+    Directory directory = Directory(directoryPath);
+    setState(() {
+      _folders = directory.listSync(recursive: true, followLinks: false);
+    });
+    print(_folders);
+  }
+
   Future<Widget?> _getAudioList() async {
     // FirebaseStorage storage = FirebaseStorage.instance;
     // Reference ref = storage.ref().child("image1" + DateTime.now().toString());
@@ -229,5 +242,11 @@ class _AudiosState extends State<Audios> {
 
   Future<QuerySnapshot> getImages() {
     return firebaseFirestore.collection("upload-voice-firebase").get();
+  }
+
+  @override
+  void initState() {
+    _getFilesFromStorage();
+    super.initState();
   }
 }
