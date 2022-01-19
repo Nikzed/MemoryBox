@@ -184,7 +184,9 @@ class _ProfileState extends State<Profile> {
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(50.0),
+                        ),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.1),
@@ -298,6 +300,7 @@ class _ProfileState extends State<Profile> {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
+                                      backgroundColor: backgroundColor,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(30),
                                       ),
@@ -320,60 +323,74 @@ class _ProfileState extends State<Profile> {
                                             ),
                                             SizedBox(height: 50),
                                             Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
                                               children: [
-                                                ElevatedButton(
-                                                  onPressed: () {
-                                                    // TODO
-                                                  },
-                                                  child: Text('Удалить'),
-                                                  style: ButtonStyle(
-                                                    foregroundColor:
-                                                        MaterialStateProperty
-                                                            .all<Color>(
-                                                                Colors.white),
-                                                    backgroundColor:
-                                                        MaterialStateProperty
-                                                            .all<Color>(Color(
-                                                                0xffE27777)),
-                                                    shape: MaterialStateProperty
-                                                        .all<
-                                                            RoundedRectangleBorder>(
-                                                      RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(40),
-                                                        side: BorderSide(
-                                                            color:
-                                                                Colors.black),
+                                                SizedBox(
+                                                  width: 100,
+                                                  child: ElevatedButton(
+                                                    onPressed: () {
+                                                      // TODO
+                                                    },
+                                                    child: Text('Удалить'),
+                                                    style: ButtonStyle(
+                                                      foregroundColor:
+                                                          MaterialStateProperty
+                                                              .all<Color>(
+                                                        Colors.white,
+                                                      ),
+                                                      backgroundColor:
+                                                          MaterialStateProperty
+                                                              .all<Color>(
+                                                        Color(0xffE27777),
+                                                      ),
+                                                      shape: MaterialStateProperty
+                                                          .all<
+                                                              RoundedRectangleBorder>(
+                                                        RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(40),
+                                                          // side: BorderSide(
+                                                          //     color:
+                                                          //         Colors.black),
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
-                                                ElevatedButton(
-                                                  onPressed: () {
-                                                    print(
-                                                        'is registered: ${authController.isRegistered}');
-                                                  },
-                                                  child: Text('Нет'),
-                                                  style: ButtonStyle(
-                                                    foregroundColor:
-                                                        MaterialStateProperty
-                                                            .all<Color>(Color(
-                                                                0xff8C84E2)),
-                                                    backgroundColor:
-                                                        MaterialStateProperty
-                                                            .all<Color>(
-                                                                Colors.white),
-                                                    shape: MaterialStateProperty
-                                                        .all<
-                                                            RoundedRectangleBorder>(
-                                                      RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(40),
-                                                        side: BorderSide(
-                                                            color: Color(
-                                                                0xff8C84E2)),
+                                                SizedBox(
+                                                  width: 100,
+                                                  child: ElevatedButton(
+                                                    onPressed: () {
+                                                      print(
+                                                          'is registered: ${authController.isRegistered}');
+                                                    },
+                                                    child: Text('Нет'),
+                                                    style: ButtonStyle(
+                                                      // elevation: MaterialStateProperty.all(5),
+                                                      foregroundColor:
+                                                          MaterialStateProperty
+                                                              .all<Color>(
+                                                        Color(0xff8C84E2),
+                                                      ),
+                                                      backgroundColor:
+                                                          MaterialStateProperty
+                                                              .all<Color>(
+                                                        backgroundColor,
+                                                      ),
+                                                      shape: MaterialStateProperty
+                                                          .all<
+                                                              RoundedRectangleBorder>(
+                                                        RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(40),
+                                                          // side: BorderSide(
+                                                          //   color:
+                                                          //       Color(0xff8C84E2),
+                                                          // ),
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
