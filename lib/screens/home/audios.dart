@@ -192,10 +192,11 @@ class _AudiosState extends State<Audios> {
         Align(
           alignment: Alignment.center,
           child: Padding(
-            padding: EdgeInsets.only(left: 20, right: 20, top: 250),
+            padding: EdgeInsets.only(left: 20, right: 20, top: 270),
             // child: Text('$_getAudioList'),
             // child: _getAudioList(),
             child: ListView.builder(
+              padding: EdgeInsets.zero,
               itemCount: names.length,
               itemBuilder: (context, i) {
                 return names.isEmpty
@@ -207,7 +208,7 @@ class _AudiosState extends State<Audios> {
               },
             ),
           ),
-        )
+        ),
       ],
     );
   }
@@ -229,32 +230,33 @@ class _AudiosState extends State<Audios> {
     // print(_folders.first.path.split('/').last);
   }
 
-  FutureBuilder<QuerySnapshot<Object?>> _getAudioList() {
-    // FirebaseStorage storage = FirebaseStorage.instance;
-    // Reference ref = storage.ref().child("image1" + DateTime.now().toString());
-    // String results = ref.listAll().toString();
-    // print('results $results');
-    // //ref.getDownloadURL();
-    //
-    // return results;
-    FirebaseStorage storage = FirebaseStorage.instance;
-    // ListResult ref = await FirebaseStorage.instance.ref().listAll();
-
-    return FutureBuilder(
-      future: getImages(),
-      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        return ListView.builder(
-            shrinkWrap: true,
-            itemCount: snapshot.data?.docs.length,
-            itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                contentPadding: EdgeInsets.all(8.0),
-                title: Text('${snapshot.data?.docs[index].data().toString()}'),
-              );
-            });
-      },
-    );
-  }
+  // FutureBuilder<QuerySnapshot<Object?>> _getAudioList() {
+  //   // FirebaseStorage storage = FirebaseStorage.instance;
+  //   // Reference ref = storage.ref().child("image1" + DateTime.now().toString());
+  //   // String results = ref.listAll().toString();
+  //   // print('results $results');
+  //   // //ref.getDownloadURL();
+  //   //
+  //   // return results;
+  //   FirebaseStorage storage = FirebaseStorage.instance;
+  //   // ListResult ref = await FirebaseStorage.instance.ref().listAll();
+  //
+  //   return FutureBuilder(
+  //     future: getImages(),
+  //     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+  //       return ListView.builder(
+  //           padding: EdgeInsets.zero,
+  //           shrinkWrap: true,
+  //           itemCount: snapshot.data?.docs.length,
+  //           itemBuilder: (BuildContext context, int index) {
+  //             return ListTile(
+  //               contentPadding: EdgeInsets.all(8.0),
+  //               title: Text('${snapshot.data?.docs[index].data().toString()}'),
+  //             );
+  //           });
+  //     },
+  //   );
+  // }
 
   Future<QuerySnapshot> getImages() {
     return firebaseFirestore.collection("upload-voice-firebase").get();
