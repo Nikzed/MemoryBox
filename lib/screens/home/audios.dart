@@ -196,7 +196,10 @@ class _AudiosState extends State<Audios> {
             // child: Text('$_getAudioList'),
             // child: _getAudioList(),
             child: ListView.builder(
-              padding: EdgeInsets.zero,
+              padding: EdgeInsets.only(bottom: 90),
+              physics: BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics(),
+              ),
               itemCount: names.length,
               itemBuilder: (context, i) {
                 return names.isEmpty
