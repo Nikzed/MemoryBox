@@ -19,6 +19,9 @@ class _HomeState extends State<Home> {
     return Container(
       color: backgroundColor,
       child: CustomScrollView(
+        physics: BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
         slivers: [
           _getSliverAppBar(),
           _getSliverList(),

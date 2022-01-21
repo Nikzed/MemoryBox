@@ -211,6 +211,9 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
               color: backgroundColor,
               child: Obx(
                 () => ListView(
+                  physics: BouncingScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics(),
+                  ),
                   padding: EdgeInsets.zero,
                   children: [
                     if (_controller.isRecorderInitialized.value)
@@ -378,7 +381,7 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
               activeColor: Color(0xff3A3A55),
               inactiveColor: Color(0xff3A3A55),
               onChanged: (value) async {
-                  await _controller.seekToPlayer(value.toInt());
+                await _controller.seekToPlayer(value.toInt());
               },
               divisions: _controller.maxDuration.value == 0.0
                   ? 1
@@ -422,7 +425,6 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
           ],
         ),
         SizedBox(height: 87),
-
       ],
     );
   }

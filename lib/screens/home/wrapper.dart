@@ -82,7 +82,7 @@ class _WrapperState extends State<Wrapper> {
                   SizedBox(height: 15),
                   _getDrawerButton('assets/category.svg', 'Подборки', 1),
                   SizedBox(height: 15),
-                  _getDrawerButton('assets/paper.svg', 'Все аудиофалы', 1),
+                  _getDrawerButton('assets/paper.svg', 'Все аудиофалы', 3),
                   SizedBox(height: 15),
                   _getDrawerButton('assets/search.svg', 'Поиск', 5),
                   SizedBox(height: 15),

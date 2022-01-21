@@ -18,7 +18,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  var _image;
+  File? _image;
   ImagePicker picker = ImagePicker();
   bool isEditing = false;
   TextEditingController _controller = TextEditingController();
@@ -124,9 +124,13 @@ class _ProfileState extends State<Profile> {
                                       Colors.black.withOpacity(0.6),
                                       BlendMode.dstATop,
                                     ),
-                                    image: NetworkImage(
-                                      'https://firebasestorage.googleapis.com/v0/b/my-app-59705.appspot.com/o/CROPPED-nebo-oblaka-ozero-pirs.jpg?alt=media&token=4e4ecb89-98a6-4fd2-84af-cade727ee090',
-                                    ),
+                                    image:
+                                        _image == null
+                                            ? NetworkImage(
+                                                'https://firebasestorage.googleapis.com/v0/b/my-app-59705.appspot.com/o/CROPPED-nebo-oblaka-ozero-pirs.jpg?alt=media&token=4e4ecb89-98a6-4fd2-84af-cade727ee090',
+                                              )
+                                            : FileImage(_image!)
+                                                as ImageProvider,
                                   ),
                                 ),
                                 child: GestureDetector(
@@ -158,7 +162,7 @@ class _ProfileState extends State<Profile> {
                                     fit: BoxFit.cover,
                                   )
                                 : Image.file(
-                                    _image,
+                                    _image!,
                                     fit: BoxFit.cover,
                                   ),
                       ),
