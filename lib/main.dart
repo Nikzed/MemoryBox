@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'MemoryBox',
+      theme: ThemeData(fontFamily: 'TTNorms'),
       debugShowCheckedModeBanner: false,
       home: LinearProgressIndicator(
         backgroundColor: backgroundColor,

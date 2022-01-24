@@ -5,7 +5,8 @@ class AudioForm extends StatefulWidget {
   final name;
   final duration;
 
-   AudioForm({Key? key, this.name, this.duration}) : super(key: key);
+  AudioForm({Key? key, this.name = 'Неизвестно', this.duration = 0,})
+      : super(key: key);
 
   @override
   State<AudioForm> createState() => _AudioFormState();
@@ -70,7 +71,7 @@ class _AudioFormState extends State<AudioForm> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Малышь Кокки 1',
+                  widget.name,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Color(0xff3A3A5580).withOpacity(1),
@@ -79,7 +80,7 @@ class _AudioFormState extends State<AudioForm> {
                 ),
                 SizedBox(height: 2),
                 Text(
-                  '30 минут',
+                  '** минут',
                   style: TextStyle(
                     color: Color(0xff3A3A5580).withOpacity(0.5),
                   ),
