@@ -12,6 +12,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:share_plus/share_plus.dart';
 
 enum RecordState {
   RECORDING,
@@ -306,6 +307,7 @@ class RecordController extends GetxController {
       ),
     );
   }
+
   //
   Future<void> seekToPlayer(int milliseconds) async {
     try {
@@ -354,9 +356,18 @@ class RecordController extends GetxController {
   // ----- PLAYER END -----
 
   Future<void> onFileUploadButtonPressed() async {
+    print('HELLO!!!!!!');
+    List<String> paths = [filePath];
+    print('paths $paths');
+    await Share.shareFiles(
+      paths,
+      subject: 'Boom',
+      text: ''
+    );
     // setState(() {
     //   _isUploading = true;
     // });
+    return;
     try {
       print('filePath: $filePath');
       FirebaseStorage firebaseStorage = FirebaseStorage.instance;

@@ -140,6 +140,7 @@ class _ProfileState extends State<Profile> {
                                       imageQuality: 50,
                                     );
                                     setState(() {
+
                                       _image = File(image!.path);
                                     });
                                   },
