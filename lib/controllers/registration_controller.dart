@@ -109,7 +109,11 @@ class RegistrationController extends GetxController {
 
     UserCredential userCredential = await auth.signInAnonymously();
     print('UserCredential: $userCredential');
-    Get.offAll(() => Wrapper(), transition: Transition.zoom);
+    Get.offAll(
+      () => Wrapper(),
+      transition: Transition.cupertino,
+      duration: Duration(seconds: 1),
+    );
     showLoading.value = false;
   }
 }

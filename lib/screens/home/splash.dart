@@ -116,7 +116,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     padding: EdgeInsets.only(bottom: 50),
                     child: Container(
                       width: 250,
-                      height: 80,
+                      height: 85,
                       padding: EdgeInsets.all(25),
                       decoration: BoxDecoration(
                         color: backgroundColor,

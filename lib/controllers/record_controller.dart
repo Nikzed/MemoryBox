@@ -85,7 +85,7 @@ class RecordController extends GetxController {
     // filePath = directory.path + '/' + 'temp' + '.aac';
     // Постоянный файл TODO: решить куда записывать
     fileName.value = await _generateFileName();
-    filePath = directoryPath + '/' + fileName.value + '.aac';
+    filePath = directoryPath + '/' + fileName.value;
     await _addRecorderListener();
     await recorder.value.startRecorder(
       toFile: filePath,

@@ -86,24 +86,25 @@ class _SignInState extends State<SignIn> {
                   child: Padding(
                     padding: EdgeInsets.only(top: 320),
                     child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Color(0xffF1B488),
-                          fixedSize: Size(269, 49),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50),
-                          ),
+                      style: ElevatedButton.styleFrom(
+                        primary: Color(0xffF1B488),
+                        fixedSize: Size(269, 49),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
                         ),
-                        onPressed: () {
-                          Get.to(
-                            () => Registration(),
-                            transition: Transition.cupertino,
-                            duration: Duration(seconds: 1),
-                          );
-                        },
-                        child: Text(
-                          'Продолжить',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        )),
+                      ),
+                      onPressed: () {
+                        Get.to(
+                          () => Registration(),
+                          transition: Transition.cupertino,
+                          duration: Duration(seconds: 1),
+                        );
+                      },
+                      child: Text(
+                        'Продолжить',
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ),
                   ),
                 ),
               ],

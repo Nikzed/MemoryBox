@@ -16,21 +16,23 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: backgroundColor,
-      child: CustomScrollView(
-        physics: BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
-        ),
-        slivers: [
-          _getSliverAppBar(),
-          _getSliverList(),
-          SliverToBoxAdapter(
-            child: Container(
-              height: 80,
-            ),
+    return Scaffold(
+      body: Container(
+        color: backgroundColor,
+        child: CustomScrollView(
+          physics: BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
           ),
-        ],
+          slivers: [
+            _getSliverAppBar(),
+            _getSliverList(),
+            SliverToBoxAdapter(
+              child: Container(
+                height: 80,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

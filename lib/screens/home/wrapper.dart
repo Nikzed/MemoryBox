@@ -23,7 +23,7 @@ class _WrapperState extends State<Wrapper> {
         SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light));
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      restorationId: "root",
+      // restorationId: "root",
       extendBody: true,
       // TODO implement logic
       drawerEnableOpenDragGesture: _wrapperController.showDrawer,
@@ -35,6 +35,7 @@ class _WrapperState extends State<Wrapper> {
         onPageChanged: (page){
           _wrapperController.onPageChanged(page);
         },
+        // children: _wrapperController.pages,
         children: _wrapperController.pages,
       ),
       drawer: _getDrawer(),

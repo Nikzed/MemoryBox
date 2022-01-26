@@ -1,12 +1,16 @@
 import 'package:first_project_test/constants/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class AudioForm extends StatefulWidget {
   final name;
   final duration;
 
-  AudioForm({Key? key, this.name = 'Неизвестно', this.duration = 0,})
-      : super(key: key);
+  AudioForm({
+    Key? key,
+    this.name = 'Неизвестно',
+    this.duration = 0,
+  }) : super(key: key);
 
   @override
   State<AudioForm> createState() => _AudioFormState();
@@ -59,6 +63,11 @@ class _AudioFormState extends State<AudioForm> {
                       setState(() {
                         isPlaying = !isPlaying;
                       });
+                      Get.snackbar(
+                        'title',
+                        'message',
+                        snackPosition: SnackPosition.BOTTOM,
+                      );
                       print(isPlaying);
                     },
                   ),

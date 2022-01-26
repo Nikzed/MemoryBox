@@ -124,13 +124,11 @@ class _ProfileState extends State<Profile> {
                                       Colors.black.withOpacity(0.6),
                                       BlendMode.dstATop,
                                     ),
-                                    image:
-                                        _image == null
-                                            ? NetworkImage(
-                                                'https://firebasestorage.googleapis.com/v0/b/my-app-59705.appspot.com/o/CROPPED-nebo-oblaka-ozero-pirs.jpg?alt=media&token=4e4ecb89-98a6-4fd2-84af-cade727ee090',
-                                              )
-                                            : FileImage(_image!)
-                                                as ImageProvider,
+                                    image: _image == null
+                                        ? NetworkImage(
+                                            'https://firebasestorage.googleapis.com/v0/b/my-app-59705.appspot.com/o/CROPPED-nebo-oblaka-ozero-pirs.jpg?alt=media&token=4e4ecb89-98a6-4fd2-84af-cade727ee090',
+                                          )
+                                        : FileImage(_image!) as ImageProvider,
                                   ),
                                 ),
                                 child: GestureDetector(
@@ -140,7 +138,6 @@ class _ProfileState extends State<Profile> {
                                       imageQuality: 50,
                                     );
                                     setState(() {
-
                                       _image = File(image!.path);
                                     });
                                   },
@@ -244,6 +241,11 @@ class _ProfileState extends State<Profile> {
                     ),
                     InkWell(
                       onTap: () {
+                        Get.snackbar(
+                          'title',
+                          'message',
+                          snackPosition: SnackPosition.BOTTOM,
+                        );
                         print(FirebaseAuth.instance.currentUser?.uid);
                       },
                       child: Text(
