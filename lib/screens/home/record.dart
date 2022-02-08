@@ -1,22 +1,11 @@
-import 'dart:async';
-import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:first_project_test/constants/constants.dart';
 import 'package:first_project_test/controllers/record_controller.dart';
-import 'package:first_project_test/controllers/registration_controller.dart';
 import 'package:first_project_test/models/painter_model.dart';
 import 'package:first_project_test/models/slider_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import '../../models/slider_model.dart';
 
 class Record extends StatefulWidget {
@@ -48,127 +37,9 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
     duration: const Duration(seconds: 1),
   )..repeat(reverse: true);
 
-  // ----- PLAYER START -----
-
-  // Future<void> _initPlayer() async {
-  //   await _player.openAudioSession();
-  //
-  //   await _player.setSubscriptionDuration(Duration(milliseconds: 150));
-  //   await initializeDateFormatting();
-  //
-  //   _playerSubscription = _player.onProgress!.listen((event) {
-  //     _maxDuration = event.duration.inMilliseconds.toDouble();
-  //     if (_maxDuration < 0) _maxDuration = 0.0;
-  //
-  //     String txt = DateFormat('mm:ss:SS', 'en_GB').format(
-  //       DateTime.fromMicrosecondsSinceEpoch(event.position.inMilliseconds,
-  //           isUtc: true),
-  //     );
-  //     _playerText = txt.substring(0, 5);
-  //
-  //     _sliderPos = event.position.inMicroseconds.toDouble();
-  //   });
-  //
-  //   _fileName = await _generateFileName();
-  // }
-
-  // Future startPlayer() async {
-  //   try {
-  //     String? audioFilePath = _tempFileName;
-  //     Codec codec = Codec.aacADTS;
-  //     if (_player.isPaused) {
-  //       await _player.resumePlayer();
-  //     } else {
-  //       await _player.startPlayer(
-  //           fromURI: audioFilePath,
-  //           codec: codec,
-  //           whenFinished: () {
-  //             _player.logger.d('Player finished');
-  //           });
-  //     }
-  //   } on Exception catch (err) {
-  //     print('ERROR HAPPENED');
-  //     _player.logger.e('error: $err');
-  //   }
-  //
-  //   String? audioFilePath = _tempFileName;
-  //   Codec codec = Codec.aacADTS;
-  //
-  //   await _player.startPlayer(
-  //     fromURI: audioFilePath,
-  //     codec: codec,
-  //     whenFinished: () => null,
-  //   );
-  // }
-
-  // Future<void> seekToSec(int milliSec) async {
-  //   if (_player.isPlaying) {
-  //     await _player.seekToPlayer(Duration(milliseconds: milliSec));
-  //   }
-  //   _sliderPos = milliSec.toDouble();
-  // }
-
-  // Future<void> playback15Seconds() async {
-  //   await _player.seekToPlayer(Duration(seconds: _sliderPosition.toInt() - 15));
-  // }
-  //
-  // Future<void> playForward15Seconds() async {
-  //   await _player.seekToPlayer(Duration(seconds: _sliderPosition.toInt() + 15));
-  // }
-
-  // Future<void> seekToPlayer(int milliSec) async {
-  //   try {
-  //     if (_player.isPlaying) {
-  //       await _player.seekToPlayer(Duration(milliseconds: milliSec));
-  //     }
-  //   } on Exception catch (err) {
-  //     _player.logger.e('error: $err');
-  //   }
-  //   _sliderPosition = milliSec.toDouble();
-  // }
-
-  // Future stopPlayer() async {
-  //   await _player.pausePlayer();
-  // }
-  //
-  // void cancelPlayerSubscriptions() {
-  //   if (_playerSubscription != null) {
-  //     _playerSubscription!.cancel();
-  //     _playerSubscription = null;
-  //   }
-  // }
-  //
-  // Future<void> togglePlayer() async {
-  //   print('_isPlaying: $_isPlaying');
-  //   if (!playing) {
-  //     setState(() {
-  //       playing = true;
-  //     });
-  //     await startPlayer();
-  //   } else {
-  //     setState(() {
-  //       playing = false;
-  //     });
-  //     await stopPlayer();
-  //   }
-  // }
-
-  // ----- PLAYER END -----
-
   @override
   void dispose() {
-    // // recorder
-    // _recorder.closeAudioSession();
-    // _isRecorderInitialized = false;
-    // cancelRecorderSubscriptions();
-    // // player
-    // _player.closeAudioSession();
-    // cancelPlayerSubscriptions();
-
     _animationController.dispose();
-    // _controller.onClose();
-    // print(_controller.isClosed);
-    // _controller.onClose();
     Get.delete<RecordController>();
     super.dispose();
   }

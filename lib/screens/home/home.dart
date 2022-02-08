@@ -42,7 +42,7 @@ class _HomeState extends State<Home> {
       systemOverlayStyle:
           SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light),
       backgroundColor: backgroundColor,
-      expandedHeight: 400,
+      expandedHeight: 390,
       automaticallyImplyLeading: false,
       flexibleSpace: FlexibleSpaceBar(
         background: Stack(
@@ -206,22 +206,6 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: 5,
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: Offset(0, 10), // changes position of shadow
-                    ),
-                  ],
-                ),
-              ),
-            )
           ],
         ),
       ),
