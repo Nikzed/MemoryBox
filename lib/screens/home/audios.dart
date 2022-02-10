@@ -3,9 +3,12 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:first_project_test/constants/constants.dart';
+import 'package:first_project_test/controllers/wrapper_controller.dart';
 import 'package:first_project_test/models/audio_model.dart';
 import 'package:first_project_test/models/painter_model.dart';
+import 'package:first_project_test/models/player_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
@@ -15,6 +18,9 @@ class Audios extends StatefulWidget {
 }
 
 class _AudiosState extends State<Audios> {
+  final WrapperController f = Get.find();
+  int isPlaying = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -208,10 +214,17 @@ class _AudiosState extends State<Audios> {
                       ? Text('nothing :(')
                       : AudioForm(
                           name: names[i],
-                          duration: 0,
+                          duration: 1>2?0:1,
                         );
                 },
               ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(bottom: 90),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: PlayerModel(),
             ),
           ),
         ],
@@ -230,10 +243,14 @@ class _AudiosState extends State<Audios> {
     });
     for (var i in _folders) {
       print(i.path.split('/').last);
-      names.add(i.path.split('/').last);
+      if (i.path.split('/').last.endsWith('.aac')) {
+        names.add(i.path.split('/').last);
+      }
     }
     print(names);
     // print(_folders.first.path.split('/').last);
+    // List<String> q = [];
+    // await rootBundle.loadString();
   }
 
   Future<QuerySnapshot> getImages() {

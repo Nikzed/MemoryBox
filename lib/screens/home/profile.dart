@@ -41,10 +41,12 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       body: WillPopScope(
         onWillPop: () async {
-          setState(() {
-            isEditing = false;
-            shouldPop = !shouldPop;
-          });
+          setState(
+            () {
+              isEditing = false;
+              shouldPop = !shouldPop;
+            },
+          );
           return shouldPop;
         },
         child: ListView(
@@ -138,7 +140,8 @@ class _ProfileState extends State<Profile> {
                                             ? NetworkImage(
                                                 'https://firebasestorage.googleapis.com/v0/b/my-app-59705.appspot.com/o/CROPPED-nebo-oblaka-ozero-pirs.jpg?alt=media&token=4e4ecb89-98a6-4fd2-84af-cade727ee090',
                                               )
-                                            : FileImage(_image!) as ImageProvider,
+                                            : FileImage(_image!)
+                                                as ImageProvider,
                                       ),
                                     ),
                                     child: GestureDetector(
@@ -228,7 +231,8 @@ class _ProfileState extends State<Profile> {
                                         color: Colors.black,
                                         style: BorderStyle.none,
                                       ),
-                                      borderRadius: BorderRadius.circular(100.0),
+                                      borderRadius:
+                                          BorderRadius.circular(100.0),
                                     ),
                                   ),
                                 )

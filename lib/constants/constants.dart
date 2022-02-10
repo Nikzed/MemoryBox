@@ -11,3 +11,4 @@ final Future<FirebaseApp> firebaseInitialization = Firebase.initializeApp();
 FirebaseAuth auth = FirebaseAuth.instance;
 FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 Color backgroundColor = Color(0xffF6F6F6);
+Color accentColor = Color(0xff8c84e2);

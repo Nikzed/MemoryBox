@@ -1,4 +1,5 @@
 import 'package:first_project_test/constants/constants.dart';
+import 'package:first_project_test/controllers/wrapper_controller.dart';
 import 'package:first_project_test/models/audio_model.dart';
 import 'package:first_project_test/models/painter_model.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,9 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
+  final WrapperController f = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,7 +130,9 @@ class _HomeState extends State<Home> {
                         child: Padding(
                           padding: const EdgeInsets.only(top: 130),
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              f.startPlayer();
+                            },
                             child: Text(
                               'Добавить',
                               textAlign: TextAlign.center,

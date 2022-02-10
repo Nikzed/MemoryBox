@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:first_project_test/constants/constants.dart';
 import 'package:first_project_test/controllers/record_controller.dart';
@@ -41,6 +42,8 @@ class _RecordState extends State<Record> with TickerProviderStateMixin {
   void dispose() {
     _animationController.dispose();
     Get.delete<RecordController>();
+    print('trying to delete...');
+    File('/storage/emulated/0/SoundRecorder/temp.aac').delete();
     super.dispose();
   }
 

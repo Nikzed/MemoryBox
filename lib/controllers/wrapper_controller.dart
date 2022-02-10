@@ -5,6 +5,7 @@ import 'package:first_project_test/screens/home/collections.dart';
 import 'package:first_project_test/screens/home/home.dart';
 import 'package:first_project_test/screens/home/profile.dart';
 import 'package:first_project_test/screens/home/record.dart';
+import 'package:flutter_sound/public/flutter_sound_player.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
@@ -13,13 +14,44 @@ class WrapperController extends GetxController {
     initialPage: 0,
   );
   Rx<int> currentIndex = 0.obs;
+
   // TODO implement logic
   bool showDrawer = true;
   Rx<String> recordLabelText = 'Запись'.obs;
+  Rx<FlutterSoundPlayer> player = FlutterSoundPlayer().obs;
+
+  RxBool isPlaying = false.obs;
+  RxString playingSong = ''.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    initPlayer();
+  }
+
+  Future<void> initPlayer() async {
+    print('HELLOOOOOOOOOOOOOOO');
+    await player.value.openAudioSession();
+  }
+
+  Future<void> startPlayer() async {
+    // player
+    print('...');
+    isPlaying.value = true;
+    playingSong.value = 'Запись №1.aac';
+    await player.value.startPlayer(
+        fromURI: '/storage/emulated/0/SoundRecorder/Запись №1.aac',
+        whenFinished: () {
+          playingSong.value = '';
+          isPlaying.value = false;
+          player.value.stopPlayer();
+        });
+  }
 
   @override
   void dispose() {
     pageController.dispose();
+    // player.value.closeAudioSession();
     super.dispose();
   }
 
@@ -39,7 +71,7 @@ class WrapperController extends GetxController {
     print('current index: $currentIndex');
   }
 
-  onPageChanged(page){
+  onPageChanged(page) {
     if (page < 5)
       currentIndex.value = page;
     else

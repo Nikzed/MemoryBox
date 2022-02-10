@@ -1,4 +1,5 @@
 import 'package:first_project_test/constants/constants.dart';
+import 'package:first_project_test/controllers/wrapper_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,6 +19,7 @@ class AudioForm extends StatefulWidget {
 
 class _AudioFormState extends State<AudioForm> {
   bool isPlaying = false;
+  final WrapperController f = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,10 @@ class _AudioFormState extends State<AudioForm> {
           width: 0.5,
         ),
       ),
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      margin: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 5,
+      ),
       child: Container(
         decoration: BoxDecoration(
           color: backgroundColor,
@@ -52,23 +57,27 @@ class _AudioFormState extends State<AudioForm> {
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(
-                    icon: Icon(
-                      isPlaying
-                          ? Icons.pause_rounded
-                          : Icons.play_arrow_rounded,
-                      color: backgroundColor,
-                      size: 35,
+                    icon: Obx(
+                      () => Icon(
+                        f.playingSong == widget.name
+                            ? Icons.pause_rounded
+                            : Icons.play_arrow_rounded,
+                        // isPlaying
+                        //     ? Icons.pause_rounded
+                        //     : Icons.play_arrow_rounded,
+                        color: backgroundColor,
+                        size: 35,
+                      ),
                     ),
                     onPressed: () {
                       setState(() {
                         isPlaying = !isPlaying;
                       });
-                      Get.snackbar(
-                        'title',
-                        'message',
-                        snackPosition: SnackPosition.BOTTOM,
-                      );
+                      // check
+                      f.startPlayer();
                       print(isPlaying);
+                      // isn't updating
+                      print('f.isPlaying.value: ${f.isPlaying.value}');
                     },
                   ),
                 ),
@@ -89,7 +98,7 @@ class _AudioFormState extends State<AudioForm> {
                 ),
                 SizedBox(height: 2),
                 Text(
-                  '** минут',
+                  '${widget.duration} минут',
                   style: TextStyle(
                     color: Color(0xff3A3A5580).withOpacity(0.5),
                   ),

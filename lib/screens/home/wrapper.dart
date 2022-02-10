@@ -1,7 +1,7 @@
-import 'dart:ui';
 import 'package:first_project_test/controllers/wrapper_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
@@ -13,14 +13,16 @@ class Wrapper extends StatefulWidget {
 }
 
 class _WrapperState extends State<Wrapper> {
-  final _wrapperController = WrapperController();
-  var accentColor = Color(0xff8c84e2);
+  final _wrapperController = Get.put(WrapperController());
   var drawerColor = Color(0xff3A3A55);
 
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light));
+      SystemUiOverlayStyle(
+        statusBarIconBrightness: Brightness.light,
+      ),
+    );
     return Scaffold(
       resizeToAvoidBottomInset: false,
       // restorationId: "root",
@@ -32,7 +34,7 @@ class _WrapperState extends State<Wrapper> {
       body: PageView(
         physics: NeverScrollableScrollPhysics(),
         controller: _wrapperController.pageController,
-        onPageChanged: (page){
+        onPageChanged: (page) {
           _wrapperController.onPageChanged(page);
         },
         // children: _wrapperController.pages,
@@ -52,15 +54,16 @@ class _WrapperState extends State<Wrapper> {
         child: ListView(
           children: [
             Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.only(top: 40),
-                child: Text(
-                  'Аудисказки',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                  ),
-                )),
+              alignment: Alignment.center,
+              padding: const EdgeInsets.only(top: 40),
+              child: Text(
+                'Аудисказки',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
             Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.only(top: 40),
@@ -74,25 +77,60 @@ class _WrapperState extends State<Wrapper> {
               ),
             ),
             Container(
-              padding: const EdgeInsets.only(top: 70, left: 30, right: 50),
+              padding: const EdgeInsets.only(
+                top: 70,
+                left: 30,
+                right: 50,
+              ),
               child: Column(
                 children: [
-                  _getDrawerButton('assets/home.svg', 'Главная', 0),
+                  _getDrawerButton(
+                    'assets/home.svg',
+                    'Главная',
+                    0,
+                  ),
                   SizedBox(height: 15),
-                  _getDrawerButton('assets/profile.svg', 'Профиль', 4),
+                  _getDrawerButton(
+                    'assets/profile.svg',
+                    'Профиль',
+                    4,
+                  ),
                   SizedBox(height: 15),
-                  _getDrawerButton('assets/category.svg', 'Подборки', 1),
+                  _getDrawerButton(
+                    'assets/category.svg',
+                    'Подборки',
+                    1,
+                  ),
                   SizedBox(height: 15),
-                  _getDrawerButton('assets/paper.svg', 'Все аудиофалы', 3),
+                  _getDrawerButton(
+                    'assets/paper.svg',
+                    'Все аудиофалы',
+                    3,
+                  ),
                   SizedBox(height: 15),
-                  _getDrawerButton('assets/search.svg', 'Поиск', 5),
+                  _getDrawerButton(
+                    'assets/search.svg',
+                    'Поиск',
+                    5,
+                  ),
                   SizedBox(height: 15),
-                  _getDrawerButton('assets/delete.svg', 'Недавно удаленные', 0),
-                  SizedBox(height: 40),
-                  _getDrawerButton('assets/wallet.svg', 'Подписка', 0),
+                  _getDrawerButton(
+                    'assets/delete.svg',
+                    'Недавно удаленные',
+                    0,
+                  ),
                   SizedBox(height: 40),
                   _getDrawerButton(
-                      'assets/edit.svg', 'Написать в поддержку', 0),
+                    'assets/wallet.svg',
+                    'Подписка',
+                    0,
+                  ),
+                  SizedBox(height: 40),
+                  _getDrawerButton(
+                    'assets/edit.svg',
+                    'Написать в поддержку',
+                    0,
+                  ),
                 ],
               ),
             ),

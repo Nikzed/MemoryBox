@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CustomSliderPlayer extends SliderComponentShape {
   final double thumbRadius;
 
-  const CustomSliderPlayer({required this.thumbRadius});
+  const CustomSliderPlayer( {required this.thumbRadius});
 
   @override
   Size getPreferredSize(bool isEnabled, bool isDiscrete) {
@@ -28,6 +28,10 @@ class CustomSliderPlayer extends SliderComponentShape {
       ..color = sliderTheme.activeTrackColor!
       ..style = PaintingStyle.fill;
 
+    // final paint = Paint()
+    //   ..color = Colors.white
+    //   ..style = PaintingStyle.fill;
+
     final rect = RRect.fromRectAndRadius(
       Rect.fromPoints(
         Offset(center.dx - 10, center.dy + 5),
@@ -37,5 +41,22 @@ class CustomSliderPlayer extends SliderComponentShape {
     );
 
     canvas.drawRRect(rect, paint);
+  }
+}
+
+class CustomTrackShape extends RoundedRectSliderTrackShape {
+  Rect getPreferredRect({
+    required RenderBox parentBox,
+    Offset offset = Offset.zero,
+    required SliderThemeData sliderTheme,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+  }) {
+    final double? trackHeight = 1;
+    final double trackLeft = offset.dx;
+    final double trackTop =
+        offset.dy + (parentBox.size.height - trackHeight!) / 2;
+    final double trackWidth = parentBox.size.width;
+    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
 }

@@ -7,7 +7,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_sound/public/flutter_sound_player.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -85,7 +87,8 @@ class RecordController extends GetxController {
     // filePath = directory.path + '/' + 'temp' + '.aac';
     // Постоянный файл TODO: решить куда записывать
     fileName.value = await _generateFileName();
-    filePath = directoryPath + '/' + fileName.value;
+    // filePath = directoryPath + '/' + fileName.value;
+    filePath = directoryPath + '/' + 'temp.aac';
     await _addRecorderListener();
     await recorder.value.startRecorder(
       toFile: filePath,
@@ -191,6 +194,13 @@ class RecordController extends GetxController {
       print(file.path);
       filePath = file.path;
     });
+  }
+
+  Future<void> _renameFile() async{
+    String newPath = path.join(directoryPath.value, 'какая-то запись');
+    print('old path: $filePath');
+    File(filePath).rename(newPath);
+    print('new path: $newPath');
   }
 
   Future<String> _generateFileName([int i = 1]) async {
