@@ -1,11 +1,10 @@
-import 'package:first_project_test/models/audio_model.dart';
 import 'package:first_project_test/screens/additional_screens/search.dart';
 import 'package:first_project_test/screens/home/audios.dart';
 import 'package:first_project_test/screens/home/collections.dart';
 import 'package:first_project_test/screens/home/home.dart';
 import 'package:first_project_test/screens/home/profile.dart';
 import 'package:first_project_test/screens/home/record.dart';
-import 'package:flutter_sound/public/flutter_sound_player.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
@@ -30,7 +29,7 @@ class WrapperController extends GetxController {
   }
 
   Future<void> initPlayer() async {
-    print('HELLOOOOOOOOOOOOOOO');
+    print('HELLOOOOOOOOOOOOOOO initPlayer()');
     await player.value.openAudioSession();
   }
 
@@ -40,6 +39,7 @@ class WrapperController extends GetxController {
     isPlaying.value = true;
     playingSong.value = 'Запись №1.aac';
     await player.value.startPlayer(
+        codec: Codec.aacADTS,
         fromURI: '/storage/emulated/0/SoundRecorder/Запись №1.aac',
         whenFinished: () {
           playingSong.value = '';

@@ -185,19 +185,20 @@ class RecordController extends GetxController {
 
   Future<void> _createFile() async {
     // fileName.value = await _generateFileName();
-    File(directoryPath + '/' + fileName.value)
-        .create(recursive: true)
-        .then((File file) async {
-      //write to file
-      Uint8List bytes = await file.readAsBytes();
-      file.writeAsBytes(bytes);
-      print(file.path);
-      filePath = file.path;
-    });
+    _renameFile();
+    // File(directoryPath + '/' + fileName.value)
+    //     .create(recursive: true)
+    //     .then((File file) async {
+    //   //write to file
+    //   Uint8List bytes = await file.readAsBytes();
+    //   file.writeAsBytes(bytes);
+    //   print(file.path);
+    //   filePath = file.path;
+    // });
   }
 
   Future<void> _renameFile() async{
-    String newPath = path.join(directoryPath.value, 'какая-то запись');
+    String newPath = path.join(directoryPath.value, 'какая-то запись.aac');
     print('old path: $filePath');
     File(filePath).rename(newPath);
     print('new path: $newPath');
