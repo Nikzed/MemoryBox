@@ -74,7 +74,7 @@ class _AudioFormState extends State<AudioForm> {
                         isPlaying = !isPlaying;
                       });
                       // check
-                      f.startPlayer();
+                      f.startPlayer(widget.name);
                       print(isPlaying);
                       // isn't updating
                       print('f.isPlaying.value: ${f.isPlaying.value}');

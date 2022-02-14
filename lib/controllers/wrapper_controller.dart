@@ -33,14 +33,35 @@ class WrapperController extends GetxController {
     await player.value.openAudioSession();
   }
 
-  Future<void> startPlayer() async {
+  Future<void> startPlayer([String? songName]) async {
+    songName != null ? playingSong.value = songName : null;
+
+    if (player.value.isPlaying) {
+      player.value.stopPlayer();
+      playingSong.value = '';
+      isPlaying.value = false;
+      return;
+    }
+
+    isPlaying.value = true;
+    await player.value.startPlayer(
+        codec: Codec.aacADTS,
+        fromURI: '/storage/emulated/0/SoundRecorder/$songName',
+        whenFinished: () {
+          playingSong.value = '';
+          isPlaying.value = false;
+          player.value.stopPlayer();
+        });
+
+    return;
+
     // player
     print('...');
     isPlaying.value = true;
-    playingSong.value = 'Запись №1.aac';
+    playingSong.value = 'какая-то запись.aac';
     await player.value.startPlayer(
         codec: Codec.aacADTS,
-        fromURI: '/storage/emulated/0/SoundRecorder/Запись №1.aac',
+        fromURI: '/storage/emulated/0/SoundRecorder/какая-то запись.aac',
         whenFinished: () {
           playingSong.value = '';
           isPlaying.value = false;

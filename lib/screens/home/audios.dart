@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:first_project_test/constants/constants.dart';
 import 'package:first_project_test/controllers/wrapper_controller.dart';
-import 'package:first_project_test/models/audio_model.dart';
+import 'package:first_project_test/models/audio_form_model.dart';
 import 'package:first_project_test/models/painter_model.dart';
 import 'package:first_project_test/models/player_model.dart';
 import 'package:flutter/material.dart';
@@ -220,12 +220,14 @@ class _AudiosState extends State<Audios> {
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(bottom: 90),
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: PlayerModel(),
-            ),
+          Obx(
+            () => f.isPlaying.value ? Padding(
+              padding: EdgeInsets.only(bottom: 90),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: PlayerModel(),
+              ),
+            ) : SizedBox(),
           ),
         ],
       ),
