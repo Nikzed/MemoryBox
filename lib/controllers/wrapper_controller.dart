@@ -1,3 +1,4 @@
+import 'package:first_project_test/screens/additional_screens/recently_deleted.dart';
 import 'package:first_project_test/screens/additional_screens/search.dart';
 import 'package:first_project_test/screens/home/audios.dart';
 import 'package:first_project_test/screens/home/collections.dart';
@@ -84,6 +85,7 @@ class WrapperController extends GetxController {
     Profile(),
     // additional_screens
     Search(),
+    RecentlyDeleted(),
   ];
 
   void goTo(int page) {
